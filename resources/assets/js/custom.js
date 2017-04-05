@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+ 
 var CURRENT_URL = window.location.href.split('?')[0],
     $BODY = $('body'),
     $MENU_TOGGLE = $('#menu_toggle'),
@@ -34,7 +34,7 @@ $(document).ready(function() {
 
     $SIDEBAR_MENU.find('a').on('click', function(ev) {
         var $li = $(this).parent();
-
+        
         if ($li.is('.active')) {
             $li.removeClass('active active-sm');
             $('ul:first', $li).slideUp(function() {
@@ -54,9 +54,9 @@ $(document).ready(function() {
             });
         }
     });
-
+    console.log(123123333);
     // toggle small or large menu
-    $MENU_TOGGLE.on('click', function() {
+    $MENU_TOGGLE.on('click', function() {console.log(44444);
         if ($BODY.hasClass('nav-md')) {
             $SIDEBAR_MENU.find('li.active ul').hide();
             $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
@@ -235,10 +235,10 @@ $(document).ready(function() {
 // NProgress
 if (typeof NProgress != 'undefined') {
     $(document).ready(function () {
-        NProgress.start();
+         NProgress.start();
     });
 
-    $(window).load(function () {
+     $(window).on('load', function () {
         NProgress.done();
     });
 }

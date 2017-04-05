@@ -11,9 +11,8 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
-        <script src="{{ elixir('js/app.js') }}"></script>
-        <script src="{{ elixir('js/libs.js') }}"></script>
-        <script src="{{ elixir('js/custom.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ asset('js/custom.js') }}"></script>
     </head>
     <body class="nav-md">
             <div id="app"></div>
