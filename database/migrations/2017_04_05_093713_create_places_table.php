@@ -13,7 +13,7 @@ class CreatePlacesTable extends Migration
      */
     public function up()
     {
-        Schema::table('places', function (Blueprint $table) {
+        Schema::create('places', function (Blueprint $table) {
             $table->increments('place_id');
             $table->float('lat');
             $table->float('lng');
@@ -29,8 +29,6 @@ class CreatePlacesTable extends Migration
      */
     public function down()
     {
-        Schema::table('places', function (Blueprint $table) {
-            Schema::dropIfExists('places');
-        });
+        Schema::dropIfExists('places');
     }
 }

@@ -6,6 +6,8 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Repositories\EloquentRepository\UserRepository;
+use App\Repositories\EloquentRepository\UserAccountRepository;
 
 class RegisterController extends Controller
 {
@@ -29,14 +31,21 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/home';
 
+    protected $userRepository, $userAccountRepository;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(
+        UserRepository $userRepository, 
+        UserAccountRepository $userAccountRepository
+    )
     {
         $this->middleware('guest');
+        $this->userAccountRepository = $userAccountRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -62,10 +71,9 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $data['password'] = bcrypt($data['password']);dd($data);
+        $user = $this->userRepository->store($data);
+
+        return $user && $this->userAccountRepository->store($data);
     }
 }
