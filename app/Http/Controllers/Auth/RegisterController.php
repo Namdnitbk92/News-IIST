@@ -6,8 +6,9 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
 use App\Repositories\EloquentRepository\UserRepository;
-use App\Repositories\EloquentRepository\UserAccountRepository;
 
 class RegisterController extends Controller
 {
@@ -21,33 +22,24 @@ class RegisterController extends Controller
     | provide this functionality without requiring any additional code.
     |
     */
-
     use RegistersUsers;
-
     /**
      * Where to redirect users after registration.
      *
      * @var string
      */
     protected $redirectTo = '/home';
-
-    protected $userRepository, $userAccountRepository;
-
+    protected $userRepository;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(
-        UserRepository $userRepository, 
-        UserAccountRepository $userAccountRepository
-    )
+    public function __construct(UserRepository $userRepository)
     {
         $this->middleware('guest');
-        $this->userAccountRepository = $userAccountRepository;
         $this->userRepository = $userRepository;
     }
-
     /**
      * Get a validator for an incoming registration request.
      *
@@ -71,9 +63,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $data['password'] = bcrypt($data['password']);dd($data);
-        $user = $this->userRepository->store($data);
+        $data['password'] = bcrypt($data['password']);
 
-        return $user && $this->userAccountRepository->store($data);
+        return $this->userRepository->store($data);
     }
 }

@@ -7,7 +7,7 @@
                 <div class="panel-heading">Dashboard</div>
 
                 <div class="panel-body">
-                    You are logged in!
+                    Create form news
                 </div>
             </div>
         </div>

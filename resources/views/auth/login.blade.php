@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container">
+@section('login')
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <img src="../images/lp-logo.png" width="700" height="150"/>
+    </div>        
+</div>
+<div class="container" style="margin-top:5%;">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
