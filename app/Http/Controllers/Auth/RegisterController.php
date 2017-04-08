@@ -64,6 +64,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $data['password'] = bcrypt($data['password']);
+        $data['api_token'] = str_random(60);
 
         return $this->userRepository->store($data);
     }

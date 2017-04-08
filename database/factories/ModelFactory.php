@@ -18,7 +18,48 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
+        'api_token' => str_random(60),
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+    ];
+});
+
+$factory->define(App\Role::class, function (Faker\Generator $faker) {
+    return [
+        'role_id' => $faker->unique()->randomNumber,
+        'description' => 'this is role test...',
+    ];
+});
+
+$factory->define(App\Status::class, function (Faker\Generator $faker) {
+    return [
+        'status_id' => $faker->unique()->randomNumber,
+        'description' => 'this is status test...',
+    ];
+});
+
+$factory->define(App\Places::class, function (Faker\Generator $faker) {
+    return [
+        'lat' => $faker->randomFloat(2, 0, 200),
+        'lng' => $faker->randomFloat(2, 0, 200),
+        'name' => 'place test',
+        'type' => 'city',
+    ];
+});
+
+$factory->define(App\News::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->address,
+        'sub_title' => $faker->address,
+        'audio_path' => 'https:/zing.vn',
+        'place_id' => function () {
+            return factory(App\Places::class)->create()->id;
+        },
+        'user_id' => function () {
+            return factory(App\User::class)->create()->id;
+        },
+        'status_id' => function () {
+            return factory(App\Status::class)->create()->id;
+        },
     ];
 });

@@ -15,10 +15,12 @@ class CreatePlacesTable extends Migration
     {
         Schema::create('places', function (Blueprint $table) {
             $table->increments('place_id');
-            $table->float('lat');
-            $table->float('lng');
-            $table->string('name');
+            $table->float('lat')->nullable();
+            $table->float('lng')->nullable();
+            $table->string('name')->nullable();
+            $table->string('user_id')->nullable();
             $table->enum('type', ['city', 'county', 'guild']);
+            $table->timestamps();
         });
     }
 
