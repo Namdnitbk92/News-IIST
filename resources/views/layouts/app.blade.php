@@ -109,22 +109,13 @@
         </div>
         <!-- /top navigation -->
         <!-- page content -->
-        <div class="right_col" role="main">
-        <div class="row">
-            @yield('content')
-        </div>
-         
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            IIST
+        <div class="right_col" role="main" style="height:100vh; !important;">
+          <div class="row">
+              @yield('content')
           </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
-      </div>
+           
+          <!-- /page content -->
+        </div>
     </div>
 </body>
 @else

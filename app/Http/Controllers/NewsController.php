@@ -34,7 +34,36 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // try
+        // {
+        //     DB::beginTransaction();
+        //     News::create($request->all());
+        // }
+        // catch(Exception $e)
+        // {
+        //     DB::rollBack();
+        //     $isFailed = true;
+        // }
+
+        // if (!isset($isFailed))
+        // {
+        //     $audioFile = \Request::file('audio-file');
+        //     $result = \Cloudder::uploadVideo($audioFile)->getResult();
+        //     $path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+
+        //     if ($path !== "" && !is_null($path))
+        //     {
+        //         DB::commit();
+
+        //          return redirect(route('news.create'))->with('status', 'Create a new has errors occurreds'); 
+        //     } 
+        //     else 
+        //     {
+        //         DB::rollBack();
+        //     }
+        // }
+
+         return redirect(route('news.create'))->with('status', 'Create a new is successfully'); 
     }
 
     /**
