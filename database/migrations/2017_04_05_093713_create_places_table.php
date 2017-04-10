@@ -20,6 +20,7 @@ class CreatePlacesTable extends Migration
             $table->string('name')->nullable();
             $table->string('user_id')->nullable();
             $table->enum('type', ['city', 'county', 'guild']);
+            $table->string('original_place_id')->nullable();
             $table->timestamps();
         });
     }

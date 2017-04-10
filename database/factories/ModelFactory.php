@@ -31,13 +31,6 @@ $factory->define(App\Role::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Status::class, function (Faker\Generator $faker) {
-    return [
-        'status_id' => $faker->unique()->randomNumber,
-        'description' => 'this is status test...',
-    ];
-});
-
 $factory->define(App\Places::class, function (Faker\Generator $faker) {
     return [
         'lat' => $faker->randomFloat(2, 0, 200),
@@ -58,8 +51,28 @@ $factory->define(App\News::class, function (Faker\Generator $faker) {
         'user_id' => function () {
             return factory(App\User::class)->create()->id;
         },
-        'status_id' => function () {
-            return factory(App\Status::class)->create()->id;
-        },
+        'status_id' => 1,
+    ];
+});
+
+$factory->define(App\City::class, function (Faker\Generator $faker) {
+    return [
+        'name' => 'Ha Noi',
+    ];
+});
+
+$factory->define(App\County::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->randomElement(['Thanh xuan', 'Dong Da', 'Long bien']).' '.$faker->randomDigit(),
+        'city_id' => 1,
+    ];
+});
+
+$factory->define(App\Guild::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->randomElement(['Thinh Quang', 'Lang Ha', 'Trung Tu']).' '.$faker->randomDigit(),
+        'county_id' => function () {
+            return factory(App\County::class)->create()->id;
+        }
     ];
 });

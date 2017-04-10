@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
+    <link rel="stylesheet" href="{{ elixir('css/table.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -58,9 +59,8 @@
                   <li><a><i class="fa fa-newspaper-o" aria-hidden="true"></i> News List <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{ route('news.create') }}">{{ trans('app.create_new') }}</a></li>
-                      <li><a href="form_advanced.html">{{ trans('app.view_news_list_detail') }}</a></li>
+                      <li><a href="{{ route('news.index') }}">{{ trans('app.view_news_list_detail') }}</a></li>
                       <li><a href="form_validation.html">{{ trans('app.approve_new') }}</a></li>
-                      <li><a href="form_wizards.html">{{ trans('app.view_new_detail') }}</a></li>
                     </ul>
                   </li>
                 </ul>

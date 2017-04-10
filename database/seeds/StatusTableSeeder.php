@@ -11,6 +11,17 @@ class StatusTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Status::class, 10)->create();
+    	DB::table('status')->insert([
+            'status_id' => 1,
+            'description' => 'New',
+        ]);
+        DB::table('status')->insert([
+            'status_id' => 2,
+            'description' => 'Approved',
+        ]);
+        DB::table('status')->insert([
+            'status_id' => 3,
+            'description' => 'Cancelled',
+        ]);
     }
 }

@@ -18,6 +18,7 @@ elixir((mix) => {
 	mix.copy('node_modules/gentelella/production/images', 'public/images')
 	.copy('node_modules/font-awesome/fonts', 'public/fonts')
   mix.sass('app.scss')
+  	.less('table.less', 'public/css/table.css')
     .webpack('app.js')
     .scripts(['libs/bootstrap.fd.js', 'custom.js'], 'public/js/custom.js')
     .version('css/app.css');

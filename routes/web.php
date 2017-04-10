@@ -20,3 +20,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index');
 
 Route::resource('news', 'NewsController');
+
+Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');
