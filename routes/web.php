@@ -17,8 +17,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('news', 'NewsController');
+
+Route::post('/approveNew', 'NewsController@approveNew')->name('approveNew');
 
 Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');

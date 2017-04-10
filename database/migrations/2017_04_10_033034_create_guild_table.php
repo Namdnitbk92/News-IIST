@@ -13,7 +13,7 @@ class CreateGuildTable extends Migration
      */
     public function up()
     {
-        Schema::create('Guild', function (Blueprint $table) {
+        Schema::create('guild', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('county_id');
@@ -28,7 +28,7 @@ class CreateGuildTable extends Migration
      */
     public function down()
     {
-        Schema::table('Guild', function (Blueprint $table) {
+        Schema::table('guild', function (Blueprint $table) {
             Schema::dropIfExists('Guild');
         });
     }

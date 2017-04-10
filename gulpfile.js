@@ -20,6 +20,6 @@ elixir((mix) => {
   mix.sass('app.scss')
   	.less('table.less', 'public/css/table.css')
     .webpack('app.js')
-    .scripts(['libs/bootstrap.fd.js', 'custom.js'], 'public/js/custom.js')
+    .scripts(['libs/bootstrap.fd.js', 'custom.js', 'libs/lazyload.js'], 'public/js/custom.js')
     .version('css/app.css');
 });

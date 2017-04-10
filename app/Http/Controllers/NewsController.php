@@ -54,6 +54,17 @@ class NewsController extends Controller
                     return redirect(route('news.create'))->with('status', $up->getMessage()); 
                 }
             }
+            else
+            {
+                // $audioText = $request->get('audio-text');
+                // if ($audioText !== null && $audioText !== "")
+                // {
+                //     $googleProvider = new \duncan3dc\Speaker\Providers\GoogleProvider;
+                //     $textToSpeech = new \duncan3dc\Speaker\TextToSpeech($audioText, $googleProvider);
+                //     file_put_contents("/tmp/hello.mp3", $textToSpeech->getAudioData());
+                //     return redirect()->back();
+                // }
+            }
             
             if ($path !== "" && !is_null($path))
             {
@@ -79,7 +90,15 @@ class NewsController extends Controller
                     }
 
                     $place = \App\Places::create($place_data);
-                    \App\News::create(array_merge($request->all(), ['status_id' => 1,'audio_path' => $path, 'place_id' => $place->id]));
+                    \App\News::create(
+                        array_merge(
+                            $request->all(), 
+                            [
+                                'status_id' => 1,
+                                'audio_path' => $path, 
+                                'place_id' => $place->id
+                            ]
+                    ));
                 }
                 catch(Exception $ec)
                 {
@@ -103,7 +122,8 @@ class NewsController extends Controller
             throw new Exception('create new is failed, cause : '.$e->getMessage());
         }
 
-        return redirect(route('news.create'))->with('status', 'Create a new is successfully'); 
+        return redirect(route('news.create'))
+            ->with('status', 'Create a new is successfully'); 
     }
 
     /**
@@ -138,7 +158,7 @@ class NewsController extends Controller
                     $original_place = \App\Guild::find($place->original_place_id);
                     if ($original_place)
                     {
-                        $address = $original_place->name .' - '. $original_place->county()->first()->name .' - ' . $original_place->county()->city()->first()->name;
+                        $address = $original_place->name .' - '. $original_place->county()->first()->name .' - ' . $original_place->county()->first()->city()->first()->name;
                     }
                     break;   
 
@@ -213,9 +233,16 @@ class NewsController extends Controller
                     $place_data['original_place_id'] = $request->get('city');
                 }
 
-                $place = \App\Places::where('place_id', $new->place_id)->get();
-                $place->save($place_data);
-                \App\News::save(array_merge($request->all(), ['status_id' => 1,'audio_path' => $path, 'place_id' => $place->id]));
+                $place = \App\Places::where('place_id', $new->place_id);
+                $place->update($place_data);
+                $new->update(
+                    array_merge($request->all(), 
+                    [
+                        'status_id' => 1,
+                        'audio_path' => $path, 
+                        'place_id' => $place->first()->place_id
+                    ]
+                ));
             }
             catch(Exception $ec)
             {
@@ -229,7 +256,8 @@ class NewsController extends Controller
             }
             else
             {
-                return redirect(route('news.create'))->with('status', 'Update a new has occurred failed cause'.$ec->getMessage()); 
+                return redirect(route('news.create'))
+                    ->with('status', 'Update a new has occurred failed cause'.$ec->getMessage()); 
             }
         }
         catch(Exception $e)
@@ -237,7 +265,8 @@ class NewsController extends Controller
             throw new Exception('update new is failed, cause : '.$e->getMessage());
         }
 
-        return redirect(route('news.create'))->with('status', 'Update a new is successfully'); 
+        return redirect()->route('news.edit', ['id' => $new->id])
+                    ->with('status', 'Update a new is successfully'); 
     }
 
     /**
@@ -248,7 +277,37 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+
+            $new = \App\News::find($id);
+            $place = \App\Places::where('place_id', $new->place_id);
+
+            if ($place)
+            {
+                $place->delete();
+            }
+
+            $new->delete();
+        }
+        catch(Exception $ec)
+        {
+            \DB::rollBack();
+
+            return response()->json([
+                'message' => 'Delete this new has occurred failed cause'.$ec->getMessage(),
+                'status' => 500,
+            ]);
+
+        }
+         
+        \DB::commit();
+
+        return response()->json([
+            'message' => 'Delete this new is successfully',
+            'status' => 200,
+        ]);
     }
 
     public function getGuildList(Request $request)
@@ -266,6 +325,42 @@ class NewsController extends Controller
         return response()->json([
             'status' => 200,
             'guilds' => $guilds ?: [],
+        ]);
+    }
+
+
+    public function approveNew(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $newId = $request->get('newId');
+
+            if ($newId !== null)
+            {
+                try
+                {
+                    \DB::beginTransaction();
+                    $new = \App\News::find($newId);
+                    $new->status_id = 2;
+                    $new->update();
+                }
+                catch(Exception $e)
+                {
+                    \DB::rollBack();
+                    return response()->json([
+                        'status' => 500,
+                        'message' => 'has errors appeared cause' . $e->getMessage(),
+                    ]);
+                }
+                \DB::commit();
+            }
+        }
+
+
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'This new was approved!!',
         ]);
     }
 }

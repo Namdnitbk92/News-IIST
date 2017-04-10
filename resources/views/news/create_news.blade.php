@@ -2,9 +2,11 @@
 
 @section('content')
 
-<form name="create_new" style="margin:50px" enctype="multipart/form-data" action="{{ !isset($new) ? route('news.store') : route('news.update', ['id' => $new->id]) }}" method="{{ isset($new) ? 'PUT' : 'POST'}}">
+<form name="create_new" style="margin:50px" enctype="multipart/form-data" action="{{ !isset($new) ? route('news.store') : route('news.update', ['id' => $new->id]) }}" method="POST">
     {{ csrf_field() }}
-    <input type="hidden" name="_method" value="put" />
+    @if(isset($new))
+        <input type="hidden" name="_method" value="put" />
+    @endif
     <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
     @if (session('status'))
         <div class="alert alert-success">
@@ -15,11 +17,11 @@
       <div class="row">
         <div class="col-md-6 col-xs-6">
           <label for="usr">Title</label>
-        <input type="text" name="title" class="form-control" id="usr" value="{{$new->title}}">
+        <input type="text" name="title" class="form-control" id="usr" value="{{ isset($new) ? $new->title : ''}}">
         </div>
         <div class="col-md-6 col-xs-6">
             <label for="pwd">Sub-Title</label>
-            <input type="text" name="sub_title" class="form-control" id="pwd" value="{{$new->sub_title}}">
+            <input type="text" name="sub_title" class="form-control" id="pwd" value="{{isset($new) ? $new->sub_title : ''}}">
         </div>
       </div>
     </div>

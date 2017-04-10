@@ -22,6 +22,12 @@
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     </script>
 </head>
 @if (!Auth::guest())
@@ -54,7 +60,7 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                  <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                   </li>
                   <li><a><i class="fa fa-newspaper-o" aria-hidden="true"></i> News List <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
@@ -109,7 +115,7 @@
         </div>
         <!-- /top navigation -->
         <!-- page content -->
-        <div class="right_col" role="main" style="height:100vh; !important;">
+        <div class="right_col" role="main" style="height:100%; !important;">
           <div class="row">
               @yield('content')
           </div>

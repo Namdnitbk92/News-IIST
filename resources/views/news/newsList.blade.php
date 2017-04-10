@@ -2,7 +2,11 @@
 
 @section('content')
 	 
-
+  @if (session('status'))
+      <div class="alert alert-success">
+          {{ session('status') }}
+      </div>
+  @endif
  <div id="demo">
   <h1>News List</h1>
   <div class="table-responsive-vertical shadow-z-1">

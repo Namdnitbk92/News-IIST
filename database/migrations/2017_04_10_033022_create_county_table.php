@@ -13,7 +13,7 @@ class CreateCountyTable extends Migration
      */
     public function up()
     {
-        Schema::create('County', function (Blueprint $table) {
+        Schema::create('county', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('city_id');
@@ -28,7 +28,7 @@ class CreateCountyTable extends Migration
      */
     public function down()
     {
-        Schema::table('County', function (Blueprint $table) {
+        Schema::table('county', function (Blueprint $table) {
             Schema::dropIfExists('County');
         });
     }

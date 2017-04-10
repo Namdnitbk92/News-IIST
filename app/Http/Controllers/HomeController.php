@@ -23,6 +23,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $news = \App\News::all();
+        $newsOne = [];
+        $newsSecond = [];
+        $plot = count($news) / 2;
+
+        for ($i = $plot ;$i >= 0 ;$i-- )
+        {
+            array_push($newsOne, $news[$i]);
+
+            if (count($news) - 1 >= $plot && $plot > $i)
+            {
+                array_push($newsSecond, $news[$plot]);
+                $plot++;
+            }
+        }
+
+        return view('home',compact('newsOne', 'newsSecond'));
     }
 }
