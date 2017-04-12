@@ -1,0 +1,267 @@
+<div class="form-group">
+  <label class="col-sm-3 control-label">Thời gian cập nhật từ ngày:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("THOIGIANBATDAU", ViewData["THOIGIANBATDAU"], new { @class = "form-control datepicker", @onchange = "changeMindate()" })  
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Đến ngày:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("THOIGIANKETTHUC", ViewData["THOIGIANBATDAU"], new { id = "THOIGIANKETTHUC", @class = "form-control datepicker" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Họ tên:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("HOTEN", "", new { @class = "form-control" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Giới tính:</label>
+  <div class="col-sm-9">
+	<input type="text" name="name" class="form-control" placeholder="Type your name..."/>
+	@Html.DropDownList("GIOITINH", Model.ListGIOITINH, "[--- Chọn giới tính ---]", new { @class = "form-control input-lg valid", @style = "" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Nghề nghiệp:</label>
+  <div class="col-sm-9">
+	@Html.DropDownList("NGHENGHIEP_ID", Model.ListNGHENGHIEP, "[--- Chọn nghê nghiệp ---]", new { @class = "form-control select2 valid", @style = "" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Tỉnh/TP:</label>
+  <div class="col-sm-9">
+	@if (Model.PhanLoaiCoSo == CAPDONVI.CAPTRUNGUONG || Model.PhanLoaiCoSo == CAPDONVI.CAPBENHVIENTRUNGUONG)
+	{
+		@Html.DropDownList("TINH_TIMKIEM_ID", Model.ListCity, "[--- Chọn Tỉnh/TP ---]", new { @class = "form-control valid", @style = "", onchange = "LoadDiaDiem('TINH_TIMKIEM_ID', 'HUYEN_TIMKIEM_ID', 'XA_TIMKIEM_ID', 1);" })
+	}
+	else
+	{
+		@Html.DropDownList("TINH_TIMKIEM_ID", Model.ListCity, "[--- Chọn Tỉnh/TP ---]", new { @class = "form-control valid", @style = "", onchange = "LoadDiaDiem('TINH_TIMKIEM_ID', 'HUYEN_TIMKIEM_ID', 'XA_TIMKIEM_ID', 1);", @disabled = "disabled" })
+	}
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Quận/Huyện:</label>
+  <div class="col-sm-9">
+	@if (Model.PhanLoaiCoSo == CAPDONVI.CAPTRUNGUONG || Model.PhanLoaiCoSo == CAPDONVI.CAPBENHVIENTRUNGUONG || Model.PhanLoaiCoSo == CAPDONVI.CAPTINH || Model.PhanLoaiCoSo == CAPDONVI.CAPBENHVIENTINH)
+	{
+		@Html.DropDownList("HUYEN_TIMKIEM_ID", Model.ListQuanHuyen, "[--- Chọn Quận/Huyện ---]", new { @class = "form-control valid", @style = "", onchange = "LoadDiaDiem('TINH_TIMKIEM_ID', 'HUYEN_TIMKIEM_ID', 'XA_TIMKIEM_ID', 2);" })
+	}
+	else
+	{
+		@Html.DropDownList("HUYEN_TIMKIEM_ID", Model.ListQuanHuyen, "[--- Chọn Quận/Huyện ---]", new { @class = "form-control valid", @style = "", onchange = "LoadDiaDiem('TINH_TIMKIEM_ID', 'HUYEN_TIMKIEM_ID', 'XA_TIMKIEM_ID', 2);", @disabled = "disabled" })
+	}
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Phường/Xã:</label>
+  <div class="col-sm-9">
+	@if (Model.PhanLoaiCoSo == CAPDONVI.CAPXA)
+	{
+		@Html.DropDownList("XA_TIMKIEM_ID", Model.ListPhuongXa, "[--- Chọn Phường/Xã ---]", new { @class = "form-control valid", @style = "", @disabled = "disabled" })
+	}
+	else
+	{
+		@Html.DropDownList("XA_TIMKIEM_ID", Model.ListPhuongXa, "[--- Chọn Phường/Xã ---]", new { @class = "form-control valid", @style = "" })
+	}
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Chọn bệnh:</label>
+  <div class="col-sm-9">
+		<input class="form-control" id="BENHTRUYENNHIEM_ID" name="BENHTRUYENNHIEM_ID" type="text" value="Tất cả">
+		<div id="RESULT_BENHTRUYENNHIEM" class="widget-doituong-content">
+			<ul class="dsdoituong">
+				<li>
+					<input class="css-checkbox" id="BENHTRUYENNHIEM_ITEM_TATCA" name="BENHTRUYENNHIEM_ITEM_TATCA" type="checkbox" checked="checked">
+					<label for="BENHTRUYENNHIEM_ITEM_TATCA" class="css-label3">Tất cả</label>
+				</li>
+				@foreach (var item in Model.ListBenh)
+				{
+					list_benh_id += item.BENHCHUANDOAN_ID + ",";
+					<li>
+						@if (listBenhChuanDoan.Contains(item.BENHCHUANDOAN_ID))
+						{
+							<input class="css-checkbox" value="@item.BENHCHUANDOAN_ID" data-text="@item.TENBENHCHUANDOAN" id="BENHTRUYENNHIEM_@item.BENHCHUANDOAN_ID" name="BENHTRUYENNHIEM_ITEM" type="checkbox" checked="checked">
+						}
+						else
+						{
+							<input class="css-checkbox" value="@item.BENHCHUANDOAN_ID" data-text="@item.TENBENHCHUANDOAN" id="BENHTRUYENNHIEM_@item.BENHCHUANDOAN_ID" name="BENHTRUYENNHIEM_ITEM">
+						}
+						@if (item.TENBENHCHUANDOAN.Length > 15)
+						{
+							string name1 = item.TENBENHCHUANDOAN.Substring(0, 15) + "...";
+							<label for="BENHTRUYENNHIEM_@item.BENHCHUANDOAN_ID" class="css-label3" title="@item.TENBENHCHUANDOAN">@name1</label>
+						}
+						else
+						{
+							<label for="BENHTRUYENNHIEM_@item.BENHCHUANDOAN_ID" class="css-label3">@item.TENBENHCHUANDOAN</label>
+						}
+
+
+					</li>
+				}
+			</ul>
+			<input id="btnClose" type="button" value="Đóng" onclick="CloseBenhDialog();" style="background-color: #336699; font-weight: bold; height: 35px; border: none; width: 100px; color: white; margin-bottom:10px;margin-left: 40%;" />
+		</div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Nhóm tuổi:</label>
+  <div class="col-sm-9">
+	<input class="form-control" id="Nhomtuoi" name="Nhomtuoi" type="text" value="Tất cả">
+	<div id="RESULT_Nhomtuoi" class="widget-doituong-content-small">
+		<ul class="dsdoituong">
+			<li>
+				<input class="css-checkbox" id="Nhomtuoi_ITEM_TATCA" name="Nhomtuoi_ITEM_TATCA" type="checkbox" checked="checked">
+				<label for="Nhomtuoi_ITEM_TATCA" class="css-label3">Tất cả</label>
+			</li>
+			@foreach (var item in Model.ListNhomTuoi)
+			{
+				listNhomtuoi += item.NHOMTUOIID + ",";
+				<li>
+					<input class="css-checkbox" value="@item.NHOMTUOIID" data-text="@item.TEN" id="Nhomtuoi_@item.NHOMTUOIID" name="Nhomtuoi_ITEM" type="checkbox" checked="checked">
+					<label for="Nhomtuoi_@item.NHOMTUOIID" class="css-label3">@item.TEN</label>
+				</li>
+			}
+		</ul>
+		<input id="btnClose" type="button" value="Đóng" onclick="CloseNhomtuoiDialog();" style="background-color: #336699; font-weight: bold; height: 35px; border: none; width: 100px; color: white; margin-bottom:10px;margin-left: 40%;" />
+	</div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">KQ xét nghiệm:</label>
+  <div class="col-sm-9">
+	@Html.DropDownList("KQXetNghiem", Model.LstKQXetNghiem, "[--- Chọn KQ xét nghiệm ---]", new { @class = "form-control valid", @style = "" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Ngày lấy mẫu XN:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("NGAYLAYMAU", "", new { id = "NGAYLAYMAU", @class = "form-control datepicker" })
+	@Html.TextBox("NGAYLAYMAUDEN", "", new { id = "NGAYLAYMAUDEN", @class = "form-control datepicker" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Đơn vị thực hiện XN:</label>
+  <div class="col-sm-9">
+	@Html.DropDownList("DONVITHUCHIENXN", Model.ListDONVITHUCHIENXN, "[--- Chọn Đơn vị ---]", new { @class = "form-control valid", @style = "" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Ngày ra trả kết quả XN:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("NGAYTRAKETQUAXN", "", new { id = "NGAYTRAKETQUAXN", @class = "form-control datepicker" })
+	@Html.TextBox("NGAYTRAKETQUAXNDEN", "", new { id = "NGAYTRAKETQUAXNDEN", @class = "form-control datepicker" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Ngày khởi phát/Ngày đến cơ sở đầu tiên:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("NGAYKHOIPHAT", "", new { id = "NGAYKHOIPHAT", @class = "form-control datepicker" })
+	@Html.TextBox("NGAYKHOIPHATDEN", "", new { id = "NGAYKHOIPHATDEN", @class = "form-control datepicker" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Ngày nhập viện:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("NGAYNHAPVIEN", "", new { id = "NGAYNHAPVIEN", @class = "form-control datepicker" })
+	@Html.TextBox("NGAYNHAPVIENDEN", "", new { id = "NGAYNHAPVIENDEN", @class = "form-control datepicker" })
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Ngày ra viện:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("NGAYRAVIEN", "", new { id = "NGAYRAVIEN", @class = "form-control datepicker" })
+	@Html.TextBox("NGAYRAVIENDEN", "", new { id = "NGAYRAVIENDEN", @class = "form-control datepicker" })
+  </div>
+</div>
+
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Trạng thái:</label>
+  <div class="col-sm-9 row">
+		<div class="cus-check2">
+			<span>
+				@if (listTrangThai != null && listTrangThai.Count == 3)
+			{
+					<input class="css-checkbox" id="TRANGTHAI_TATCA" name="TRANGTHAI_TATCA" type="checkbox" checked="checked">
+			}
+			else
+			{
+					<input class="css-checkbox" id="TRANGTHAI_TATCA" name="TRANGTHAI_TATCA" type="checkbox">
+			}
+				<label for="TRANGTHAI_TATCA" class="css-label2">Tất cả</label>
+			</span>
+		</div>
+		<div class="cus-check2">
+			<span>
+				@if (listTrangThai != null && listTrangThai.Contains(TRUONGHOPBENHCONSTANT.DANGTHEODOI))
+			{
+					<input class="css-checkbox" id="TRANGTHAI_0" name="TRANGTHAI" type="checkbox" value="0" checked="checked">
+			}
+			else
+			{
+					<input class="css-checkbox" id="TRANGTHAI_0" name="TRANGTHAI" type="checkbox" value="0">
+			}
+				<label for="TRANGTHAI_0" class="css-label2">Đang theo dõi</label>
+			</span>
+		</div>
+		<div class="cus-check2">
+			<span>
+				@if (listTrangThai != null && listTrangThai.Contains(TRUONGHOPBENHCONSTANT.NGUNGTHEODOI))
+			{
+					<input class="css-checkbox" id="TRANGTHAI_1" name="TRANGTHAI" type="checkbox" value="1" checked="checked">
+			}
+			else
+			{
+					<input class="css-checkbox" id="TRANGTHAI_1" name="TRANGTHAI" type="checkbox" value="1">
+			}
+				<label for="TRANGTHAI_1" class="css-label2">Ra viện</label>
+			</span>
+		</div>
+		<div class="cus-check2">
+			<span>
+				@if (listTrangThai != null && listTrangThai.Contains(TRUONGHOPBENHCONSTANT.TUVONG))
+			{
+					<input class="css-checkbox" id="TRANGTHAI_2" name="TRANGTHAI" type="checkbox" value="2" checked="checked">
+			}
+			else
+			{
+					<input class="css-checkbox" id="TRANGTHAI_2" name="TRANGTHAI" type="checkbox" value="2">
+			}
+				<label for="TRANGTHAI_2" class="css-label2">Tử vong</label>
+			</span>
+		</div>
+	</div>
+</div>
+
+
+<div class="form-group">
+  <label class="col-sm-3 control-label">Chọn thông tin:</label>
+  <div class="col-sm-9">
+	@Html.TextBox("NGAYRAVIEN", "", new { id = "NGAYRAVIEN", @class = "form-control datepicker" })
+	@Html.TextBox("NGAYRAVIENDEN", "", new { id = "NGAYRAVIENDEN", @class = "form-control datepicker" })
+  </div>
+</div>
+
+
+
