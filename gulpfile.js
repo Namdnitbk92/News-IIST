@@ -12,14 +12,20 @@ require('laravel-elixir-vue-2');
  | file for your application as well as publishing vendor resources.
  |
  */
- var path_gentelella = 'node_modules/gentelella/production/js';
- var path_gentelella_vendors = 'node_modules/gentelella/vendors/';
 elixir((mix) => {
-	mix.copy('node_modules/gentelella/production/images', 'public/images')
-	.copy('node_modules/font-awesome/fonts', 'public/fonts')
-  mix.sass('app.scss')
-  	.less('table.less', 'public/css/table.css')
-    .webpack('app.js')
-    .scripts(['libs/bootstrap.fd.js', 'custom.js', 'libs/lazyload.js'], 'public/js/custom.js')
-    .version('css/app.css');
+  mix.styles(['libs/style.default.css', 'libs/dropzone.css'], 'public/css/libs.css')
+    .scripts([
+    	'libs/jquery-1.11.1.min.js',
+    	'libs/jquery-migrate-1.2.1.min.js',
+    	'libs/bootstrap.min.js',
+    	'libs/modernizr.min.js',
+    	'libs/jquery.sparkline.min.js',
+    	'libs/toggles.min.js',
+    	'libs/retina.min.js',
+    	'libs/jquery.cookies.js',
+    	'libs/bootstrap-wizard.min.js',
+    	'libs/select2.min.js',
+    	'libs/dropzone.min.js',
+    	'libs/custom.js'
+	], 'public/js/libs.js')
 });

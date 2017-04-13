@@ -11,16 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => 'auth'] , function (){
 
-Route::resource('news', 'NewsController');
+	Route::get('/', function (){
+	    return view('home');
+	});
 
-Route::post('/approveNew', 'NewsController@approveNew')->name('approveNew');
+	Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');
+	Route::resource('news', 'NewsController');
+
+	Route::post('/approveNew', 'NewsController@approveNew')->name('approveNew');
+
+	Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');
+
+});

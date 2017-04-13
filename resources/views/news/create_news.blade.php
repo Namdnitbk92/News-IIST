@@ -2,6 +2,135 @@
 
 @section('content')
 
+<div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-btns">
+          <a href="" class="panel-close">&times;</a>
+          <a href="" class="minimize">&minus;</a>
+        </div>
+        <h4 class="panel-title">Create a new article</h4>
+      </div>
+      <div class="panel-body panel-body-nopadding">
+        
+        <!-- BASIC WIZARD -->
+        <div id="progressWizard" class="basic-wizard">
+          
+          <ul class="nav nav-pills nav-justified">
+            <li><a href="#ptab1" data-toggle="tab"><span>Step 1:</span> Basic Info</a></li>
+            <li><a href="#ptab2" data-toggle="tab"><span>Step 2:</span> Area Info</a></li>
+            <li><a href="#ptab3" data-toggle="tab"><span>Step 3:</span> Audio & Video & Text Info</a></li>
+          </ul>
+            
+          <div class="tab-content">
+            
+            <div class="progress progress-striped active">
+              <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            
+            <div class="tab-pane" id="ptab1">
+              <form class="form">
+                <div class="form-group">
+                  <label class="col-sm-4">Title</label>
+                  <div class="col-sm-8">
+                    <input type="text" name="title" class="form-control" value="{{ isset($new) ? $new->title : ''}}"/>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-sm-4">Description</label>
+                  <div class="col-sm-8">
+                    <input type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : ''}}"/>
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                  <label class="col-sm-4">Place</label>
+                  <div class="col-sm-4">
+                    <select class="select2" id="place" name="type">
+                      <option value="county">County</option>
+                      <option value="city">City</option>
+                      <option value="guild">Guild</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="tab-pane" id="ptab2">
+              <form class="form">
+                <div class="form-group">
+                  <label class="col-sm-4">City</label>
+                  <div class="col-sm-7">
+                   <select class="select2" id="place" name="city">
+                    <option value="1">Ha Noi</option>
+                  </select>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-sm-4">County</label>
+                  <div class="col-sm-8">
+                    <select class="select2" id="county" name="county">
+                      @if(isset($counties))
+                        @foreach($counties as $county)
+                          <option value="{{$county->id}}">{{ $county->name }}</option>
+                        @endforeach
+                      @endif
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-sm-4">Guild</label>
+                  <div class="col-sm-4">
+                    <select class="select2" id="guild" name="guild" style="display:none;">
+                    </select>
+                  </div>
+                </div>
+                
+              </form>
+            </div>
+            <div class="tab-pane" id="ptab3">
+              <form action="files" class="dropzone dz-clickable col-md-8">
+                  <div class="dz-default dz-message">
+                  <span>Drop files here to upload</span>
+                  </div>
+              </form>
+              <form class="form">
+                <div class="form-group">
+                  <label class="col-sm-4">Card No</label>
+                  <div class="col-sm-8">
+                    <input type="text" name="cardno" class="form-control" />
+                  </div>
+                </div>
+
+
+
+                <div class="form-group">
+                  <label class="col-sm-4">CSV</label>
+                  <div class="col-sm-4">
+                    <input type="text" name="csv" class="form-control" />
+                  </div>
+                </div>
+                
+              </form>
+            </div>
+            
+            
+          </div><!-- tab-content -->
+          
+          <ul class="pager wizard">
+              <li class="previous"><a href="javascript:void(0)">Previous</a></li>
+              <li class="next"><a href="javascript:void(0)">Next</a></li>
+            </ul>
+          
+        </div><!-- #basicWizard -->
+        
+      </div><!-- panel-body -->
+    </div><!-- panel -->
+    
+  </div><!-- row -->
+
 <form name="create_new" style="margin:50px" enctype="multipart/form-data" action="{{ !isset($new) ? route('news.store') : route('news.update', ['id' => $new->id]) }}" method="POST">
     {{ csrf_field() }}
     @if(isset($new))
@@ -173,4 +302,4 @@
     })
 </script>
 @endsection
-
+@include('scripts.createnews')
