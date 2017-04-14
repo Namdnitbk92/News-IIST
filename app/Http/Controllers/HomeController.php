@@ -21,7 +21,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $news = \App\News::all();
         $newsOne = [];
@@ -38,6 +38,8 @@ class HomeController extends Controller
                 $plot++;
             }
         }
+
+        $request->session()->flash('showChannel', 'true');
 
         return view('home',compact('newsOne', 'newsSecond'));
     }

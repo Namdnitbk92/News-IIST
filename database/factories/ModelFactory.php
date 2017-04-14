@@ -45,6 +45,7 @@ $factory->define(App\News::class, function (Faker\Generator $faker) {
         'title' => $faker->address,
         'sub_title' => $faker->address,
         'audio_path' => 'https:/zing.vn',
+        'audio_text' => '',
         'place_id' => function () {
             return factory(App\Places::class)->create()->id;
         },
@@ -52,6 +53,7 @@ $factory->define(App\News::class, function (Faker\Generator $faker) {
             return factory(App\User::class)->create()->id;
         },
         'status_id' => 1,
+        'publish_time' => \Carbon\Carbon::now(),
     ];
 });
 

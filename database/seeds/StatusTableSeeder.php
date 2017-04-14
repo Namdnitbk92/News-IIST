@@ -17,10 +17,14 @@ class StatusTableSeeder extends Seeder
         ]);
         DB::table('status')->insert([
             'status_id' => 2,
-            'description' => 'Approved',
+            'description' => 'In Progress',
         ]);
         DB::table('status')->insert([
             'status_id' => 3,
+            'description' => 'Approved',
+        ]);
+        DB::table('status')->insert([
+            'status_id' => 4,
             'description' => 'Cancelled',
         ]);
     }

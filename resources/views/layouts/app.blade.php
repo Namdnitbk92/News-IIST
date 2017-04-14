@@ -64,11 +64,11 @@
       
       <h5 class="sidebartitle">Navigation</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
-        <li><a href="index.html"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
+        <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
         <li class="nav-parent nav-active active"><a href=""><i class="fa fa-edit"></i> <span>News List</span></a>
           <ul class="children" style="display: block">
             <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> Create a new</a></li>
-            <li ><a href="form-layouts.html"><i class="fa fa-caret-right"></i> View list news</a></li>
+            <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> View list news</a></li>
           </ul>
         </li>
       </ul>
@@ -81,9 +81,9 @@
       
       <a class="menutoggle"><i class="fa fa-bars"></i></a>
       
-      <form class="searchform" action="index.html" method="post">
+      <!-- <form class="searchform" action="index.html" method="post">
         <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
-      </form>
+      </form> -->
       
       <div class="header-right">
         <ul class="headermenu">
@@ -253,36 +253,32 @@
             <div class="btn-group">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <img src="images/photos/loggeduser.png" alt="" />
-                John Doe
+                {{ Auth::user()->name }}
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
                 <li><a href="profile.html"><i class="glyphicon glyphicon-user"></i> My Profile</a></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Account Settings</a></li>
                 <li><a href="#"><i class="glyphicon glyphicon-question-sign"></i> Help</a></li>
-                <li><a href="signin.html"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+                <li><a href="{{ route('logout') }}"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
               </ul>
             </div>
           </li>
+          @if(session()->has('showChannel'))
           <li>
             <button id="chatview" class="btn btn-default tp-icon chat-icon">
                 <i class="glyphicon glyphicon-comment"></i>
             </button>
           </li>
+          @endif
         </ul>
       </div><!-- header-right -->
       
     </div><!-- headerbar -->
         
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i> Form Layouts <span>Subtitle goes here...</span></h2>
+      <h2><i class="fa fa-pencil"></i>{{ isset($titlePage) ? $titlePage : session('titlePage') }}<span></span></h2>
       <div class="breadcrumb-wrapper">
-        <span class="label">You are here:</span>
-        <ol class="breadcrumb">
-          <li><a href="index.html">News</a></li>
-          <li><a href="general-forms.html">Forms</a></li>
-          <li class="active">Form Layouts</li>
-        </ol>
       </div>
     </div>
     

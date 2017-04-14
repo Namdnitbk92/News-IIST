@@ -15,12 +15,14 @@ class CreateNewsTable extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->string('sub_title');
-            $table->string('status_id');
-            $table->string('audio_path');
-            $table->string('place_id');
-            $table->string('user_id');
+            $table->string('title')->nullable();
+            $table->string('sub_title')->nullable();
+            $table->string('status_id')->nullable();
+            $table->string('audio_path')->nullable();
+            $table->string('audio_text')->nullable();
+            $table->string('place_id')->nullable();
+            $table->string('user_id')->nullable();
+            $table->dateTime('publish_time')->nullable();
             $table->timestamps();
         });
     }

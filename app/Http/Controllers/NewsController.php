@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\NewsRequest;
+use App\Http\Requests\Test;
+use Carbon\Carbon;
 
 class NewsController extends Controller
 {
@@ -13,9 +15,10 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $news = \App\News::paginate(10);
+        $news = \App\News::paginate(5);
+        $titlePage = 'News List';
 
-        return view('news.newsList', compact('news'));
+        return view('news.newsList', compact('news', 'titlePage'));
     }
 
     /**
@@ -36,11 +39,22 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Test $request)
+    {dd($request->all());
         try
         {
-            $audioFile = \Request::file('audio-file');
+             $validator = Validator::make($request->all(), [
+                'title' => 'required|unique:posts|max:255',
+                'body' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect('post/create')
+                            ->withErrors($validator)
+                            ->withInput();
+            }
+
+            $audioFile = $request->file('audio-file');
             $path = "";
             if ($audioFile !== null)
             {
@@ -89,14 +103,17 @@ class NewsController extends Controller
                         $place_data['original_place_id'] = $request->get('city');
                     }
 
+                    $publishTime = $request->get('publish_time') ?? Carbon::now();
+
                     $place = \App\Places::create($place_data);
                     \App\News::create(
                         array_merge(
-                            $request->all(), 
+                            $request->except('publish_time'), 
                             [
                                 'status_id' => 1,
                                 'audio_path' => $path, 
-                                'place_id' => $place->id
+                                'place_id' => $place->id,
+                                'publish_time' => $publishTime,
                             ]
                     ));
                 }
@@ -137,6 +154,7 @@ class NewsController extends Controller
         $new = \App\News::find($id);
         $user = $new ? \App\User::find($new->user_id) : null;
         $place = $new ? \App\Places::where('place_id', $new->place_id)->first() : null;
+        $titlePage = 'Detail Information of The New ID ' . $new->id;
 
         if ($place)
         {
@@ -169,7 +187,7 @@ class NewsController extends Controller
         }
 
 
-        return view('news.show', compact('new', 'user', 'place', 'address'));
+        return view('news.show', compact('new', 'user', 'place', 'address', 'titlePage'));
     }
 
     /**
@@ -192,11 +210,11 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(NewsRequest $request, $id)
     {
         try
         {
-            $audioFile = \Request::file('audio-file');
+            $audioFile = $request->file('audio-file');
             $path = "";
             if ($audioFile !== null)
             {
@@ -239,7 +257,7 @@ class NewsController extends Controller
                     array_merge($request->all(), 
                     [
                         'status_id' => 1,
-                        'audio_path' => $path, 
+                        'audio_path' => empty($path) ? $new->audio_path : $path, 
                         'place_id' => $place->first()->place_id
                     ]
                 ));
@@ -295,22 +313,18 @@ class NewsController extends Controller
         {
             \DB::rollBack();
 
-            return response()->json([
-                'message' => 'Delete this new has occurred failed cause'.$ec->getMessage(),
-                'status' => 500,
-            ]);
+            return redirect(route('news.index'))
+                ->with('error', 'Delete this new has errors cause : ' . $ec->getMessage());
 
         }
          
         \DB::commit();
 
-        return response()->json([
-            'message' => 'Delete this new is successfully',
-            'status' => 200,
-        ]);
+        return redirect(route('news.index'))
+                ->with('status', 'Delete this new successfully!!');
     }
 
-    public function getGuildList(Request $request)
+    public function getGuildList(NewsRequest $request)
     {
         if ($request->ajax())
         {
@@ -329,11 +343,13 @@ class NewsController extends Controller
     }
 
 
-    public function approveNew(Request $request)
+    public function approveNew(NewsRequest $request)
     {
         if ($request->ajax())
         {
             $newId = $request->get('newId');
+
+            
 
             if ($newId !== null)
             {
@@ -341,8 +357,19 @@ class NewsController extends Controller
                 {
                     \DB::beginTransaction();
                     $new = \App\News::find($newId);
-                    $new->status_id = 2;
-                    $new->update();
+
+                    if ($new->hasApprove())
+                    {
+                        $new->status_id = config('attribute.status.approved');
+                        $new->update();
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status' => 500,
+                            'message' => 'To approve this new is failed cause its publish time is invalid (required greater of equal published current time )!!',
+                        ]);
+                    }
                 }
                 catch(Exception $e)
                 {
@@ -360,7 +387,46 @@ class NewsController extends Controller
 
         return response()->json([
             'status' => 200,
+            'status_text' => $new->status()->first()->description,
             'message' => 'This new was approved!!',
         ]);
+    }
+
+    public function search(NewsRequest $request)
+    {
+        $news = \App\News::search($request->search)->paginate(10);
+
+        return view('news.newsList', compact('news'));
+    }
+
+    public function copyNew(NewsRequest $request)
+    {
+        $new = \App\News::find($request->get('id'));
+        if (!empty($new))
+        {
+            try
+            {
+                \DB::beginTransaction();
+                $copyNew = $new->replicate();
+                $copyNew->save();
+                $msg = "Copy this new is successfully, the newly new has newId :" . $copyNew->id;
+            }
+            catch(Exception $e)
+            {
+                \DB::rollBack();
+                $msg = "Copy this new has occurred errors cause :" . $e->getMessage();
+
+                return redirect()->back()->with('status', $msg);
+            }
+
+            \DB::commit();
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'The new can not copied');
+        }
+
+        return redirect(route('news.show', ['id' => $copyNew->id]))
+                ->with('status', $msg ?? '');
     }
 }

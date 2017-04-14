@@ -2,91 +2,110 @@
 @includeIf('partials.modal', ['message' => 'Are you sure to approve for this new ?'])
 @section('content')
 <div id="message" class="alert alert-success hide"></div>
-<div class="panel panel-info" style="margin : 8%">
-  <!-- Default panel contents -->
-  <div class="panel-heading">{{ $new ? $new->title : '' }}
-  	<div class="acion-new" style="float:right;font-size:25px;">
-		  <a href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit"></i></a>&nbsp;
-	  	<a data-method="delete" class="jquery-postback" href="{{route('news.destroy', ['id' => $new->id])}}"><i class="fa fa-trash"></i></a>&nbsp;
-      <a class="approve-new">
-        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-      </a>&nbsp;
-	  </div>
-  </div>
-  <!-- List group -->
-  <ul class="list-group">
-    <li class="list-group-item">{{ $new ? $new->sub_title : '' }}</li>
-    <li class="list-group-item">Created at - {{ $new ? $new->created_at : '' }}</li>
-    <li class="list-group-item">Created by - <b> {{ $user ? $user->name : '' }} </b></li>
-    <li class="list-group-item">By Place - <b> {{ $place ? $place->name : '' }} {{ $address ?? '' }} </b></li>
-    <li class="list-group-item _status">
-      Status - <span class="label label-{{$new->status_id == 1 ? 'success' : (
-        $new->status_id == 2 ? 'warning' : 'danger'
-      )}}">
-      {{ $new && $new->status() ? $new->status()->first()->description ?? '' : '' }}
-      </span>
-    </li>
-    <li class="list-group-item">
-    	<div class="embed-responsive embed-responsive-16by9">
-		  <iframe class="embed-responsive-item" src="{{$new ? $new->audio_path : ''}}"></iframe>
-		</div>	
-    </li>
-  </ul>
+
+<div class="row">
+  @include('partials.result')
+  <form id="copyNew" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
+    {{csrf_field()}}
+  </form>
+  <form id="deleteNew" method="POST" action="{{ route('news.destroy', ['id' => $new->id]) }}">
+    {{csrf_field()}}
+    {{ method_field('DELETE') }}
+  </form>
+  <div class="panel panel-default panel-alt widget-messaging">
+    <div class="panel-heading">
+        <div class="panel-btns">
+          <a class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
+          <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+          <a class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
+          <a class="approve-new panel-edit">
+            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+          </a>
+        </div><!-- panel-btns -->
+        <h3 class="panel-title">{{ isset($new) ? $new->sub_title : '' }}</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li>
+            <h5 class="pull-right">{{ isset($new) ? $new->created_at : '' }}</h5>
+            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> Created at </h4>
+          </li>
+          <li>
+            <h5 class="pull-right">{{ isset($user) ? $user->name : '' }}</h5>
+            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> Created by <b> </h4>
+          </li>
+          <li>
+            <h5 class="pull-right">{{ isset($place) ? $place->name : '' }} {{ $address ?? '' }}</h5>
+            <h4 class="sender"> <i class="fa fa-building-o" aria-hidden="true"></i> By Place <b> </h4>
+          </li>
+          <li><i class="fa fa-hand-o-right" aria-hidden="true"></i>  
+            Status 
+            <h5 class="pull-right _status">
+              <span class="label label-{{$new->status_id == 1 ? 'success' : (
+                $new->status_id == 2 ? 'warning' : 'danger'
+              )}}">
+              {{ isset($new) && $new->status() ? $new->status()->first()->description ?? '' : '' }}
+            </span>
+
+            </h5>
+          </li>
+          <li>
+            <h5 class="pull-right">{{ isset($new) ? $new->publish_time : '' }}</h5>
+            <h4 class="sender"><i class="fa fa-calendar"></i>&nbsp;Publish Time</h4>
+          </li>
+          <li>
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="{{isset($new) ? $new->audio_path : ''}}"></iframe>
+              </div>  
+          </li>
+          <li>
+            <h3>Text</h3>
+            <h4>{{ isset($new) ? $new->audio_text : '' }}</h4>
+          </li>
+        </ul>
+      </div><!-- panel-body -->
+    </div>
 </div>
 <script type="text/javascript">
-  $(document).on('click', 'a.jquery-postback', function(e) {
-      e.preventDefault(); // does not go through with the link.
-
-      var $this = $(this);
-
-      $.post({
-          type: $this.data('method'),
-          url: $this.attr('href')
-      }).done(function (res) {
-        $('#message').removeClass('hide');
-        $('#message').addClass('show');
-        $('#message').text(res.message);
-        if (res.status == 500)
-        {
-          $('#message').removeClass('alert-success');
-          $('#message').addClass('alert-danger');
-        } 
-        else
-        {
-          setTimeout(function () {window.location.href="{{route('news.index')}}"}, 2000);
-        }
-      });
-  });
-
   $('.approve-new').click(function (){
       $('#myModal').modal('show');
   });
 
+  function copy()
+  {
+    $('form[id=copyNew]').submit();
+  }
+
+  function deleteNew()
+  {
+    $('form[id=deleteNew]').submit();
+  }
+
 
   function doSomething()
-    {
-      $.ajax({
-        url : '{{route("approveNew")}}',
-        method : 'POST',
-        data : {
-          newId : '{{$new->id}}'
-        }
-      }).done(function (res){
-        $('#message').removeClass('hide');
-        $('#message').addClass('show');
-        $('#message').text(res.message);
-        if (res.status == 500)
-        {
-          $('#message').removeClass('alert-success');
-          $('#message').addClass('alert-danger');
-        }
-        else
-        {
-          $('li._status').empty();
-          $('li._status').append('Status is <span class="label label-warning"> approved</span>');
-        } 
-      });
-    }
+  {
+    $.ajax({
+      url : '{{route("approveNew")}}',
+      method : 'POST',
+      data : {
+        newId : '{{$new->id}}'
+      }
+    }).done(function (res){
+      $('#message').removeClass('hide');
+      $('#message').addClass('show');
+      $('#message').text(res.message);
+      if (res.status == 500)
+      {
+        $('#message').removeClass('alert-success');
+        $('#message').addClass('alert-danger');
+      }
+      else
+      {
+        $('li ._status').empty();
+        $('li ._status').append('<span class="label label-warning">' + res.status_text +'</span>');
+      } 
+    });
+  }
 
 </script>
 @endsection

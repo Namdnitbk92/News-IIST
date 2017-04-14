@@ -25,6 +25,10 @@ Route::group(['middleware' => 'auth'] , function (){
 
 	Route::post('/approveNew', 'NewsController@approveNew')->name('approveNew');
 
+	Route::post('/copyNew', 'NewsController@copyNew')->name('copyNew');
+
+	Route::get('/search', 'NewsController@search')->name('search_news');
+
 	Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');
 
 });
