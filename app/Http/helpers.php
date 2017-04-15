@@ -10,7 +10,7 @@ function displayFieldError($errors,$field)
 	}
 }
 
-function addErrorClass($field)
+function addErrorClass($field) 
 {
 	return isset($errors) && $errors->has($field) ? ' has-error' : '';
 }
