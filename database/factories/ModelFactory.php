@@ -21,13 +21,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'api_token' => str_random(60),
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
-    ];
-});
-
-$factory->define(App\Role::class, function (Faker\Generator $faker) {
-    return [
-        'role_id' => $faker->unique()->randomNumber,
-        'description' => 'this is role test...',
+        'role_id' => $faker->randomElement([1, 2, 3, 4, 5]),
     ];
 });
 
@@ -44,7 +38,7 @@ $factory->define(App\News::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->address,
         'sub_title' => $faker->address,
-        'audio_path' => 'https:/zing.vn',
+        'audio_path' => '',
         'audio_text' => '',
         'place_id' => function () {
             return factory(App\Places::class)->create()->id;
@@ -60,6 +54,7 @@ $factory->define(App\News::class, function (Faker\Generator $faker) {
 $factory->define(App\City::class, function (Faker\Generator $faker) {
     return [
         'name' => 'Ha Noi',
+        'supervisor' => \App\User::where('role_id', 3)->first()->id,
     ];
 });
 
@@ -67,6 +62,7 @@ $factory->define(App\County::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->randomElement(['Thanh xuan', 'Dong Da', 'Long bien']).' '.$faker->randomDigit(),
         'city_id' => 1,
+        'supervisor' => \App\User::where('role_id', 3)->first()->id,
     ];
 });
 
@@ -75,6 +71,7 @@ $factory->define(App\Guild::class, function (Faker\Generator $faker) {
         'name' => $faker->randomElement(['Thinh Quang', 'Lang Ha', 'Trung Tu']).' '.$faker->randomDigit(),
         'county_id' => function () {
             return factory(App\County::class)->create()->id;
-        }
+        },
+        'supervisor' => \App\User::where('role_id', 3)->first()->id,
     ];
 });

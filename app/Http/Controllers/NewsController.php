@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\NewsRequest;
-use App\Http\Requests\Test;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class NewsController extends Controller
@@ -39,21 +39,10 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Test $request)
-    {dd($request->all());
+    public function store(NewsRequest $request)
+    {
         try
         {
-             $validator = Validator::make($request->all(), [
-                'title' => 'required|unique:posts|max:255',
-                'body' => 'required',
-            ]);
-
-            if ($validator->fails()) {
-                return redirect('post/create')
-                            ->withErrors($validator)
-                            ->withInput();
-            }
-
             $audioFile = $request->file('audio-file');
             $path = "";
             if ($audioFile !== null)
@@ -102,11 +91,10 @@ class NewsController extends Controller
                     {
                         $place_data['original_place_id'] = $request->get('city');
                     }
-
-                    $publishTime = $request->get('publish_time') ?? Carbon::now();
-
+                    $publishTime = date( "Y-m-d H:i:s", strtotime($request->get('publish_time'))) ?? Carbon::now();
+                    
                     $place = \App\Places::create($place_data);
-                    \App\News::create(
+                    $new = \App\News::create(
                         array_merge(
                             $request->except('publish_time'), 
                             [
@@ -139,8 +127,8 @@ class NewsController extends Controller
             throw new Exception('create new is failed, cause : '.$e->getMessage());
         }
 
-        return redirect(route('news.create'))
-            ->with('status', 'Create a new is successfully'); 
+        return redirect(route('news.show', ['id' => $new->id]))
+                ->with('status', 'Create a new is successfully'); 
     }
 
     /**
@@ -210,7 +198,7 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(NewsRequest $request, $id)
+    public function update(Request $request, $id)
     {
         try
         {
@@ -324,7 +312,7 @@ class NewsController extends Controller
                 ->with('status', 'Delete this new successfully!!');
     }
 
-    public function getGuildList(NewsRequest $request)
+    public function getGuildList(Request $request)
     {
         if ($request->ajax())
         {
@@ -343,7 +331,7 @@ class NewsController extends Controller
     }
 
 
-    public function approveNew(NewsRequest $request)
+    public function approveNew(Request $request)
     {
         if ($request->ajax())
         {
@@ -392,14 +380,14 @@ class NewsController extends Controller
         ]);
     }
 
-    public function search(NewsRequest $request)
+    public function search(Request $request)
     {
         $news = \App\News::search($request->search)->paginate(10);
 
         return view('news.newsList', compact('news'));
     }
 
-    public function copyNew(NewsRequest $request)
+    public function copyNew(Request $request)
     {
         $new = \App\News::find($request->get('id'));
         if (!empty($new))
@@ -428,5 +416,64 @@ class NewsController extends Controller
 
         return redirect(route('news.show', ['id' => $copyNew->id]))
                 ->with('status', $msg ?? '');
+    }
+
+    public function noticeApprove(Request $request)
+    {
+        $new = \App\News::find($request->get('id'));
+        if (!empty($new))
+        {
+            try
+            {
+                \DB::beginTransaction();
+                $msg = "Makes approve notification for this new is successfully, please waiting for approved by superior!!";
+                $new->approved_by = $news->getManager();
+                $new->status_id = config('attribute.status.inprogress');
+                $new->save();
+            }
+            catch(Exception $e)
+            {
+                \DB::rollBack();
+                $msg = "Make approve notification for this new has occurred errors cause :" . $e->getMessage();
+
+                return redirect()->back()->with('status', $msg);
+            }
+
+            \DB::commit();
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'The newId can not empty');
+        }
+
+        return redirect(route('news.show', ['id' => $copyNew->id]))
+                ->with('status', $msg ?? '');
+    }
+
+    public function getRequireToApproveNewsListByCreater()
+    {
+        $user = \Auth::user();
+        if ($user->isCreater())
+        {
+            $conds = [
+                'user_id' => $user->id,
+                'status_id' => config('attribute.status.inprogress'),
+            ];
+
+            $where = \App\News::where($conds)
+                ->where('approved_by', '<>', 'NULL');
+        }
+        else
+        {
+            $conds = [
+                'approved_by' => $user->id,
+                'status_id' => config('attribute.status.inprogress'),
+            ];
+
+            $where = \App\News::where($conds);
+        }
+        $news = $where->where('publish_time', '>=', \Carbon\Carbon::now())->paginate(10);
+
+        return view('news.newsListByRequiredToApprove', compact('news'));
     }
 }

@@ -1,10 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-@foreach ($errors->all() as $message) 
-    {{$message}}
-@endforeach
-{{ $errors->first('title') }}
 <div class="row">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -38,7 +34,7 @@
             </div>
             
             <div class="tab-pane" id="ptab1">
-                <div class="form-group {{ addErrorClass('title') }}">
+                <div class="form-group {{ addErrorClass($errors, 'title') }}">
                   <label class="col-sm-4">Title</label>
                   <div class="col-sm-8">
                     <input type="text" name="title" class="form-control" value="{{ isset($new) ? $new->title : ''}}"/>
@@ -53,7 +49,7 @@
                   </div>
                 </div>
 
-                <div class="form-group {{ addErrorClass('publish_time') }}">
+                <div class="form-group {{ addErrorClass($errors, 'publish_time') }}">
                   <label class="col-sm-4">Publish Time</label>
                   <div class="col-sm-8">
                     <div class="input-group">
@@ -61,10 +57,10 @@
                           <i class="glyphicon glyphicon-calendar"></i>
                        </span>
                        <div class="input-group">
-                          <input id="publishTime" name="publishTime" type="datetime-local" class="form-control"/>
-                          {!! displayFieldError($errors, 'publish_time') !!}
+                          <input id="publishTime" name="publish_time" type="datetime-local" class="form-control"/>
                        </div>
                     </div>
+                  {!! displayFieldError($errors, 'publish_time') !!}
                   </div>
                 </div>
 
@@ -113,7 +109,7 @@
               </form>
             </div>
             <div class="tab-pane" id="ptab3">
-               <div class="input-group">
+               <div class="input-group {{ addErrorClass($errors, 'audio-file') }}">
                   <label class="input-group-btn">
                       <span class="btn btn-primary">
                           <i class="fa fa-upload"></i>&nbsp;Upload audio&hellip; <input type="file" name="audio-file" style="display: none;" multiple>
@@ -121,6 +117,7 @@
                   </label>
                   <input type="text" class="form-control" readonly>
               </div>
+              {!! displayFieldError($errors, 'audio-file') !!}
               <br/>
               <div class="form-group">
                 <label for="comment">Text</label>

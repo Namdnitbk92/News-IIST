@@ -17,6 +17,7 @@ class CreateCountyTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('city_id');
+            $table->string('supervisor')->nullable();
             $table->timestamps();
         });
     }

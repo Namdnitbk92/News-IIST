@@ -112,7 +112,7 @@ $(document).ready(function(){
         $('#myModal').modal('show');
      });
      @if(isset($new))
-     $('#publishTime').val(new Date('{{$new->publish_time}}').toISOString());
+     	$('#publishTime').val(new Date('{{$new->publish_time}}').toISOString());
      @endif
      
 });

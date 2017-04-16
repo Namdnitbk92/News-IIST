@@ -6,7 +6,7 @@
     <form class="searchform" action="index.html" method="post">
         <input type="text" class="form-control" name="keyword" placeholder="Search here...">
       </form>
-    <form action="{{route('search_news')}}" method="GET">
+    <form action="{{route('search_news')}}" method="GET" name="searchForm">
       {{ csrf_field() }}
       <label>Search <input onkeypress="return runScript()" type="search" id="search" name="search" class="" placeholder="" aria-controls="table2"></label>
     </form>  
@@ -57,7 +57,7 @@
 
   function runScript()
   {
-    document.getElementById('#search').submit();
+    $('form[name=searchForm]').submit();
   }
 </script>
 @endsection

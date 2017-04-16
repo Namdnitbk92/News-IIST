@@ -26,4 +26,34 @@ class User extends Authenticatable
     protected $hidden = [
         'remember_token',
     ];
+
+    public function isAdmin()
+    {
+        return $this->role_id === config('attribute.role.admin');
+    }
+
+    public function isPeople()
+    {
+        return $this->role_id === config('attribute.role.people');
+    }
+
+    public function isCreater()
+    {
+        return $this->role_id === config('attribute.role.creater');
+    }
+    public function isApprover()
+    {
+        return $this->role_id === config('attribute.role.approver');
+    }
+
+    public function isUsersManager()
+    {
+        return $this->role_id === config('attribute.role.users_manager');
+    }
+
+    public function isReflectedManager()
+    {
+        return $this->role_id === config('attribute.role.reflect_manager');
+    }
+
 }

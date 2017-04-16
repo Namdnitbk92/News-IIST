@@ -65,12 +65,38 @@
       <h5 class="sidebartitle">Navigation</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
-        <li class="nav-parent nav-active active"><a href=""><i class="fa fa-edit"></i> <span>News List</span></a>
+
+        <li class="nav-parent nav-active active"><a href=""><i class="fa fa-edit"></i> <span>News Management</span></a>
           <ul class="children" style="display: block">
             <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> Create a new</a></li>
-            <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> View list news</a></li>
+            <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> News List</a></li>
           </ul>
         </li>
+
+        <li class="nav-parent nav-active active">
+          <a href=""><i class="fa fa-user-circle" aria-hidden="true"></i> <span>Users Management</span></a>
+          <ul class="children" style="display: block">
+            <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> Create new user</a></li>
+            <li ><a href="{{ route('users.index') }}"><i class="fa fa-caret-right"></i> Users List</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-parent nav-active active">
+          <a href=""><i class="fa fa-check"></i> <span>Approve Management</span></a>
+          <ul class="children" style="display: block">
+            <li ><a href="{{ route('getRequireToApproveNewsListByCreater') }}"><i class="fa fa-caret-right"></i> News list are required to approve</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-parent nav-active active">
+          <a href=""><i class="fa fa-user-circle" aria-hidden="true"></i> <span>Groups Management</span></a>
+          <ul class="children" style="display: block">
+            <li class="active"><a href="{{ route('city.index') }}"><i class="fa fa-caret-right"></i>City</a></li>
+            <li ><a href="{{ route('county.index') }}"><i class="fa fa-caret-right"></i>County</a></li>
+            <li ><a href="{{ route('guild.index') }}"><i class="fa fa-caret-right"></i>Guild</a></li>
+          </ul>
+        </li>
+
       </ul>
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->

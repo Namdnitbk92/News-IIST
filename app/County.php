@@ -12,4 +12,9 @@ class County extends Model
     {
         return $this->belongsTo('App\City');
     }
+
+    public function user()
+    {
+    	return $this->belongsTo('App\User', 'supervisor', 'id');
+    }
 }

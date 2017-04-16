@@ -1,16 +1,27 @@
 <?php
 
-function displayFieldError($errors,$field)
+function displayFieldError($errors, $field)
 {
 	if (isset($errors) && $errors->has($field))
 	{
-		return "<span class='help-block'>
-	        		<strong>{{ $errors->first($field) }}</strong>
-	   			</span>";
+		return '<span class="help-block">
+	        		<strong> ' . $errors->first($field) . '</strong>
+	   			</span>';
 	}
 }
 
-function addErrorClass($field) 
+function addErrorClass($errors, $field) 
 {
 	return isset($errors) && $errors->has($field) ? ' has-error' : '';
+}
+
+function renderSelect($data, $value, $desribe, $nameSelect, $idSelect, $cssClass)
+{
+	$options = '';
+	foreach ($data as $d) {
+		$options .= '<option value="' . $d[$value] . '">' .$d[$desribe]. '</option>';
+	}
+
+	return '<select class="'.$cssClass.'" id="'.$idSelect.'" name="'.$nameSelect.'">'
+			.$options.'</select>';
 }

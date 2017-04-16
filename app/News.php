@@ -12,7 +12,7 @@ class News extends Model
     protected $table = 'news';
 
     protected $fillable = [
-        'title', 'sub_title', 'status_id', 'audio_path', 'place_id', 'user_id', 'audio_text',
+        'title', 'sub_title', 'status_id', 'audio_path', 'place_id', 'user_id', 'audio_text', 'publish_time',
     ];
 
     /**
@@ -40,6 +40,35 @@ class News extends Model
     public function hasApprove()
     {
     	return $this->publish_time >= \Carbon\Carbon::now();
+    }
+
+    public function getManager()
+    {
+        $place = \App\Places::where('place_id', $this->id);
+        $type = $place->type;
+
+        switch ($type) {
+            case 'city':
+                $city = \App\City::find($place->original_place_id);
+                $managerId = $city->supervisor;
+                break;
+
+            case 'county':
+                $county = \App\County::find($place->original_place_id);
+                $managerId = $county->supervisor;
+                break;
+
+            case 'guild':
+                $guild = \App\Guild::find($place->original_place_id);
+                $managerId = $guild->supervisor;
+                break;
+                
+            default:
+                # code...
+                break;
+        }
+
+        return $managerId;
     }
 
     public function getTotalRecords()

@@ -27,6 +27,18 @@ Route::group(['middleware' => 'auth'] , function (){
 
 	Route::post('/copyNew', 'NewsController@copyNew')->name('copyNew');
 
+	Route::post('/noticeApprove', 'NewsController@noticeApprove')->name('noticeApprove');
+
+	Route::get('/getRequireToApproveNewsListByCreater', 'NewsController@getRequireToApproveNewsListByCreater')->name('getRequireToApproveNewsListByCreater');
+
+
+	Route::resource('users', 'UserController');
+
+	Route::resource('city', 'CityController');
+	Route::resource('county', 'CountyController');
+	Route::resource('guild', 'GuildController');
+	
+
 	Route::get('/search', 'NewsController@search')->name('search_news');
 
 	Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');

@@ -12,4 +12,9 @@ class City extends Model
     {
         return $this->hasMany('App\County');
     }
+
+    public function user()
+    {
+    	return $this->belongsTo('App\User', 'supervisor', 'id');
+    }
 }

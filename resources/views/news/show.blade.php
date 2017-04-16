@@ -8,6 +8,9 @@
   <form id="copyNew" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
     {{csrf_field()}}
   </form>
+  <form id="noticeApprove" method="POST" action="{{ route('noticeApprove', ['id' => $new->id]) }}">
+    {{csrf_field()}}
+  </form>
   <form id="deleteNew" method="POST" action="{{ route('news.destroy', ['id' => $new->id]) }}">
     {{csrf_field()}}
     {{ method_field('DELETE') }}
@@ -17,6 +20,8 @@
         <div class="panel-btns">
           <a class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
           <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+          <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
+
           <a class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
           <a class="approve-new panel-edit">
             <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
@@ -79,6 +84,11 @@
   function deleteNew()
   {
     $('form[id=deleteNew]').submit();
+  }
+
+  function noticeApprove()
+  {
+    $('form[id=noticeApprove]').submit();
   }
 
 

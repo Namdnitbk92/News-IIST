@@ -15,8 +15,8 @@ class NewsRequest extends BaseRequest
 	{
 	    return [
 	        'title' => 'required|unique:news|max:255',
-	        'publish_time' => 'required|',
-	        'audio_file' => 'file|mimetypes:video/avi,video/mpeg,video/mp4,audio/mpeg,audio/mp4'
+	        'publish_time' => 'required',
+	        'audio-file' => 'required|file|mimetypes:video/avi,video/mpeg,video/mp4,audio/mpeg,audio/mp4'
 	    ];
 	}
 
