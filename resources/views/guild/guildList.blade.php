@@ -2,7 +2,8 @@
 @section('content')
 @includeIf('partials.result')
 @includeIf('partials.modal', ['message' => 'Are you sure delete this guild ?'])
-
+<a href="{{route('guild.create')}}" class="btn btn-lightblue pull-right"><i class="fa fa-plus"></i>&nbsp;Create new guild</a>
+<br><br>
 <div class="table-responsive-vertical shadow-z-1">
   <table id="guildTable" class="table table-hover table-mc-light-blue table-bordered table-stripped">
       <thead>

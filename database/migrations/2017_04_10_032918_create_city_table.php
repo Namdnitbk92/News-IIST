@@ -28,8 +28,6 @@ class CreateCityTable extends Migration
      */
     public function down()
     {
-        Schema::table('city', function (Blueprint $table) {
-            Schema::dropIfExists('City');
-        });
+        Schema::dropIfExists('city');
     }
 }

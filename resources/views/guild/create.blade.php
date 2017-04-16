@@ -50,8 +50,8 @@
 	    minimumResultsForSearch: -1,
 	 });
 
-	$("select[name=county_id]").select2('val', parseInt('{{ isset($guild) ? $guild->county()->first()->id : 1 }}'));
+	$("select[name=county_id]").select2('val', parseInt('{{ isset($guild) ? $guild->county_id : 1 }}'));
 
-	$("select[name=county_id]").select2('val', parseInt('{{ isset($guild) ? $guild->user()->first()->id : 1 }}'));
+	$("select[name=supervisor]").select2('val', parseInt('{{ isset($guild) ? $guild->user()->first()->id : 1 }}'));
 </script>
 @endsection

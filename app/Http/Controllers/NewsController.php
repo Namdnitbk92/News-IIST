@@ -238,11 +238,11 @@ class NewsController extends Controller
                 {
                     $place_data['original_place_id'] = $request->get('city');
                 }
-
+                $publish_time = $request->get('publish_time');
                 $place = \App\Places::where('place_id', $new->place_id);
                 $place->update($place_data);
                 $new->update(
-                    array_merge($request->all(), 
+                    array_merge(empty($publish_time) ? $request->except('publish_time') : $request->all(), 
                     [
                         'status_id' => 1,
                         'audio_path' => empty($path) ? $new->audio_path : $path, 

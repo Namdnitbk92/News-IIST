@@ -66,14 +66,14 @@
       <ul class="nav nav-pills nav-stacked nav-bracket">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
 
-        <li class="nav-parent nav-active active"><a href=""><i class="fa fa-edit"></i> <span>News Management</span></a>
+        <li class="nav-parent"><a href=""><i class="fa fa-edit"></i> <span>News Management</span></a>
           <ul class="children" style="display: block">
             <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> Create a new</a></li>
             <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> News List</a></li>
           </ul>
         </li>
 
-        <li class="nav-parent nav-active active">
+        <li class="nav-parent">
           <a href=""><i class="fa fa-user-circle" aria-hidden="true"></i> <span>Users Management</span></a>
           <ul class="children" style="display: block">
             <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> Create new user</a></li>
@@ -81,7 +81,7 @@
           </ul>
         </li>
 
-        <li class="nav-parent nav-active active">
+        <li class="nav-parent">
           <a href=""><i class="fa fa-check"></i> <span>Approve Management</span></a>
           <ul class="children" style="display: block">
             <li ><a href="{{ route('getRequireToApproveNewsListByCreater') }}"><i class="fa fa-caret-right"></i> News list are required to approve</a></li>
@@ -89,7 +89,7 @@
         </li>
 
         <li class="nav-parent nav-active active">
-          <a href=""><i class="fa fa-user-circle" aria-hidden="true"></i> <span>Groups Management</span></a>
+          <a href=""><i class="fa fa-users" aria-hidden="true"></i> <span>Groups Management</span></a>
           <ul class="children" style="display: block">
             <li class="active"><a href="{{ route('city.index') }}"><i class="fa fa-caret-right"></i>City</a></li>
             <li ><a href="{{ route('county.index') }}"><i class="fa fa-caret-right"></i>County</a></li>
@@ -286,8 +286,9 @@
                 <li><a href="profile.html"><i class="glyphicon glyphicon-user"></i> My Profile</a></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Account Settings</a></li>
                 <li><a href="#"><i class="glyphicon glyphicon-question-sign"></i> Help</a></li>
-                <li><a href="{{ route('logout') }}"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+                <li onclick="logout();"><a href="javascript:void(0)"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
               </ul>
+              <form action="{{route('logout')}}" method="POST" name="formLogout">{{csrf_field()}}</form>
             </div>
           </li>
           @if(session()->has('showChannel'))
@@ -347,3 +348,9 @@
     @yield('login')
 @endif
 </html>
+<script>
+  function logout()
+  {
+    $('form[name=formLogout]').submit();
+  }
+</script>

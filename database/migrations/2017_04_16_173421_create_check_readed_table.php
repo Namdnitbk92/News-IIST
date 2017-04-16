@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCountyTable extends Migration
+class CreateCheckReadedTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateCountyTable extends Migration
      */
     public function up()
     {
-        Schema::create('county', function (Blueprint $table) {
+        Schema::create('check_readed', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('city_id');
-            $table->string('supervisor')->nullable();
+            $table->string('new_id');
+            $table->string('user_id');
+            $table->string('is_readed')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateCountyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('county');
+        Schema::dropIfExists('check_readed');
     }
 }

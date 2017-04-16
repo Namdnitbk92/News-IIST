@@ -26,6 +26,11 @@ class GuildController extends Controller
      */
     public function create()
     {
+        $titlePage = 'Create a Guild';
+        $county = \App\County::all();
+        $users = \App\User::where('role_id', config('attribute.role.approver'))->get();
+
+        return view('guild.create',compact('titlePage', 'county', 'users'));
     }
 
     /**

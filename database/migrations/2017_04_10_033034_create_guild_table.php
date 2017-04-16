@@ -29,8 +29,6 @@ class CreateGuildTable extends Migration
      */
     public function down()
     {
-        Schema::table('guild', function (Blueprint $table) {
-            Schema::dropIfExists('Guild');
-        });
+        Schema::dropIfExists('guild');
     }
 }
