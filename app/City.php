@@ -8,6 +8,10 @@ class City extends Model
 {
     protected $table = 'city';
 
+     protected $fillable = [
+        'name', 'supervisor',
+    ];
+
     public function county()
     {
         return $this->hasMany('App\County');

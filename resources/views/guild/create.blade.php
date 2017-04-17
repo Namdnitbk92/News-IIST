@@ -42,12 +42,10 @@
 <script type="text/javascript">
 	$("select[name=county_id]").select2({
 	    width: '100%',
-	    minimumResultsForSearch: -1,
 	 });
 
 	$("select[name=supervisor]").select2({
 	    width: '100%',
-	    minimumResultsForSearch: -1,
 	 });
 
 	$("select[name=county_id]").select2('val', parseInt('{{ isset($guild) ? $guild->county_id : 1 }}'));

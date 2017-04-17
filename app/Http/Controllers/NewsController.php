@@ -17,8 +17,9 @@ class NewsController extends Controller
     {
         $news = \App\News::paginate(5);
         $titlePage = 'News List';
+        $quantity = count($news);
 
-        return view('news.newsList', compact('news', 'titlePage'));
+        return view('news.newsList', compact('news', 'titlePage', 'quantity'));
     }
 
     /**
@@ -371,8 +372,6 @@ class NewsController extends Controller
             }
         }
 
-
-
         return response()->json([
             'status' => 200,
             'status_text' => $new->status()->first()->description,
@@ -383,8 +382,10 @@ class NewsController extends Controller
     public function search(Request $request)
     {
         $news = \App\News::search($request->search)->paginate(10);
+        $quantity = count($news);
+        $titlePage = 'News List';
 
-        return view('news.newsList', compact('news'));
+        return view('news.newsList', compact('news', 'quantity', 'titlePage'));
     }
 
     public function copyNew(Request $request)

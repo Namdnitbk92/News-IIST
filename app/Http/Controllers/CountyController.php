@@ -26,7 +26,11 @@ class CountyController extends Controller
      */
     public function create()
     {
-        //
+        $titlePage = 'Create a county';
+        $city = \App\City::all();
+        $users = \App\User::where('role_id', config('attribute.role.approver'))->get();
+
+        return view('county.create',compact('titlePage', 'city', 'users'));
     }
 
     /**
@@ -37,7 +41,21 @@ class CountyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $guild = \App\County::create($request->all());
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Create county has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'Create county successfully!!');
     }
 
     /**
@@ -59,7 +77,18 @@ class CountyController extends Controller
      */
     public function edit($id)
     {
-        //
+        $county = \App\County::find($id);
+        $city = \App\City::all();
+        $users = \App\User::where('role_id', config('attribute.role.approver'))->get();
+
+        if (empty($county))
+        {
+            return redirect()->back()->with('error', 'The county with id' . $id . 'is not exists on system..!');
+        }
+
+        $titlePage = 'Edit County [' . $county->name . ']';
+
+        return view('county.create', compact('county', 'titlePage', 'city', 'users'));
     }
 
     /**
@@ -71,7 +100,23 @@ class CountyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $county = \App\County::find($id);
+            $county->update($request->all());
+            $CountyName = $county->name;
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'update county [ ' . $CountyName . ' ] has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'update county  [' . $CountyName . ']  successfully!!');
     }
 
     /**
@@ -82,6 +127,22 @@ class CountyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $county = \App\County::find($id);
+            $countyName = $county->name;
+            $county->delete();
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Delete county [ ' . $countyName . ' ]has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'Delete guild  [ ' . $countyName . ' ] successfully!!');
     }
 }

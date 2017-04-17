@@ -26,7 +26,10 @@ class CityController extends Controller
      */
     public function create()
     {
-        //
+        $titlePage = 'Create a city';
+        $users = \App\User::where('role_id', config('attribute.role.approver'))->get();
+
+        return view('city.create',compact('titlePage', 'users'));
     }
 
     /**
@@ -37,7 +40,21 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $guild = \App\City::create($request->all());
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Create City has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'Create City successfully!!');
     }
 
     /**
@@ -59,7 +76,17 @@ class CityController extends Controller
      */
     public function edit($id)
     {
-        //
+        $city = \App\City::find($id);
+        $users = \App\User::where('role_id', config('attribute.role.approver'))->get();
+
+        if (empty($city))
+        {
+            return redirect()->back()->with('error', 'The city with id ' . $id . ' is not exists on system..!');
+        }
+
+        $titlePage = 'Edit city [' . $city->name . ']';
+
+        return view('city.create', compact('city', 'titlePage', 'users'));
     }
 
     /**
@@ -71,7 +98,23 @@ class CityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $city = \App\City::find($id);
+            $city->update($request->all());
+            $cityName = $city->name;
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'update city [' . $cityName . '] has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'update city  [' . $cityName . ']  successfully!!');
     }
 
     /**
@@ -82,6 +125,22 @@ class CityController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $city = \App\City::find($id);
+            $cityName = $city->name;
+            $city->delete();
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Delete city [' . $cityName . '] has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'Delete city  [' . $cityName . ']  successfully!!');
     }
 }

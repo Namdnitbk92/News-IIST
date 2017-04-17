@@ -96,7 +96,6 @@
             <li ><a href="{{ route('guild.index') }}"><i class="fa fa-caret-right"></i>Guild</a></li>
           </ul>
         </li>
-
       </ul>
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->
@@ -304,7 +303,7 @@
     </div><!-- headerbar -->
         
     <div class="pageheader">
-      <h2><i class="fa fa-pencil"></i>{{ isset($titlePage) ? $titlePage : session('titlePage') }}<span></span></h2>
+      <h2><i class=""></i>{{ isset($titlePage) ? $titlePage : session('titlePage') }}<span></span></h2>
       <div class="breadcrumb-wrapper">
       </div>
     </div>
