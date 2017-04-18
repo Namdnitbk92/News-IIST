@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\BaseRequest;
 
-class NewsRequest extends BaseRequest
+class UsersRequest extends BaseRequest
 {
 	/**
 	 * Get the validation rules that apply to the request.
@@ -14,23 +14,10 @@ class NewsRequest extends BaseRequest
 	public function rules()
 	{
 	    return [
-	    ];
-	}
-
-	public function getRules()
-	{
-	    return [
-	        'title' => 'required|unique:news|max:255',
-	        'publish_time' => 'required',
-	        'audio-file' => 'required|file|mimetypes:video/avi,video/mpeg,video/mp4,audio/mpeg,audio/mp4,text/csv,text/plain'
-	    ];
-	}
-
-	public function getQuickRules()
-	{
-		return [
-	        'title' => 'required|unique:news|max:255',
-	        'audio_text' => 'required',
+	        'name' => 'required||max:255',
+	        'email' => 'required|email|unique:users',
+	        'role_id' => 'required',
+	        'password' => 'required|max:20',
 	    ];
 	}
 
@@ -55,8 +42,10 @@ class NewsRequest extends BaseRequest
 	public function messages()
 	{
 	    return [
-	        'title.required' => 'A title is required',
-	        'publish_time.required'  => 'the publish time is required for new',
+	        'name.required' => 'User name is required',
+	        'email.required'  => 'User email is required.',
+	        'role_id.required'  => 'User role is required.',
+	        'password.required' => 'Password is required.'
 	    ];
 	}
 }

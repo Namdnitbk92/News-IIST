@@ -30,9 +30,13 @@ Route::group(['middleware' => 'auth'] , function (){
 	Route::post('/noticeApprove', 'NewsController@noticeApprove')->name('noticeApprove');
 
 	Route::get('/getRequireToApproveNewsListByCreater', 'NewsController@getRequireToApproveNewsListByCreater')->name('getRequireToApproveNewsListByCreater');
+	Route::post('/deleteApproved', 'NewsController@deleteApproved')->name('deleteApproved');
+
+
 
 
 	Route::resource('users', 'UserController');
+	Route::get('/profile', 'UserController@profile')->name('profile');
 
 	Route::resource('city', 'CityController');
 	Route::resource('county', 'CountyController');
@@ -42,5 +46,7 @@ Route::group(['middleware' => 'auth'] , function (){
 	Route::get('/search', 'NewsController@search')->name('search_news');
 
 	Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');
+	Route::get('getNotifications', 'HomeController@getNotifications')->name('getNotifications');
+	
 
 });

@@ -81,32 +81,32 @@ $(document).ready(function(){
           });
       });
 
-        $('#county').change(function (){
-          $.ajax({
-              url : '{{ route("getGuildList") }}',
-              method : 'GET',
-              data : {
-                  'county_id' : $('#county').val(),
-                  '_token' : '{{ csrf_token() }}'
-              },
-          }).done(function (response){
-            guilds = response.guilds;
+      //   $('#county').change(function (){
+      //     $.ajax({
+      //         url : '{{ route("getGuildList") }}',
+      //         method : 'GET',
+      //         data : {
+      //             'county_id' : $('#county').val(),
+      //             '_token' : '{{ csrf_token() }}'
+      //         },
+      //     }).done(function (response){
+      //       guilds = response.guilds;
 
-            if (guilds && guilds.length)
-            {
-              for (index in guilds)
-              {
-                $('#guild').show(500);
-                $('#guild').empty();
-                $('#guild').append('<option value="' + guilds[index].id + '">' + guilds[index].name + '</option>');
-              }
-            }
-            else 
-            {
-              $('#guild').empty();
-            }
-          });
-      });
+      //       if (guilds && guilds.length)
+      //       {
+      //         for (index in guilds)
+      //         {
+      //           $('#guild').show(500);
+      //           $('#guild').empty();
+      //           $('#guild').append('<option value="' + guilds[index].id + '">' + guilds[index].name + '</option>');
+      //         }
+      //       }
+      //       else 
+      //       {
+      //         $('#guild').empty();
+      //       }
+      //     });
+      // });
 
      $('#progressWizard .finish').click(function (){
         $('#myModal').modal('show');
@@ -114,12 +114,35 @@ $(document).ready(function(){
      @if(isset($new))
      	$('#publishTime').val(new Date('{{$new->publish_time}}').toISOString());
      @endif
-     
+
+     $('select[id=place]').change(function (){
+     	var place = $('select[id=place]').select2('val');
+     	if (place === 'city')
+     	{
+     		$('div.city_list').show(500);
+     		$('div.county_list').hide();
+     		$('div.guild_list').hide();
+     	}
+     	else if(place === 'county')
+     	{
+     		$('div.city_list').hide();
+     		$('div.county_list').show(500);
+     		$('div.guild_list').hide();
+     	}
+     	else
+     	{
+     		$('div.city_list').hide();
+     		$('div.county_list').hide();
+     		$('div.guild_list').show(500);
+     	}
+
+     })
+
 });
 
 function doSomething()
 {
-  form = document.getElementById("newsForm").submit();
+  	form = document.getElementById("newsForm").submit();
 }
 </script>
 @endsection

@@ -36,7 +36,8 @@
 	$("select[name=supervisor]").select2({
 	    width: '100%',
 	 });
-
-	$("select[name=supervisor]").select2('val', parseInt('{{ isset($city) ? $city->user()->first()->id : 1 }}'));
+	@if(isset($city))
+		$("select[name=supervisor]").select2('val', parseInt('{{ isset($city) ? $city->user()->first()->id : null }}'));
+	@endif
 </script>
 @endsection

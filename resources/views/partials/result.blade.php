@@ -7,6 +7,13 @@
 	<div class="alert alert-danger _message">
       <label><i class="fa fa-times" aria-hidden="true"></i>&nbsp; {{ session('error') }} </label>
   </div>
+
+@elseif (isset($errors) && count($errors) > 0)
+	<div class="alert alert-danger _message">
+		@foreach($errors->all() as $error)
+			<p><label><i class="fa fa-times" aria-hidden="true"></i>&nbsp; {{$error}}</label></p>
+		@endforeach
+  </div>
 @endif
 
 <script type="text/javascript">

@@ -143,6 +143,6 @@ class CountyController extends Controller
 
         \DB::commit();
 
-        return redirect()->back()->with('status', 'Delete guild  [ ' . $countyName . ' ] successfully!!');
+        return redirect()->back()->with('status', 'Delete county  [ ' . $countyName . ' ] successfully!!');
     }
 }

@@ -15,11 +15,21 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $news = \App\News::paginate(5);
+        $news = \App\News::where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'News List';
         $quantity = count($news);
 
-        return view('news.newsList', compact('news', 'titlePage', 'quantity'));
+        $formQuickCreateNew = 
+        '<form action="'.route('news.store').'" name="quickCreateNew" method="POST">'
+        .csrf_field()
+        .'<input type="hidden" name="quickCreate" value="yes"/>'
+        .'<div class="form-group"><label class="col-sm-4">Title</label>'
+        .'<div class="col-sm-8"><input type="text" name="title" class="form-control"/></div></div>'
+        .'<div class="form-group"><label class="col-sm-4">Text for new</label>'
+        .'<div class="col-sm-8"><textarea class="form-control" rows="5" name="audio_text" id="audio_text"></textarea></div></div>'
+        .'</form>';
+
+        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'formQuickCreateNew'));
     }
 
     /**
@@ -30,9 +40,40 @@ class NewsController extends Controller
     public function create()
     {
         $counties = \App\County::all();
+        $guilds = \App\Guild::all();
+        $cities = \App\City::all();
 
-        return view('news.create_news', compact('counties'));
+        return view('news.create_news', compact('counties', 'guilds', 'cities'));
     }
+
+    public function quickCreateNew($request)
+    {
+        try
+        {
+            \DB::beginTransaction();
+            $new = \App\News::create(
+                array_merge($request->all(),
+                    [
+                        'publish_time' => \Carbon\Carbon::now(),
+                        'status_id' => 1,
+                        'created_by' => \Auth::user()->id,
+                    ]
+                )
+            );
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect(route('news.create'))->with('error', $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect(route('news.show', ['id' => $new->id]))
+                ->with('status', 'Create a new is successfully'); 
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,14 +85,36 @@ class NewsController extends Controller
     {
         try
         {
-            $audioFile = $request->file('audio-file');
+            $isQuickCreate = $request->has('quickCreate');
+            if($isQuickCreate)
+            {
+                $this->validate($request, $request->getQuickRules());
+
+                return $this->quickCreateNew($request);
+            }
+
+            $this->validate($request, $request->getRules());
+
+            $file = $request->file('audio-file');
+            $mimeType = $file->getMimeType();
             $path = "";
-            if ($audioFile !== null)
+            if ($file !== null)
             {
                 try
                 {
-                    $result = \Cloudder::uploadVideo($audioFile)->getResult();
-                    $path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+                    if ($mimeType === 'text/plain')
+                    {
+                        $result = file_exists($file) ? file_get_contents($file) : '';
+
+                    }
+                    else
+                    {
+                        $result = \Cloudder::uploadVideo($file)->getResult();
+                    }
+                    if (!is_string($result))
+                        $path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+                    else
+                        $path = '';
                 }
                 catch(Exception $up)
                 {
@@ -70,7 +133,7 @@ class NewsController extends Controller
                 // }
             }
             
-            if ($path !== "" && !is_null($path))
+            if (($path !== "" && !is_null($path)) || (is_string($result) && strlen($result) > 0))
             {
                 try
                 {
@@ -79,7 +142,6 @@ class NewsController extends Controller
                     $place_data = [
                         'type' => $request->get('type'),
                     ];
-
                     if ($type === 'county')
                     {
                         $place_data['original_place_id'] = $request->get('county');
@@ -93,16 +155,19 @@ class NewsController extends Controller
                         $place_data['original_place_id'] = $request->get('city');
                     }
                     $publishTime = date( "Y-m-d H:i:s", strtotime($request->get('publish_time'))) ?? Carbon::now();
+
+                    $audio_text = (is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
                     
                     $place = \App\Places::create($place_data);
                     $new = \App\News::create(
                         array_merge(
-                            $request->except('publish_time'), 
+                            $request->except(['publish_time', 'audio_text']), 
                             [
                                 'status_id' => 1,
                                 'audio_path' => $path, 
                                 'place_id' => $place->id,
                                 'publish_time' => $publishTime,
+                                'audio_text' => $audio_text,
                             ]
                     ));
                 }
@@ -203,14 +268,25 @@ class NewsController extends Controller
     {
         try
         {
-            $audioFile = $request->file('audio-file');
+            $file = $request->file('audio-file');
+            $mimeType = $file->getMimeType();
             $path = "";
-            if ($audioFile !== null)
+            if ($file !== null)
             {
                 try
                 {
-                    $result = \Cloudder::uploadVideo($audioFile)->getResult();
-                    $path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+                     if ($mimeType === 'text/plain')
+                    {
+                        $result = file_exists($file) ? file_get_contents($file) : '';
+                    }
+                    else
+                    {
+                        $result = \Cloudder::uploadVideo($file)->getResult();
+                    }
+                    if (!is_string($result))
+                        $path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+                    else
+                        $path = '';
                 }
                 catch(Exception $up)
                 {
@@ -240,6 +316,7 @@ class NewsController extends Controller
                     $place_data['original_place_id'] = $request->get('city');
                 }
                 $publish_time = $request->get('publish_time');
+                $audio_text = (is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
                 $place = \App\Places::where('place_id', $new->place_id);
                 $place->update($place_data);
                 $new->update(
@@ -247,7 +324,8 @@ class NewsController extends Controller
                     [
                         'status_id' => 1,
                         'audio_path' => empty($path) ? $new->audio_path : $path, 
-                        'place_id' => $place->first()->place_id
+                        'place_id' => $place->first()->place_id,
+                        'audio_text' => $audio_text,
                     ]
                 ));
             }
@@ -428,7 +506,7 @@ class NewsController extends Controller
             {
                 \DB::beginTransaction();
                 $msg = "Makes approve notification for this new is successfully, please waiting for approved by superior!!";
-                $new->approved_by = $news->getManager();
+                $new->approved_by = $new->getManager();
                 $new->status_id = config('attribute.status.inprogress');
                 $new->save();
             }
@@ -447,14 +525,14 @@ class NewsController extends Controller
             return redirect()->back()->with('error', 'The newId can not empty');
         }
 
-        return redirect(route('news.show', ['id' => $copyNew->id]))
+        return redirect(route('news.show', ['id' => $new->id]))
                 ->with('status', $msg ?? '');
     }
 
     public function getRequireToApproveNewsListByCreater()
     {
         $user = \Auth::user();
-        if ($user->isCreater())
+        if (!$user->isCreater())
         {
             $conds = [
                 'user_id' => $user->id,
@@ -476,5 +554,38 @@ class NewsController extends Controller
         $news = $where->where('publish_time', '>=', \Carbon\Carbon::now())->paginate(10);
 
         return view('news.newsListByRequiredToApprove', compact('news'));
+    }
+
+    public function deleteApproved(Request $request)
+    {
+
+        $new = \App\News::find($request->get('id'));
+        if (!empty($new))
+        {
+            try
+            {
+                \DB::beginTransaction();
+                $msg = "Remove required to approve on this new is successfully!!";
+                $new->approved_by = null;
+                $new->status_id = config('attribute.status.new');
+                $new->save();
+            }
+            catch(Exception $e)
+            {
+                \DB::rollBack();
+                $msg = "Remove required to approve on this new has occurred errors cause :" . $e->getMessage();
+
+                return redirect()->back()->with('status', $msg);
+            }
+
+            \DB::commit();
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'The newId can not empty');
+        }
+
+        return redirect(route('news.show', ['id' => $new->id]))
+                ->with('status', $msg ?? '');
     }
 }

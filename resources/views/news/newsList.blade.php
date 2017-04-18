@@ -1,14 +1,15 @@
 @extends('layouts.app')
 @section('content')
 @includeIf('partials.result')
-
+@includeIf('partials.modal', ['message' => isset($formQuickCreateNew) ? $formQuickCreateNew : '', 'btn_custom' => 'Create new quickly', 'header' => 'Create a new quickly'])
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
+      <a href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Create a new quickly</a>
     </div><!-- panel-btns -->
     <h3 class="panel-title">List</h3>
   </div>
-  <div class="panel-body">
+  <div class="panel-body">4
       <div class="input-group">
          <span class="input-group-addon trigger_search" style="color: #428bca;">
             <i class="glyphicon glyphicon-search"></i>
@@ -54,7 +55,7 @@
     	          <td data-title="Status">
     	          	<span class="label label-{{$new->status_id == 1 ? 'success' : (
                   $new->status_id == 2 ? 'warning' : 'danger'
-                )}}">{{ $new->status()->first()->description }}</span>
+                )}}">{{ (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description }}</span>
     	          </td>
     	        </tr>
     		    @endforeach
@@ -88,5 +89,15 @@
   $('span.trigger_search').click(function(){
     $('form[name=searchForm]').submit();
   });
+
+  function quickNews()
+  {
+    $('#myModal').modal('show');
+  }
+
+  function doSomething()
+{
+  form = $("form[name=quickCreateNew]").submit();
+}
 </script>
 @endsection

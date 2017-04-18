@@ -28,6 +28,7 @@ elixir((mix) => {
     	'libs/dropzone.min.js',
     	'libs/jquery.validate.min.js',
     	'libs/bootstrap-datetimepicker.min.js',
+        'libs/fullcalendar.min.js',
     	'libs/custom.js'
 	], 'public/js/libs.js')
 });

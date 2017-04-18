@@ -44,30 +44,26 @@ class News extends Model
 
     public function getManager()
     {
-        $place = \App\Places::where('place_id', $this->id);
+        $place = \App\Places::where('place_id', $this->place_id)->first();
         $type = $place->type;
-
         switch ($type) {
             case 'city':
                 $city = \App\City::find($place->original_place_id);
-                $managerId = $city->supervisor;
+                $managerId = isset($city) ? $city->supervisor : null;
                 break;
 
             case 'county':
                 $county = \App\County::find($place->original_place_id);
-                $managerId = $county->supervisor;
+                $managerId = isset($county) ? $county->supervisor : null;
+
                 break;
 
             case 'guild':
                 $guild = \App\Guild::find($place->original_place_id);
-                $managerId = $guild->supervisor;
-                break;
-                
-            default:
-                # code...
+                $managerId = isset($guild) ? $guild->supervisor : null;
                 break;
         }
-
+        
         return $managerId;
     }
 

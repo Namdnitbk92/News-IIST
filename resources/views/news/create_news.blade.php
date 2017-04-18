@@ -64,46 +64,42 @@
                   </div>
                 </div>
 
-                 <div class="form-group">
-                    <label class="col-sm-4">Place</label>
-                    <div class="col-sm-4">
-                      <select class="select2" id="place" name="type">
-                        <option value="county">County</option>
-                        <option value="city">City</option>
-                        <option value="guild">Guild</option>
-                      </select>
-                    </div>
-                  </div>
+                
             </div>
             <div class="tab-pane" id="ptab2">
+
               <form class="form">
-                <div class="form-group">
-                  <label class="col-sm-4">City</label>
-                  <div class="col-sm-7">
-                   <select class="select2" id="place" name="city">
-                    <option value="1">Ha Noi</option>
+
+              <div class="form-group">
+                <label class="col-sm-4">Place</label>
+                <div class="col-sm-8">
+                  <select class="select2" id="place" name="type">
+                    <option value="county">County</option>
+                    <option value="city">City</option>
+                    <option value="guild">Guild</option>
                   </select>
+                </div>
+              </div>
+
+
+                <div class="form-group city_list" style="display:none;">
+                  <label class="col-sm-4">City</label>
+                  <div class="col-sm-8">
+                    {!! renderSelect($cities, 'id', 'name', 'city', 'city' ,'select2') !!}
                   </div>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group county_list" style="display:none;">
                   <label class="col-sm-4">County</label>
                   <div class="col-sm-8">
-                    <select class="select2" id="county" name="county">
-                      @if(isset($counties))
-                        @foreach($counties as $county)
-                          <option value="{{$county->id}}">{{ $county->name }}</option>
-                        @endforeach
-                      @endif
-                    </select>
+                     {!! renderSelect($counties, 'id', 'name', 'county', 'county' ,'select2') !!}
                   </div>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group guild_list" style="display:none;">
                   <label class="col-sm-4">Guild</label>
-                  <div class="col-sm-4">
-                    <select class="select2" id="guild" name="guild" style="display:none;">
-                    </select>
+                  <div class="col-sm-8">
+                    {!! renderSelect($guilds, 'id', 'name', 'guild', 'guild' ,'select2') !!}
                   </div>
                 </div>
               </form>
@@ -112,7 +108,7 @@
                <div class="input-group {{ addErrorClass($errors, 'audio-file') }}">
                   <label class="input-group-btn">
                       <span class="btn btn-primary">
-                          <i class="fa fa-upload"></i>&nbsp;Upload audio&hellip; <input type="file" name="audio-file" style="display: none;" multiple>
+                          <i class="fa fa-upload"></i>&nbsp;Upload audio / video&hellip; <input type="file" name="audio-file" style="display: none;" multiple>
                       </span>
                   </label>
                   <input type="text" class="form-control" readonly>
@@ -120,7 +116,7 @@
               {!! displayFieldError($errors, 'audio-file') !!}
               <br/>
               <div class="form-group">
-                <label for="comment">Text</label>
+                <label for="comment">Text</label> <button style="margin:5px;" class="btn btn-warning">Convert to audio/video</button>
                 <textarea class="form-control" rows="5" name="audio_text" id="comment"></textarea>
                 </br>
               </div>

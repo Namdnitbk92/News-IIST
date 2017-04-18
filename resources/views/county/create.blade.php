@@ -43,9 +43,10 @@
 	$("select[name=supervisor]").select2({
 	    width: '100%',
 	 });
+	@if(isset($county))
+		$("select[name=city_id]").select2('val', parseInt('{{ isset($county) ? $county->id : 1 }}'));
 
-	$("select[name=city_id]").select2('val', parseInt('{{ isset($county) ? $county->county_id : 1 }}'));
-
-	$("select[name=supervisor]").select2('val', parseInt('{{ isset($county) ? $county->user()->first()->id : 1 }}'));
+		$("select[name=supervisor]").select2('val', parseInt('{{ isset($county) ? $county->user()->first()->id : 1 }}'));
+	@endif
 </script>
 @endsection

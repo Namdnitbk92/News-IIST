@@ -20,7 +20,7 @@
         <div class="panel-btns">
           <a class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
           <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
-          <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
+          <a class="panel-edit" href="javascript:void(0);" onclick="noticeApprove();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
 
           <a class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
           <a class="approve-new panel-edit">
@@ -79,6 +79,11 @@
   function copy()
   {
     $('form[id=copyNew]').submit();
+  }
+
+  function noticeApprove()
+  {
+    $('form[id=noticeApprove]').submit();
   }
 
   function deleteNew()

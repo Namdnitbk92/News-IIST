@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('content')
 @includeIf('partials.result')
-
+@includeIf('partials.modal', ['message' => 'Are you sure delete this user ?'])
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-        <a href="{{route('guild.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;New user</a>
+        <a href="{{route('users.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;New user</a>
     </div><!-- panel-btns -->
     <h3 class="panel-title">List</h3>
   </div>
@@ -39,10 +39,17 @@
 	            {{ $user->email }}
 	          </td>
 	          <td class="table-action-hide">
-	          	 <a href="" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
-                 <a href="" class="delete-row" style="opacity: 0;">
-                 	<i class="fa fa-trash-o"></i>
-                 </a>
+	          	  <a href="javascript:void(0)" onclick="editUser('{{$user->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
+                   <a href="javascript:void(0)" onclick="deleteUser('{{$user->id}}')" class="delete-row" style="opacity: 0;">
+                    <i class="fa fa-trash-o"></i>
+                   </a>
+                 <form name="formEdit{{$user->id}}" action="{{route('users.edit', ['id' => $user->id])}}" method="GET">
+                    {{csrf_field()}}
+                 </form>
+                 <form name="formDel{{$user->id}}" action="{{route('users.destroy', ['id' => $user->id])}}" method="POST">
+                    {{csrf_field()}}
+                    {{ method_field('DELETE') }}                    
+                 </form>
 	          </td>
 	        </tr>
 		    @endforeach
@@ -62,6 +69,26 @@
     },function(){
       jQuery(this).find('.table-action-hide a').animate({opacity: 0});
     });
+
+
+    function deleteUser(id)
+    {
+      localStorage.setItem('userId', id);
+      $('#myModal').modal('show');
+    }
+
+    function editUser(id)
+    {
+      if(id)
+        $('form[name=formEdit'+ id +']').submit();
+    }
+
+    function doSomething()
+    {
+      var id = localStorage.getItem('userId');
+      if (id)
+        $('form[name=formDel'+ id +']').submit();
+    }
 
 </script>
 

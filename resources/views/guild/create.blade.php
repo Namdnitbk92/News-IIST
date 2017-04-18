@@ -47,9 +47,11 @@
 	$("select[name=supervisor]").select2({
 	    width: '100%',
 	 });
+	@if(isset($guild))
 
 	$("select[name=county_id]").select2('val', parseInt('{{ isset($guild) ? $guild->county_id : 1 }}'));
 
 	$("select[name=supervisor]").select2('val', parseInt('{{ isset($guild) ? $guild->user()->first()->id : 1 }}'));
+	@endif
 </script>
 @endsection

@@ -25,7 +25,6 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>County</th>
-                <th>City</th>
                 <th>Supervisor</th>
                 <th></th>
               </tr>
@@ -36,10 +35,9 @@
       		     <tr>
       	          <td data-title="ID">{{ $guild->id }}</td>
       	          <td data-title="Name">{{ $guild->name }}</td>
-                  <td data-title="County">{{ $guild->county()->first()->name }}</td>
-                  <td data-title="City">{{ $guild->county()->first()->city()->first()->name }}</td>
+                  <td data-title="County">{{ (is_null($guild->county()) || is_null($guild->county()->first())) ? '' : $guild->county()->first()->name }}</td>
       	          <td data-title="Supervisor">
-      	            {{ $guild->user()->first()->name }}
+      	            {{ (is_null($guild->user()) || is_null($guild->user()->first())) ? '' :  $guild->user()->first()->name }}
       	          </td>
       	          <td class="table-action-hide">
       	          	 <a href="javascript:void(0)" onclick="editGuild('{{$guild->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>

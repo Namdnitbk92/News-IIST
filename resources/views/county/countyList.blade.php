@@ -35,9 +35,9 @@
 		     <tr>
 	          <td data-title="ID">{{ $county->id }}</td>
 	          <td data-title="Name">{{ $county->name }}</td>
-            <td data-title="City">{{ $county->city()->first()->name }}</td>
+            <td data-title="City">{{ (is_null($county->city()) || is_null($county->city()->first())) ? '' : $county->city()->first()->name }}</td>
 	          <td data-title="Supervisor">
-	            {{ $county->user()->first()->name }}
+	            {{ (is_null($county->user()) || is_null($county->user()->first())) ? '' : $county->user()->first()->name }}
 	          </td>
 	          <td class="table-action-hide">
                    <a href="javascript:void(0)" onclick="editCounty('{{$county->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>

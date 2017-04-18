@@ -43,4 +43,17 @@ class HomeController extends Controller
 
         return view('home',compact('newsOne', 'newsSecond'));
     }
+
+    public function getNotifications()
+    {
+        $news = \App\News::where([
+            'approved_by' => \Auth::user()->id,
+            'status_id' => config('attribute.status.inprogress')
+        ])->where('publish_time', '>=', \Carbon\Carbon::now())->get();
+
+        return response()->json([
+            'totalNotifications' => count($news),
+            'news' => $news,
+        ]);
+    }
 }

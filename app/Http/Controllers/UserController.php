@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UsersRequest;
 
 class UserController extends Controller
 {
@@ -26,7 +27,19 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles = \App\Role::all();
+        $titlePage = 'Create new user';
+
+        return view('users.create', compact('roles', 'titlePage'));
+    }
+
+    public function profile(Request $request)
+    {
+        $titlePage = 'Profile';
+        $uid = $request->get('userId');
+        $user = !empty($uid) ? \App\User::find($uid) : \Auth::user(); 
+        
+        return view('users.profile', compact('user', 'titlePage '));
     }
 
     /**
@@ -35,9 +48,23 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UsersRequest $request)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $guild = \App\User::create($request->all());
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Create user has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'Create user successfully!!');
     }
 
     /**
@@ -48,7 +75,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = \App\User::find($id);
+
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -59,7 +88,17 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = \App\User::find($id);
+        $roles = \App\Role::all(); 
+
+        if (empty($user))
+        {
+            return redirect()->back()->with('error', 'The user with id' . $id . 'is not exists on system..!');
+        }
+
+        $titlePage = 'Edit User [' . $user->name . '] information';
+
+        return view('users.create', compact('user', 'titlePage', 'roles'));
     }
 
     /**
@@ -71,7 +110,22 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $user = \App\User::find($id);
+            $user->update($request->all());
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'update user has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'update user successfully!!');
     }
 
     /**
@@ -82,6 +136,21 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            \DB::beginTransaction();
+            $user = \App\User::find($id);
+            $user->delete();
+        }
+        catch(Exception $e)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Delete user has failed cause !!' . $e->getMessage());
+        }
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', 'Delete user successfully!!');
     }
 }
