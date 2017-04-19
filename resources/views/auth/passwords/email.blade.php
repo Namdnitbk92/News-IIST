@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 <!-- Main Content -->
-@section('content')
-<div class="container">
+@section('passwordReset')
+<div class="container" style="margin-top:5%;">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
+            <div class="panel panel-success">
                 <div class="panel-heading">Reset Password</div>
                 <div class="panel-body">
                     @if (session('status'))
@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
+                    <form class="form-horizontal" name="formReset" role="form" method="POST" action="{{ url('/password/email') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -33,9 +33,8 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Send Password Reset Link
-                                </button>
+                                <a class="btn btn-danger" href="{{ route('login') }}"><small><i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;Back to login</small></a>
+                                <a class="btn btn-primary" href="javascript:void(0)" onclick="return (function (){$('form[name=formReset]').submit();})()"><small><i class="fa fa-check"></i>&nbsp;Send Password Reset Link</small></a>
                             </div>
                         </div>
                     </form>

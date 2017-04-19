@@ -3,7 +3,7 @@
 @section('login')
 <body class="signin" >
 <section>
-    <div class="signinpanel">
+    <div class="signinpanel" style="font-size:17px;">
     <div class="row">
         <div class="col-md-12 col-xs-12">
             <form  class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
@@ -18,7 +18,8 @@
                     </span>
                 @endif
                 <input type="password" name="password" class="form-control pword {{ $errors->has('password') ? ' has-error' : '' }}" placeholder="Password" />
-                <a href="{{ url('/password/reset') }}"><small>Forgot Your Password?</small></a>
+                <a href="{{url('/password/reset')}}"><small>Forgot Your Password?</small></a>
+                <a href="{{ url('/register') }}"><small>Register new account?</small></a>
                 <button class="btn btn-success btn-block">Sign In</button>
             </form>
         </div>

@@ -38,7 +38,7 @@
 	          <td data-title="Supervisor">
 	            {{ $city->user()->first()->name }}
 	          </td>
-	          <td class="table-action-hide">
+	          <td class="table-action-hide" style="font-size: 20px;">
 	          	<a href="javascript:void(0)" onclick="editCity('{{$city->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
                    <a href="javascript:void(0)" onclick="deleteCity('{{$city->id}}')" class="delete-row" style="opacity: 0;">
                     <i class="fa fa-trash-o"></i>

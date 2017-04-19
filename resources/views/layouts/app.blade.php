@@ -82,6 +82,7 @@
         <li class="nav-parent">
           <a href=""><i class="fa fa-check"></i> <span>Approve Management</span></a>
           <ul class="children" style="display: block">
+            <li ><a href="{{ route('getNewListAvaiableApprove') }}"><i class="fa fa-list"></i> News list are avaiable to approve</a></li>
             <li ><a href="{{ route('getRequireToApproveNewsListByCreater') }}"><i class="fa fa-caret-right"></i> News list are required to approve</a></li>
           </ul>
         </li>
@@ -190,6 +191,10 @@
   
 </section>
 </body>
+@elseif (strpos(Route::getCurrentRoute()->getPath(), 'password/reset') !== false)
+    @yield('passwordReset')
+@elseif (Route::getCurrentRoute()->getPath() === 'register')
+    @yield('register')
 @else
     @yield('login')
 @endif
@@ -227,11 +232,6 @@
           $('.ntfList').append(html);
         }
   })
-
-  function redirect(id)
-  {
-    window.location.href="/news/" + id;
-  }
 
   localStorage.clear();
 </script>

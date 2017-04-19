@@ -16,6 +16,11 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    public function back() 
+    {
+        return redirect('/home');
+    }
+
     /**
      * Show the application dashboard.
      *

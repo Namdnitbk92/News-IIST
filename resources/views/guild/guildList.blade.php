@@ -39,7 +39,7 @@
       	          <td data-title="Supervisor">
       	            {{ (is_null($guild->user()) || is_null($guild->user()->first())) ? '' :  $guild->user()->first()->name }}
       	          </td>
-      	          <td class="table-action-hide">
+      	          <td class="table-action-hide" style="font-size: 20px;">
       	          	 <a href="javascript:void(0)" onclick="editGuild('{{$guild->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
                        <a href="javascript:void(0)" onclick="deleteGuild('{{$guild->id}}')" class="delete-row{{$guild->id}}" style="opacity: 0;">
                        	<i class="fa fa-trash-o"></i>

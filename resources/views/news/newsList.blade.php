@@ -9,7 +9,7 @@
     </div><!-- panel-btns -->
     <h3 class="panel-title">List</h3>
   </div>
-  <div class="panel-body">4
+  <div class="panel-body">
       <div class="input-group">
          <span class="input-group-addon trigger_search" style="color: #428bca;">
             <i class="glyphicon glyphicon-search"></i>

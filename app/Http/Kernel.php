@@ -51,6 +51,12 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'is.content.manager' => \App\Http\Middleware\isContentManager::class,
+        'is.approve.manager' => \App\Http\Middleware\isApproveManager::class,
+        'is.attendee.manager' => \App\Http\Middleware\isAttendeeManager::class,
+        'is.users.manager' => \App\Http\Middleware\isUsersManager::class,
+        'is.complain.manager' => \App\Http\Middleware\isContentManager::class,
+        'is.admin' => \App\Http\Middleware\isAdmin::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

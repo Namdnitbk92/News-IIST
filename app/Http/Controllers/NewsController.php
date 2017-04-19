@@ -15,21 +15,39 @@ class NewsController extends Controller
      */
     public function index()
     {
+        // abort(500);    
         $news = \App\News::where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'News List';
         $quantity = count($news);
 
-        $formQuickCreateNew = 
-        '<form action="'.route('news.store').'" name="quickCreateNew" method="POST">'
-        .csrf_field()
-        .'<input type="hidden" name="quickCreate" value="yes"/>'
-        .'<div class="form-group"><label class="col-sm-4">Title</label>'
-        .'<div class="col-sm-8"><input type="text" name="title" class="form-control"/></div></div>'
-        .'<div class="form-group"><label class="col-sm-4">Text for new</label>'
-        .'<div class="col-sm-8"><textarea class="form-control" rows="5" name="audio_text" id="audio_text"></textarea></div></div>'
-        .'</form>';
+        $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
         return view('news.newsList', compact('news', 'titlePage', 'quantity', 'formQuickCreateNew'));
+    }
+
+    public function getNewListAvaiableApprove()
+    {
+        $news = \App\News::where('user_id', \Auth::user()->id)->where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('created_at', 'desc')->paginate(5);
+        
+        $titlePage = 'News list are avaiable to approve';
+        $quantity = count($news);
+
+        $formQuickCreateNew = $this->genrenateFormQuickCreate();
+
+        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'formQuickCreateNew'));
+    }
+
+    private function genrenateFormQuickCreate()
+    {
+        return  $formQuickCreateNew = 
+                '<form action="'.route('news.store').'" name="quickCreateNew" method="POST">'
+                .csrf_field()
+                .'<input type="hidden" name="quickCreate" value="yes"/>'
+                .'<div class="form-group"><label class="col-sm-4">Title</label>'
+                .'<div class="col-sm-8"><input type="text" name="title" class="form-control"/></div></div>'
+                .'<div class="form-group"><label class="col-sm-4">Text for new</label>'
+                .'<div class="col-sm-8"><textarea class="form-control" rows="5" name="audio_text" id="audio_text"></textarea></div></div>'
+                .'</form>';
     }
 
     /**
@@ -56,7 +74,7 @@ class NewsController extends Controller
                     [
                         'publish_time' => \Carbon\Carbon::now(),
                         'status_id' => 1,
-                        'created_by' => \Auth::user()->id,
+                        'user_id' => \Auth::user()->id,
                     ]
                 )
             );
@@ -109,6 +127,7 @@ class NewsController extends Controller
                     }
                     else
                     {
+                        ini_set('max_execution_time', 6000);
                         $result = \Cloudder::uploadVideo($file)->getResult();
                     }
                     if (!is_string($result))
@@ -208,6 +227,8 @@ class NewsController extends Controller
         $new = \App\News::find($id);
         $user = $new ? \App\User::find($new->user_id) : null;
         $place = $new ? \App\Places::where('place_id', $new->place_id)->first() : null;
+       
+
         $titlePage = 'Detail Information of The New ID ' . $new->id;
 
         if ($place)
@@ -253,8 +274,11 @@ class NewsController extends Controller
     public function edit($id)
     {
         $new = \App\News::find($id);
+        $counties = \App\County::all();
+        $guilds = \App\Guild::all();
+        $cities = \App\City::all();
         
-        return view('news.create_news', compact('new'));
+        return view('news.create_news', compact('new', 'cities', 'guilds', 'counties'));
     }
 
     /**
@@ -351,7 +375,7 @@ class NewsController extends Controller
         }
 
         return redirect()->route('news.edit', ['id' => $new->id])
-                    ->with('status', 'Update a new is successfully'); 
+                    ->with('status', 'Update a new is successfully');
     }
 
     /**
@@ -462,8 +486,9 @@ class NewsController extends Controller
         $news = \App\News::search($request->search)->paginate(10);
         $quantity = count($news);
         $titlePage = 'News List';
+        $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
-        return view('news.newsList', compact('news', 'quantity', 'titlePage'));
+        return view('news.newsList', compact('news', 'quantity', 'titlePage', 'formQuickCreateNew'));
     }
 
     public function copyNew(Request $request)
@@ -532,7 +557,8 @@ class NewsController extends Controller
     public function getRequireToApproveNewsListByCreater()
     {
         $user = \Auth::user();
-        if (!$user->isCreater())
+        $titlePage = 'News list are required to approve';
+        if ($user->isCreater())
         {
             $conds = [
                 'user_id' => $user->id,
@@ -553,7 +579,7 @@ class NewsController extends Controller
         }
         $news = $where->where('publish_time', '>=', \Carbon\Carbon::now())->paginate(10);
 
-        return view('news.newsListByRequiredToApprove', compact('news'));
+        return view('news.newsListByRequiredToApprove', compact('news', 'titlePage'));
     }
 
     public function deleteApproved(Request $request)

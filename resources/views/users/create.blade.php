@@ -9,24 +9,24 @@
 	<div class="row mb10">
 	    <div class="col-sm-6">
 	    	<label class="control-label">User Name</label>
-	        <input type="name" name="name" class="form-control {{ addErrorClass($errors, 'name') }}" value="{{isset($user) ? $user->name : ''}}">
+	        <input  placeholder="Name for user will be creating" type="name" name="name" class="form-control {{ addErrorClass($errors, 'name') }}" value="{{isset($user) ? $user->name : ''}}">
 	        {!! displayFieldError($errors, 'name') !!}
 	    </div>
 	    <div class="col-sm-6">
 	    	<label class="control-label">Address</label>
-	    	<input type="text" name="address" class="form-control" value="{{isset($user) ? $user->address : ''}}">
+	    	<input placeholder="exp : Nguyen chi thanh - street,etc...." type="text" name="address" class="form-control" value="{{isset($user) ? $user->address : ''}}">
 	    </div>
 	</div>
 
 	<div class="row mb10">
 	    <div class="col-sm-6">
 	    	<label class="control-label">Email</label>
-	        <input type="email" name="email" class="form-control {{ addErrorClass($errors, 'email') }}" value="{{isset($user) ? $user->email : ''}}">
+	        <input placeholder="email@example.com" type="email" name="email" class="form-control {{ addErrorClass($errors, 'email') }}" value="{{isset($user) ? $user->email : ''}}" {{isset($user) ? "disabled" : ""}}>
 	        {!! displayFieldError($errors, 'email') !!}
 	    </div>
 	    <div class="col-sm-6">
 	    	<label class="control-label">Role</label>
-	    	{!! renderSelect($roles, 'role_id', 'description', 'role_id', 'role_id' ,'select2') !!}
+	    	{!! renderSelect(array_merge($roles->toArray(), ['isDisabled' => isset($user)]), 'role_id', 'description', 'role_id', 'role_id' ,'select2') !!}
 	    </div>
 	</div>
 
@@ -38,7 +38,7 @@
                   <i class="fa fa-eye"></i>
                </span>
                <div class="input-group">
-                  <input id="password" name="password" type="password" class="form-control {{ addErrorClass($errors, 'password') }}" value="{{isset($user) ? $user->password : ''}}"/>
+                  <input id="password" name="password" type="password" class="form-control {{ addErrorClass($errors, 'password') }}"/>
                </div>
             </div>
             {!! displayFieldError($errors, 'password') !!}

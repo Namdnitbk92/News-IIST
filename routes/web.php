@@ -13,6 +13,8 @@
 
 Auth::routes();
 
+Route::get('/passwordReset', 'UserController@passwordReset')->name('passwordReset');
+
 Route::group(['middleware' => 'auth'] , function (){
 
 	Route::get('/', function (){
@@ -21,32 +23,35 @@ Route::group(['middleware' => 'auth'] , function (){
 
 	Route::get('/home', 'HomeController@index')->name('home');
 
-	Route::resource('news', 'NewsController');
+	Route::get('/back', 'HomeController@back')->name('back');
 
-	Route::post('/approveNew', 'NewsController@approveNew')->name('approveNew');
+	Route::group(['middleware' => 'is.content.manager'] , function (){
+		Route::group(['middleware' => 'is.content.manager'] , function (){
+			Route::resource('news', 'NewsController');
+			Route::post('/copyNew', 'NewsController@copyNew')->name('copyNew');
+			Route::get('/search', 'NewsController@search')->name('search_news');
+			Route::post('/noticeApprove', 'NewsController@noticeApprove')->name('noticeApprove');
+			Route::get('/getNewListAvaiableApprove', 'NewsController@getNewListAvaiableApprove')->name('getNewListAvaiableApprove');
+		});
+	});
 
-	Route::post('/copyNew', 'NewsController@copyNew')->name('copyNew');
+	Route::group(['middleware' => 'is.users.manager'] , function (){
+		Route::resource('users', 'UserController');
+		Route::get('user/search', 'UserController@search')->name('search_users');
+	});
 
-	Route::post('/noticeApprove', 'NewsController@noticeApprove')->name('noticeApprove');
-
-	Route::get('/getRequireToApproveNewsListByCreater', 'NewsController@getRequireToApproveNewsListByCreater')->name('getRequireToApproveNewsListByCreater');
-	Route::post('/deleteApproved', 'NewsController@deleteApproved')->name('deleteApproved');
-
-
-
-
-	Route::resource('users', 'UserController');
 	Route::get('/profile', 'UserController@profile')->name('profile');
+	Route::get('/editProfile', 'UserController@editProfile')->name('editProfile');
 
-	Route::resource('city', 'CityController');
-	Route::resource('county', 'CountyController');
-	Route::resource('guild', 'GuildController');
-	
-
-	Route::get('/search', 'NewsController@search')->name('search_news');
+	Route::group(['middleware' => 'is.approve.manager'] , function (){
+		Route::get('/getRequireToApproveNewsListByCreater', 'NewsController@getRequireToApproveNewsListByCreater')->name('getRequireToApproveNewsListByCreater');
+		Route::post('/approveNew', 'NewsController@approveNew')->name('approveNew');
+		Route::post('/deleteApproved', 'NewsController@deleteApproved')->name('deleteApproved');
+		Route::resource('city', 'CityController');
+		Route::resource('county', 'CountyController');
+		Route::resource('guild', 'GuildController');
+	});
 
 	Route::get('getGuildList', 'NewsController@getGuildList')->name('getGuildList');
 	Route::get('getNotifications', 'HomeController@getNotifications')->name('getNotifications');
-	
-
 });

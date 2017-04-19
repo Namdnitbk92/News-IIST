@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading" style="background: #1caf9a;">
         <div class="panel-btns">
           <a href="" class="panel-close">&times;</a>
           <a href="" class="minimize">&minus;</a>
@@ -37,7 +37,7 @@
                 <div class="form-group {{ addErrorClass($errors, 'title') }}">
                   <label class="col-sm-4">Title</label>
                   <div class="col-sm-8">
-                    <input type="text" name="title" class="form-control" value="{{ isset($new) ? $new->title : ''}}"/>
+                    <input placeholder="The title for this new will be created..." type="text" name="title" class="form-control" value="{{ isset($new) ? $new->title : ''}}"/>
                     {!! displayFieldError($errors, 'title') !!}
                   </div>
                 </div>
@@ -45,7 +45,7 @@
                 <div class="form-group">
                   <label class="col-sm-4">Description</label>
                   <div class="col-sm-8">
-                    <input type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : ''}}"/>
+                    <input placeholder="The description for this new..." type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : ''}}"/>
                   </div>
                 </div>
 
@@ -116,7 +116,7 @@
               {!! displayFieldError($errors, 'audio-file') !!}
               <br/>
               <div class="form-group">
-                <label for="comment">Text</label> <button style="margin:5px;" class="btn btn-warning">Convert to audio/video</button>
+                <label for="comment">Text</label> <button style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</button>
                 <textarea class="form-control" rows="5" name="audio_text" id="comment"></textarea>
                 </br>
               </div>
@@ -140,9 +140,9 @@
               </li>
               @endif
               <li class="finish hide" style="float:right;">
-                <i class="fa fa-ok"></i>&nbsp;
+                
                 <a href="javascript:void(0)">
-                  Finish
+                  <i class="fa fa-check"></i>&nbsp;Finish
                 </a>
               </li>
             </ul>

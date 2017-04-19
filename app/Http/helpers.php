@@ -22,6 +22,6 @@ function renderSelect($data, $value, $desribe, $nameSelect, $idSelect, $cssClass
 		$options .= '<option value="' . $d[$value] . '">' .$d[$desribe]. '</option>';
 	}
 
-	return '<select class="'.$cssClass.'" id="'.$idSelect.'" name="'.$nameSelect.'">'
+	return '<select class="'.$cssClass.'" id="'.$idSelect.'" name="'.$nameSelect.'" ' . ( array_key_exists('isDisabled', $data) && $data['isDisabled'] === true ? 'disabled' : '') . '>'
 			.$options.'</select>';
 }

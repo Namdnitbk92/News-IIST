@@ -22,6 +22,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'role_id' => $faker->randomElement([1, 2, 3, 4, 5]),
+        'belong_to_place' => $faker->randomElement(['guild', 'city', 'county']),
+        'original_place_id' => $faker->randomElement([1, 2, 3]),
     ];
 });
 

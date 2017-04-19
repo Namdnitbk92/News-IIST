@@ -9,7 +9,7 @@
           <div class="mb30"></div>
           
           <h5 class="subtitle">About</h5>
-          <p class="mb30">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitat... <a href="">Show More</a></p>
+          <p class="mb30"></p>
           
           <h5 class="subtitle">Connect</h5>
           <ul class="profile-social-list">
@@ -25,8 +25,7 @@
           
           <h5 class="subtitle">Address</h5>
           <address>
-            795 Folsom Ave, Suite 600<br>
-            San Francisco, CA 94107<br>
+            {{isset($user) ? $user->address : ''}}<br>
             <abbr title="Phone">P:</abbr> (123) 456-7890
           </address>
           
@@ -34,14 +33,16 @@
         <div class="col-sm-9">
           
           <div class="profile-header">
-            <h2 class="profile-name">{{$user->name}}</h2>
-            <div class="profile-location"><i class="fa fa-map-marker"></i> {{$user->address}}</div>
-            <div class="profile-position"><i class="fa fa-briefcase"></i> Software Engineer at <a href="">SomeCompany, Inc.</a></div>
-            
+            <h2 class="profile-name">{{isset($user) ? $user->name : ''}}</h2>
+            <div class="profile-location"><i class="fa fa-map-marker"></i> {{isset($user) ? $user->address : ''}}</div>
+            <div class="profile-location"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> {{isset($user) ? $user->email : ''}}</div>
+            @if(!is_null($user->role_id))
+            <div class="profile-location"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> {{(empty($user->role()) && empty($user->role()->first())) ? '' : $user->role()->first()->description}}</div>
+            <div class="profile-position"><i class="fa fa-briefcase"></i> {{( empty($user->role()) && empty($user->role()->first())) ? '' : $user->role()->first()->description}} at  <a href="">Loa phuong channel</a></div>
+            @endif
             <div class="mb20"></div>
             
-            <button class="btn btn-success mr5"><i class="fa fa-user"></i> Follow</button>
-            <button class="btn btn-white"><i class="fa fa-envelope-o"></i> Message</button>
+            <button onclick="editProfile();" class="btn btn-success mr5"><i class="fa fa-edit"></i> Edit Profile</button>
           </div><!-- profile-header -->
           
           <!-- Nav tabs -->
@@ -163,4 +164,11 @@
       </div><!-- row -->
       
     </div>
+
+    <script type="text/javascript">
+      function editProfile()
+      {
+        window.location.href = "{{route('editProfile', ['id' => \Auth::user()->id])}}";
+      }
+    </script>
     @endsection

@@ -13,27 +13,27 @@ class RoleTableSeeder extends Seeder
     {
         DB::table('role')->insert([
             'role_id' => 1,
-            'description' => 'normal',
+            'description' => 'attendee',
         ]);
         DB::table('role')->insert([
             'role_id' => 2,
-            'description' => 'role for create news',
+            'description' => 'Content manager',
         ]);
         DB::table('role')->insert([
             'role_id' => 3,
-            'description' => 'role approve news',
+            'description' => 'Approve manager',
         ]);
         DB::table('role')->insert([
             'role_id' => 4,
-            'description' => 'role for users management',
+            'description' => 'Users manager',
         ]);
         DB::table('role')->insert([
             'role_id' => 5,
-            'description' => 'role for reflect processer ',
+            'description' => 'Complain manager',
         ]);
          DB::table('role')->insert([
             'role_id' => 6,
-            'description' => 'admin',
+            'description' => 'Admin',
         ]);
     }
 }

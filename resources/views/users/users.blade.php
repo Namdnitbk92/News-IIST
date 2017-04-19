@@ -7,7 +7,7 @@
     <div class="panel-btns">
         <a href="{{route('users.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;New user</a>
     </div><!-- panel-btns -->
-    <h3 class="panel-title">List</h3>
+    <h3 class="panel-title">List </h3>
   </div>
   <div class="panel-body">
       <div class="input-group">
@@ -15,7 +15,10 @@
             <i class="glyphicon glyphicon-search"></i>
          </span>
          <div class="input-group">
-            <input id="tableSearch" name="tableSearch" type="text" class="form-control"/>
+            <form action="{{route('search_users')}}" method="GET" name="searchForm">
+              {{ csrf_field() }}
+              <input type="search" id="search" name="search" class="form-control" placeholder="" aria-controls="table2">
+            </form>
          </div>
       </div>
 
@@ -38,7 +41,7 @@
 	          <td data-title="Role">
 	            {{ $user->email }}
 	          </td>
-	          <td class="table-action-hide">
+	          <td class="table-action-hide" style="font-size: 20px;">
 	          	  <a href="javascript:void(0)" onclick="editUser('{{$user->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
                    <a href="javascript:void(0)" onclick="deleteUser('{{$user->id}}')" class="delete-row" style="opacity: 0;">
                     <i class="fa fa-trash-o"></i>
@@ -89,6 +92,10 @@
       if (id)
         $('form[name=formDel'+ id +']').submit();
     }
+
+     $('span.trigger_search').click(function(){
+        $('form[name=searchForm]').submit();
+      });
 
 </script>
 

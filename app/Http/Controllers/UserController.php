@@ -42,6 +42,30 @@ class UserController extends Controller
         return view('users.profile', compact('user', 'titlePage '));
     }
 
+
+    public function search(Request $request)
+    {
+        $users = \App\User::search($request->search)->paginate(10);
+        $quantity = count($users);
+        $titlePage = 'Users List';
+
+        return view('users.users', compact('users', 'quantity'));
+    }
+
+    public function editProfile()
+    {
+        $user = \Auth::user();
+
+        return $this->edit($user->id);
+    }
+
+    public function passwordReset(Request $request, $token = null)
+    {
+        return view('auth.reset')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -53,7 +77,13 @@ class UserController extends Controller
         try
         {
             \DB::beginTransaction();
-            $guild = \App\User::create($request->all());
+            $guild = \App\User::create(array_merge(
+                $request->all(),
+                [
+                    'belong_to_place' => \Auth::user()->belong_to_place,
+                    'original_place_id' => \Auth::user()->original_place_id,
+                ]
+            ));
         }
         catch(Exception $e)
         {
