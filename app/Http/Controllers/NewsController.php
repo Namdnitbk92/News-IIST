@@ -27,7 +27,12 @@ class NewsController extends Controller
 
     public function getNewListAvaiableApprove()
     {
-        $news = \App\News::where('user_id', \Auth::user()->id)->where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('created_at', 'desc')->paginate(5);
+        $conds = [
+            'user_id' => \Auth::user()->id,
+            'status_id' => 1,
+        ];
+
+        $news = \App\News::where($conds)->where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('created_at', 'desc')->paginate(5);
         
         $titlePage = 'News list are avaiable to approve';
         $quantity = count($news);
@@ -293,13 +298,14 @@ class NewsController extends Controller
         try
         {
             $file = $request->file('audio-file');
-            $mimeType = $file->getMimeType();
+            
             $path = "";
             if ($file !== null)
             {
                 try
                 {
-                     if ($mimeType === 'text/plain')
+                    $mimeType = $file->getMimeType();
+                    if ($mimeType === 'text/plain')
                     {
                         $result = file_exists($file) ? file_get_contents($file) : '';
                     }
@@ -341,14 +347,23 @@ class NewsController extends Controller
                 }
                 $publish_time = $request->get('publish_time');
                 $audio_text = (is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
-                $place = \App\Places::where('place_id', $new->place_id);
-                $place->update($place_data);
+                $place = \DB::table('places')->where('place_id', $new->place_id);
+
+                if (!is_null($place->first()))
+                {
+                    $place->update($place_data);
+                    $placeId = $place->first()->place_id;
+                }
+                else
+                {
+                    $place = \App\Places::create($place_data);
+                    $placeId = $place->id;
+                }
                 $new->update(
                     array_merge(empty($publish_time) ? $request->except('publish_time') : $request->all(), 
                     [
-                        'status_id' => 1,
                         'audio_path' => empty($path) ? $new->audio_path : $path, 
-                        'place_id' => $place->first()->place_id,
+                        'place_id' => $placeId,
                         'audio_text' => $audio_text,
                     ]
                 ));
@@ -531,7 +546,13 @@ class NewsController extends Controller
             {
                 \DB::beginTransaction();
                 $msg = "Makes approve notification for this new is successfully, please waiting for approved by superior!!";
-                $new->approved_by = $new->getManager();
+                $manager = $new->getManager();
+                if (is_null($manager))
+                {
+                    return redirect()->back()->with('error', 'You must to update locate for this news, this new not belong to any places and no one to manage!');
+                }
+
+                $new->approved_by = $manager;
                 $new->status_id = config('attribute.status.inprogress');
                 $new->save();
             }

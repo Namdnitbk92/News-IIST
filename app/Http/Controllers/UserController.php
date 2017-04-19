@@ -77,12 +77,20 @@ class UserController extends Controller
         try
         {
             \DB::beginTransaction();
-            $guild = \App\User::create(array_merge(
-                $request->all(),
-                [
+            $pw = $request->get('password');
+            $data = [
                     'belong_to_place' => \Auth::user()->belong_to_place,
                     'original_place_id' => \Auth::user()->original_place_id,
-                ]
+                    ];
+
+            if ($request->has('password'))
+            {
+                $data['password'] = bcrypt($pw);
+            }
+
+            $guild = \App\User::create(array_merge(
+                $request->except('password'),
+                $data
             ));
         }
         catch(Exception $e)
@@ -144,7 +152,14 @@ class UserController extends Controller
         {
             \DB::beginTransaction();
             $user = \App\User::find($id);
-            $user->update($request->all());
+            $pw = $request->get('password');
+            $data = $request->all();
+            if ($request->has('password'))
+            {
+                $data['password'] = bcrypt($pw);
+            }
+
+            $user->update($data);
         }
         catch(Exception $e)
         {

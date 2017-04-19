@@ -108,7 +108,7 @@
                <div class="input-group {{ addErrorClass($errors, 'audio-file') }}">
                   <label class="input-group-btn">
                       <span class="btn btn-primary">
-                          <i class="fa fa-upload"></i>&nbsp;Upload audio / video&hellip; <input type="file" name="audio-file" style="display: none;" multiple>
+                          <i class="fa fa-upload"></i>&nbsp;Upload audio / video /text files...&hellip; <input type="file" name="audio-file" style="display: none;" multiple>
                       </span>
                   </label>
                   <input type="text" class="form-control" readonly>
@@ -116,7 +116,7 @@
               {!! displayFieldError($errors, 'audio-file') !!}
               <br/>
               <div class="form-group">
-                <label for="comment">Text</label> <button style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</button>
+                <label for="comment">Text</label> <a href="javascript:void(0)" style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</a>
                 <textarea class="form-control" rows="5" name="audio_text" id="comment"></textarea>
                 </br>
               </div>

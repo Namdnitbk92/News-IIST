@@ -18,14 +18,17 @@
   <div class="panel panel-default panel-alt widget-messaging">
     <div class="panel-heading">
         <div class="panel-btns">
+          @if(Auth::user()->isCreater())
           <a class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
           <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
           <a class="panel-edit" href="javascript:void(0);" onclick="noticeApprove();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
-
           <a class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
+          @endif
+          @if(Auth::user()->isApprover())
           <a class="approve-new panel-edit">
             <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
           </a>
+          @endif
         </div><!-- panel-btns -->
         <h3 class="panel-title">{{ isset($new) ? $new->sub_title : '' }}</h3>
       </div>

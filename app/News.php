@@ -45,7 +45,8 @@ class News extends Model
     public function getManager()
     {
         $place = \App\Places::where('place_id', $this->place_id)->first();
-        $type = $place->type;
+        $type = !is_null($place) ? $place->type : null;
+        $managerId = null;
         switch ($type) {
             case 'city':
                 $city = \App\City::find($place->original_place_id);
@@ -63,7 +64,7 @@ class News extends Model
                 $managerId = isset($guild) ? $guild->supervisor : null;
                 break;
         }
-        
+
         return $managerId;
     }
 
