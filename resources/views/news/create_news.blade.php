@@ -5,11 +5,9 @@
     <div class="panel panel-default">
       <div class="panel-heading" style="background: #1caf9a;">
         <div class="panel-btns">
-          <a href="" class="panel-close">&times;</a>
-          <a href="" class="minimize">&minus;</a>
         </div>
-        <h4 class="panel-title">
-          {{ isset($new) ? 'Update this new' : 'Create a new'}}
+        <h4 class="panel-title" style="color:white;">
+          {{ isset($new) ? trans('app.update_new') : trans('app.create_new')}}
         </h4>
       </div>
       <div class="panel-body panel-body-nopadding">
@@ -24,9 +22,9 @@
         <!-- BASIC WIZARD -->
         <div id="progressWizard" class="basic-wizard">
           <ul class="nav nav-pills nav-justified">
-            <li><a href="#ptab1" data-toggle="tab"><span>Step 1:</span> Basic Info</a></li>
-            <li><a href="#ptab2" data-toggle="tab"><span>Step 2:</span> Area Info</a></li>
-            <li><a href="#ptab3" data-toggle="tab"><span>Step 3:</span> Audio & Video & Text Info</a></li>
+            <li><a href="#ptab1" data-toggle="tab"><span></span><i class="fa fa-info-circle" aria-hidden="true"></i> {{trans('app.basic_info')}}</a></li>
+            <li><a href="#ptab2" data-toggle="tab"><span><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;&nbsp;</span> {{trans('app.area_info')}}</a></li>
+            <li><a href="#ptab3" data-toggle="tab"><span><i class="fa fa-video-camera" aria-hidden="true"></i> / <i class="fa fa-volume-up" aria-hidden="true"></i>&nbsp;&nbsp;</span> Audio & Video & Text Info</a></li>
           </ul>
           <div class="tab-content">
             <div class="progress progress-striped active">
@@ -35,7 +33,7 @@
             
             <div class="tab-pane" id="ptab1">
                 <div class="form-group {{ addErrorClass($errors, 'title') }}">
-                  <label class="col-sm-4">Title</label>
+                  <label class="col-sm-4"><i class="fa fa-tag" aria-hidden="true"></i>&nbsp;&nbsp;{{trans('app.title')}}</label>
                   <div class="col-sm-8">
                     <input placeholder="The title for this new will be created..." type="text" name="title" class="form-control" value="{{ isset($new) ? $new->title : ''}}"/>
                     {!! displayFieldError($errors, 'title') !!}
@@ -43,14 +41,14 @@
                 </div>
                 
                 <div class="form-group">
-                  <label class="col-sm-4">Description</label>
+                  <label class="col-sm-4"><i class="fa fa-file-text-o" aria-hidden="true"></i>&nbsp;&nbsp;{{trans('app.description')}}</label>
                   <div class="col-sm-8">
                     <input placeholder="The description for this new..." type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : ''}}"/>
                   </div>
                 </div>
 
                 <div class="form-group {{ addErrorClass($errors, 'publish_time') }}">
-                  <label class="col-sm-4">Publish Time</label>
+                  <label class="col-sm-4"><i class="fa fa-calendar"></i>&nbsp;&nbsp;{{trans('app.publish_time')}}</label>
                   <div class="col-sm-8">
                     <div class="input-group">
                        <span class="input-group-addon" style="color: #428bca;">
@@ -71,33 +69,33 @@
               <form class="form">
 
               <div class="form-group">
-                <label class="col-sm-4">Place</label>
+                <label class="col-sm-4"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp;{{trans('app.place')}}</label>
                 <div class="col-sm-8">
                   <select class="select2" id="place" name="type">
-                    <option value="county">County</option>
-                    <option value="city">City</option>
-                    <option value="guild">Guild</option>
+                    <option value="county">{{trans('app.county')}}</option>
+                    <option value="city">{{trans('app.city')}}</option>
+                    <option value="guild">{{trans('app.guild')}}</option>
                   </select>
                 </div>
               </div>
 
 
                 <div class="form-group city_list" style="display:none;">
-                  <label class="col-sm-4">City</label>
+                  <label class="col-sm-4">{{trans('app.city')}}</label>
                   <div class="col-sm-8">
                     {!! renderSelect($cities, 'id', 'name', 'city', 'city' ,'select2') !!}
                   </div>
                 </div>
                 
                 <div class="form-group county_list" style="display:none;">
-                  <label class="col-sm-4">County</label>
+                  <label class="col-sm-4">{{trans('app.county')}}</label>
                   <div class="col-sm-8">
                      {!! renderSelect($counties, 'id', 'name', 'county', 'county' ,'select2') !!}
                   </div>
                 </div>
                 
                 <div class="form-group guild_list" style="display:none;">
-                  <label class="col-sm-4">Guild</label>
+                  <label class="col-sm-4">{{trans('app.guild')}}</label>
                   <div class="col-sm-8">
                     {!! renderSelect($guilds, 'id', 'name', 'guild', 'guild' ,'select2') !!}
                   </div>
@@ -116,7 +114,7 @@
               {!! displayFieldError($errors, 'audio-file') !!}
               <br/>
               <div class="form-group">
-                <label for="comment">Text</label> <a href="javascript:void(0)" style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</a>
+                <a href="javascript:void(0)" style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</a>
                 <textarea class="form-control" rows="5" name="audio_text" id="comment"></textarea>
                 </br>
               </div>
@@ -127,22 +125,22 @@
           <ul class="pager wizard">
               <li class="previous"><a href="javascript:void(0)">
               <i class="fa fa-arrow-left"></i>&nbsp;
-              Previous</a></li>
+              {{trans('app.previous')}}</a></li>
               <li class="next"><a href="javascript:void(0)">
               <i class="fa fa-arrow-right"></i>&nbsp;
-                Next</a></li>
+                {{trans('app.next')}}</a></li>
               @if(isset($new))
               <li class="next" style="float:right;margin-right:5px;">
                 <a href="{{route('news.show',['id' => $new->id])}}" class="btn btn-warning" href="javascript:void(0)">
                 <i class="fa fa-eye"></i>&nbsp;
-                  Detail
+                  {{trans('app.view_new_detail')}}
                 </a>
               </li>
               @endif
               <li class="finish hide" style="float:right;">
                 
                 <a href="javascript:void(0)">
-                  <i class="fa fa-check"></i>&nbsp;Finish
+                  <i class="fa fa-check"></i>&nbsp;{{trans('app.finish')}}
                 </a>
               </li>
             </ul>
@@ -153,6 +151,6 @@
     </div><!-- panel -->
     
   </div><!-- row -->
-@includeIf('partials.modal', ['message' => 'Are you sure to creat this new?'])
+@includeIf('partials.modal', ['message' => trans('app.confirm_create_new') ])
 @endsection
 @include('scripts.createnews')

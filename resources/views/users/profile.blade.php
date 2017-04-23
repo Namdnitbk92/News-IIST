@@ -5,24 +5,6 @@
       <div class="row">
         <div class="col-sm-3">
           <img src="images/photos/profile-1.png" class="thumbnail img-responsive" alt="">
-          
-          <div class="mb30"></div>
-          
-          <h5 class="subtitle">About</h5>
-          <p class="mb30"></p>
-          
-          <h5 class="subtitle">Connect</h5>
-          <ul class="profile-social-list">
-            <li><i class="fa fa-twitter"></i> <a href="">twitter.com/eileensideways</a></li>
-            <li><i class="fa fa-facebook"></i> <a href="">facebook.com/eileen</a></li>
-            <li><i class="fa fa-youtube"></i> <a href="">youtube.com/eileen22</a></li>
-            <li><i class="fa fa-linkedin"></i> <a href="">linkedin.com/4ever-eileen</a></li>
-            <li><i class="fa fa-pinterest"></i> <a href="">pinterest.com/eileen</a></li>
-            <li><i class="fa fa-instagram"></i> <a href="">instagram.com/eiside</a></li>
-          </ul>
-          
-          <div class="mb30"></div>
-          
           <h5 class="subtitle">Address</h5>
           <address>
             {{isset($user) ? $user->address : ''}}<br>

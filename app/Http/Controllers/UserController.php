@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = \App\User::paginate(5);
+        $users = \App\User::orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'Users List';
 
         return view('users.users', compact('users', 'titlePage'));
@@ -45,7 +45,7 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-        $users = \App\User::search($request->search)->paginate(10);
+        $users = \App\User::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
         $quantity = count($users);
         $titlePage = 'Users List';
 

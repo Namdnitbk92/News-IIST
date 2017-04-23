@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@includeIf('partials.modal', ['message' => 'Are you sure to approve for this new ?'])
+@includeIf('partials.modal', ['message' => trans('app.confirm_approve_new') ])
 @section('content')
 <div id="message" class="alert alert-success hide"></div>
 
@@ -19,35 +19,35 @@
     <div class="panel-heading">
         <div class="panel-btns">
           @if(Auth::user()->isCreater())
-          <a class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
-          <a class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
-          <a class="panel-edit" href="javascript:void(0);" onclick="noticeApprove();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
-          <a class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
+          <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
+          <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+          <a {!! addTooltip(trans('app.makes_required_approve')) !!} class="panel-edit" href="javascript:void(0);" onclick="noticeApprove();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
+          <a {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
           @endif
           @if(Auth::user()->isApprover())
-          <a class="approve-new panel-edit">
+          <a {!! addTooltip(trans('app.approve_new')) !!} class="approve-new panel-edit">
             <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
           </a>
           @endif
         </div><!-- panel-btns -->
-        <h3 class="panel-title">{{ isset($new) ? $new->sub_title : '' }}</h3>
+        <h3 class="panel-title">{{ isset($new) ? $new->title : '' }}</h3>
       </div>
       <div class="panel-body">
         <ul>
           <li>
             <h5 class="pull-right">{{ isset($new) ? $new->created_at : '' }}</h5>
-            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> Created at </h4>
+            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> {{trans('app.created_at')}}</h4>
           </li>
           <li>
             <h5 class="pull-right">{{ isset($user) ? $user->name : '' }}</h5>
-            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> Created by <b> </h4>
+            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> {{trans('app.created_by')}} <b> </h4>
           </li>
           <li>
             <h5 class="pull-right">{{ isset($place) ? $place->name : '' }} {{ $address ?? '' }}</h5>
-            <h4 class="sender"> <i class="fa fa-building-o" aria-hidden="true"></i> By Place <b> </h4>
+            <h4 class="sender"> <i class="fa fa-building-o" aria-hidden="true"></i> By {{trans('app.place')}} <b> </h4>
           </li>
           <li><i class="fa fa-hand-o-right" aria-hidden="true"></i>  
-            Status 
+            {{trans('app.status')}} 
             <h5 class="pull-right _status">
               <span class="label label-{{$new->status_id == 1 ? 'success' : (
                 $new->status_id == 2 ? 'warning' : 'danger'
@@ -58,8 +58,8 @@
             </h5>
           </li>
           <li>
-            <h5 class="pull-right">{{ isset($new) ? $new->publish_time : '' }}</h5>
-            <h4 class="sender"><i class="fa fa-calendar"></i>&nbsp;Publish Time</h4>
+            <h5 class="pull-right" style="color:#f0ad4e; font-weight: bold;">{{ isset($new) ? $new->publish_time : '' }}</h5>
+            <h4 class="sender"><i class="fa fa-calendar"></i>&nbsp;{{trans('app.publish_time')}}</h4>
           </li>
           <li>
               <div class="embed-responsive embed-responsive-16by9">
@@ -67,7 +67,7 @@
               </div>  
           </li>
           <li>
-            <h3>Text</h3>
+            <h3>{{trans('app.text')}}</h3>
             <h4>{{ isset($new) ? $new->audio_text : '' }}</h4>
           </li>
         </ul>
@@ -126,4 +126,10 @@
   }
 
 </script>
+<style>
+  .panel-btns > a {
+    font-size:25px;
+    margin:5px !important;
+  }
+</style>
 @endsection

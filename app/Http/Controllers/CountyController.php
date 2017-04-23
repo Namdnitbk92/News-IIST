@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\CountyRequest;
 
 class CountyController extends Controller
 {
@@ -13,8 +14,8 @@ class CountyController extends Controller
      */
     public function index()
     {
-        $countyList = \App\County::paginate(5);
-        $titlePage = 'County List';
+        $countyList = \App\County::orderBy('created_at', 'desc')->paginate(5);
+        $titlePage = '';
 
         return view('county.countyList', compact('countyList', 'titlePage'));
     }
@@ -39,7 +40,7 @@ class CountyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CountyRequest $request)
     {
         try
         {

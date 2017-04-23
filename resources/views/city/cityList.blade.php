@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('content')
 @includeIf('partials.result')
-@includeIf('partials.modal', ['message' => 'Are you sure delete this city ?'])
+@includeIf('partials.modal', ['message' => trans('app.confirm_del_city')])
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-        <a href="{{route('city.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;New city</a>
+        <a href="{{route('city.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;{{trans('app.create_new_entity')}}</a>
     </div><!-- panel-btns -->
-    <h3 class="panel-title">List</h3>
+    <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
   <div class="panel-body">
       <div class="input-group">
@@ -23,9 +23,9 @@
   <table id="cityTable" class="table table-hover table-mc-light-blue table-bordered table-stripped">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Supervisor</th>
+          <th>{{trans('app.id')}}</th>
+          <th>{{trans('app.name')}}</th>
+          <th>{{trans('app.supervisor')}}</th>
           <th></th>
         </tr>
       </thead>

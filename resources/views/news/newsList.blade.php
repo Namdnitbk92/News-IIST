@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('content')
 @includeIf('partials.result')
-@includeIf('partials.modal', ['message' => isset($formQuickCreateNew) ? $formQuickCreateNew : '', 'btn_custom' => 'Create new quickly', 'header' => 'Create a new quickly'])
+@includeIf('partials.modal', ['message' => isset($formQuickCreateNew) ? $formQuickCreateNew : '', 'btn_custom' => trans('app.create_new'), 'header' => trans('app.create_new_quickly')])
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-      <a href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Create a new quickly</a>
+      <a href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;{{trans('app.create_new_quickly')}}</a>
     </div><!-- panel-btns -->
-    <h3 class="panel-title">List</h3>
+    <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
   <div class="panel-body">
       <div class="input-group">
@@ -21,26 +21,14 @@
             </form>
          </div>
       </div>
-
-
-     <!-- <div id="demo">
-      <div style="float:right;">
-        <form class="searchform" action="index.html" method="post">
-            <input type="text" class="form-control" name="keyword" placeholder="Search here...">
-          </form>
-        <form action="{{route('search_news')}}" method="GET" name="searchForm">
-          {{ csrf_field() }}
-          <label>Search <input onkeypress="return runScript()" type="search" id="search" name="search" class="" placeholder="" aria-controls="table2"></label>
-        </form>  
-      </div> -->
       <div class="table-responsive-vertical shadow-z-1" style="padding-top:1%;">
       <table id="table" class="table table-hover table-mc-light-blue table-bordered table-stripped">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>SubTitle</th>
-              <th>Status</th>
+              <th>{{trans('app.id')}}</th>
+              <th>{{trans('app.title')}}</th>
+              <th>{{trans('app.description')}}</th>
+              <th>{{trans('app.status')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -67,7 +55,7 @@
       @if(isset($new))
           <div class="row" style="position: inherit;bottom:10%;">
             <label class="label label-success pull-right">
-            {{$quantity ?? 0}} / {{ $new->getTotalRecords() }} Records.</label>
+            {{$quantity ?? 0}} / {{ $new->getTotalRecordsByCreater() }} Records.</label>
           </div>
       @endif
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\GuildRequest;
 
 class GuildController extends Controller
 {
@@ -13,8 +14,8 @@ class GuildController extends Controller
      */
     public function index()
     {
-        $guildList = \App\Guild::paginate(5);
-        $titlePage = 'Guild List';
+        $guildList = \App\Guild::orderBy('created_at', 'desc')->paginate(5);
+        $titlePage = '';
 
         return view('guild.guildList', compact('guildList', 'titlePage'));
     }
@@ -39,7 +40,7 @@ class GuildController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(GuildRequest $request)
     {
         try
         {

@@ -73,6 +73,11 @@ class News extends Model
     	return $this->count();
     }
 
+    public function getTotalRecordsByCreater()
+    {
+        return $this->where('user_id', \Auth::user()->id)->count();
+    }    
+
     public function status()
     {
         return $this->belongsTo('App\Status', 'status_id', 'status_id');

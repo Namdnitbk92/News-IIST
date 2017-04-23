@@ -8,14 +8,15 @@
 	@endif
 	<div class="row">
 	    <div class="col-sm-12">
-	    	<label class="control-label">City Name</label>
+	    	<label class="control-label {{ addErrorClass($errors, 'name') }}">{{trans('app.name')}}</label>
 	        <input type="name" name="name" class="form-control" value="{{isset($city) ? $city->name : ''}}">
+	        {!! displayFieldError($errors, 'name') !!}
 	    </div>
 	</div>
 
 	<div class="row">
 		<div class="col-sm-12">
-	    	<label class="control-label">Supervisor</label>
+	    	<label class="control-label">{{trans('app.supervisor')}}</label>
 	         {!! renderSelect($users, 'id', 'name', 'supervisor', 'supervisor' ,'select2') !!}
 	    </div>
 	</div>
@@ -26,7 +27,7 @@
 	    <div class="col-sm-3">
 	    	<button class="btn btn-success btn-block" type="submit">
 	    	<i class="fa fa-check"></i>&nbsp;
-	    	{{isset($city) ? 'Update City' : 'Create City' }}</button>    
+	    	{{isset($city) ? trans('app.edit_new_entity') : trans('app.create_new_entity') }}</button>    
 	    </div>
 	</div>    
 </form>

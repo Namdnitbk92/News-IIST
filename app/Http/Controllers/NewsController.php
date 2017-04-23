@@ -34,7 +34,7 @@ class NewsController extends Controller
 
         $news = \App\News::where($conds)->where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('created_at', 'desc')->paginate(5);
         
-        $titlePage = 'News list are avaiable to approve';
+        $titlePage = trans('app.list_available_approve');
         $quantity = count($news);
 
         $formQuickCreateNew = $this->genrenateFormQuickCreate();
@@ -48,9 +48,9 @@ class NewsController extends Controller
                 '<form action="'.route('news.store').'" name="quickCreateNew" method="POST">'
                 .csrf_field()
                 .'<input type="hidden" name="quickCreate" value="yes"/>'
-                .'<div class="form-group"><label class="col-sm-4">Title</label>'
+                .'<div class="form-group"><label class="col-sm-4">'.trans('app.title').'</label>'
                 .'<div class="col-sm-8"><input type="text" name="title" class="form-control"/></div></div>'
-                .'<div class="form-group"><label class="col-sm-4">Text for new</label>'
+                .'<div class="form-group"><label class="col-sm-4">'.trans('app.text').'</label>'
                 .'<div class="col-sm-8"><textarea class="form-control" rows="5" name="audio_text" id="audio_text"></textarea></div></div>'
                 .'</form>';
     }
@@ -94,7 +94,7 @@ class NewsController extends Controller
         \DB::commit();
 
         return redirect(route('news.show', ['id' => $new->id]))
-                ->with('status', 'Create a new is successfully'); 
+                ->with('status', trans('app.notification.create_success')); 
     }
 
 
@@ -218,7 +218,7 @@ class NewsController extends Controller
         }
 
         return redirect(route('news.show', ['id' => $new->id]))
-                ->with('status', 'Create a new is successfully'); 
+                ->with('status', trans('app.notification.create_success')); 
     }
 
     /**
@@ -234,7 +234,7 @@ class NewsController extends Controller
         $place = $new ? \App\Places::where('place_id', $new->place_id)->first() : null;
        
 
-        $titlePage = 'Detail Information of The New ID ' . $new->id;
+        $titlePage = trans('app.detail_information');
 
         if ($place)
         {
@@ -346,7 +346,7 @@ class NewsController extends Controller
                     $place_data['original_place_id'] = $request->get('city');
                 }
                 $publish_time = $request->get('publish_time');
-                $audio_text = (is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
+                $audio_text = (isset($result) && is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
                 $place = \DB::table('places')->where('place_id', $new->place_id);
 
                 if (!is_null($place->first()))
@@ -390,7 +390,7 @@ class NewsController extends Controller
         }
 
         return redirect()->route('news.edit', ['id' => $new->id])
-                    ->with('status', 'Update a new is successfully');
+                    ->with('status', trans('app.notification.edit_success'));
     }
 
     /**
@@ -427,7 +427,7 @@ class NewsController extends Controller
         \DB::commit();
 
         return redirect(route('news.index'))
-                ->with('status', 'Delete this new successfully!!');
+                ->with('status', trans('app.notification.delete_success'));
     }
 
     public function getGuildList(Request $request)
@@ -455,8 +455,6 @@ class NewsController extends Controller
         {
             $newId = $request->get('newId');
 
-            
-
             if ($newId !== null)
             {
                 try
@@ -473,7 +471,7 @@ class NewsController extends Controller
                     {
                         return response()->json([
                             'status' => 500,
-                            'message' => 'To approve this new is failed cause its publish time is invalid (required greater of equal published current time )!!',
+                            'message' => trans('app.require_new_publish_time'),
                         ]);
                     }
                 }
@@ -492,15 +490,15 @@ class NewsController extends Controller
         return response()->json([
             'status' => 200,
             'status_text' => $new->status()->first()->description,
-            'message' => 'This new was approved!!',
+            'message' => trans('app.new_approved'),
         ]);
     }
 
     public function search(Request $request)
     {
-        $news = \App\News::search($request->search)->paginate(10);
+        $news = \App\News::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
         $quantity = count($news);
-        $titlePage = 'News List';
+        $titlePage = trans('app.news_list');
         $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
         return view('news.newsList', compact('news', 'quantity', 'titlePage', 'formQuickCreateNew'));
@@ -578,7 +576,7 @@ class NewsController extends Controller
     public function getRequireToApproveNewsListByCreater()
     {
         $user = \Auth::user();
-        $titlePage = 'News list are required to approve';
+        $titlePage = trans('app.list_required_approve');
         if ($user->isCreater())
         {
             $conds = [

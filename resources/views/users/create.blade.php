@@ -8,31 +8,31 @@
 	@endif
 	<div class="row mb10">
 	    <div class="col-sm-6">
-	    	<label class="control-label">User Name</label>
+	    	<label class="control-label">{{trans('app.name')}}</label>
 	        <input  placeholder="Name for user will be creating" type="name" name="name" class="form-control {{ addErrorClass($errors, 'name') }}" value="{{isset($user) ? $user->name : ''}}">
 	        {!! displayFieldError($errors, 'name') !!}
 	    </div>
 	    <div class="col-sm-6">
-	    	<label class="control-label">Address</label>
+	    	<label class="control-label">{{trans('app.address')}}</label>
 	    	<input placeholder="exp : Nguyen chi thanh - street,etc...." type="text" name="address" class="form-control" value="{{isset($user) ? $user->address : ''}}">
 	    </div>
 	</div>
 
 	<div class="row mb10">
 	    <div class="col-sm-6">
-	    	<label class="control-label">Email</label>
+	    	<label class="control-label">{{trans('app.email')}}</label>
 	        <input placeholder="email@example.com" type="email" name="email" class="form-control {{ addErrorClass($errors, 'email') }}" value="{{isset($user) ? $user->email : ''}}" {{isset($user) ? "disabled" : ""}}>
 	        {!! displayFieldError($errors, 'email') !!}
 	    </div>
 	    <div class="col-sm-6">
-	    	<label class="control-label">Role</label>
+	    	<label class="control-label">{{trans('app.role')}}</label>
 	    	{!! renderSelect(array_merge($roles->toArray(), ['isDisabled' => isset($user)]), 'role_id', 'description', 'role_id', 'role_id' ,'select2') !!}
 	    </div>
 	</div>
 
 	<div class="row">
 	    <div class="col-sm-12">
-	    	<label class="control-label">Password</label>
+	    	<label class="control-label">{{trans('app.password')}}</label>
 	        <div class="input-group">
                <span class="input-group-addon see-pw" style="color: #428bca;">
                   <i class="fa fa-eye"></i>
@@ -51,7 +51,7 @@
 	    <div class="col-sm-3">
 	    	<button class="btn btn-success btn-block" type="submit">
 	    	<i class="fa fa-check"></i>&nbsp;
-	    	{{isset($user) ? 'Update user' : 'Create user' }}</button>    
+	    	{{isset($user) ? trans('app.edit_new_entity') : trans('app.create_new_entity') }}</button>    
 	    </div>
 	</div>    
 </form>

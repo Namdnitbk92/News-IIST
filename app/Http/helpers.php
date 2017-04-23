@@ -25,3 +25,8 @@ function renderSelect($data, $value, $desribe, $nameSelect, $idSelect, $cssClass
 	return '<select class="'.$cssClass.'" id="'.$idSelect.'" name="'.$nameSelect.'" ' . ( array_key_exists('isDisabled', $data) && $data['isDisabled'] === true ? 'disabled' : '') . '>'
 			.$options.'</select>';
 }
+
+function addTooltip($content)
+{
+	return 'class="tooltips" data-toggle="tooltip" title="" data-original-title="'.$content.'"';
+}

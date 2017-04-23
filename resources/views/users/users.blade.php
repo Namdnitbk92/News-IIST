@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 @includeIf('partials.result')
-@includeIf('partials.modal', ['message' => 'Are you sure delete this user ?'])
+@includeIf('partials.modal', ['message' => trans('app.confirm_delete_users')])
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">

@@ -63,38 +63,44 @@
       <h5 class="sidebartitle">Navigation</h5>
       <ul class="nav nav-pills nav-stacked nav-bracket">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
-
-        <li class="nav-parent"><a href=""><i class="fa fa-edit"></i> <span>News Management</span></a>
+        @if(Auth::user()->isCreater() || Auth::user()->isAdmin())
+        <li class="nav-parent"><a href=""><i class="fa fa-edit"></i> <span>{{trans('app.news_management')}}</span></a>
           <ul class="children" style="display: block">
-            <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> Create a new</a></li>
-            <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> News List</a></li>
+            <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> {{trans('app.create_new')}}</a></li>
+            <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> {{trans('app.news_list')}}</a></li>
           </ul>
         </li>
-
+        @endif
+        @if(Auth::user()->isUsersManager() || Auth::user()->isAdmin())
         <li class="nav-parent">
-          <a href=""><i class="fa fa-user-circle" aria-hidden="true"></i> <span>Users Management</span></a>
+          <a href=""><i class="fa fa-user-circle" aria-hidden="true"></i> <span>{{trans('app.users_management')}}</span></a>
           <ul class="children" style="display: block">
-            <li class="active"><a href="{{ route('users.create') }}"><i class="fa fa-caret-right"></i> Create new user</a></li>
-            <li ><a href="{{ route('users.index') }}"><i class="fa fa-caret-right"></i> Users List</a></li>
+            <li class="active"><a href="{{ route('users.create') }}"><i class="fa fa-caret-right"></i>{{trans('app.create_new_entity')}}</a></li>
+            <li ><a href="{{ route('users.index') }}"><i class="fa fa-caret-right"></i> {{trans('app.list')}}</a></li>
           </ul>
         </li>
-
+        @endif
+        @if(Auth::user()->isCreater() || Auth::user()->isApprover() || Auth::user()->isAdmin())
         <li class="nav-parent">
-          <a href=""><i class="fa fa-check"></i> <span>Approve Management</span></a>
+          <a href=""><i class="fa fa-check"></i> <span>{{trans('app.approve_management')}}</span></a>
           <ul class="children" style="display: block">
-            <li ><a href="{{ route('getNewListAvaiableApprove') }}"><i class="fa fa-list"></i> News list are avaiable to approve</a></li>
-            <li ><a href="{{ route('getRequireToApproveNewsListByCreater') }}"><i class="fa fa-caret-right"></i> News list are required to approve</a></li>
+            @if(Auth::user()->isCreater())
+            <li ><a href="{{ route('getNewListAvaiableApprove') }}"><i class="fa fa-list"></i> {{trans('app.list_available_approve')}}</a></li>
+            @endif
+            <li ><a href="{{ route('getRequireToApproveNewsListByCreater') }}"><i class="fa fa-caret-right"></i>{{trans('app.list_required_approve')}} </a></li>
           </ul>
         </li>
-
+        @endif
+        @if(Auth::user()->isApprover() || Auth::user()->isAdmin())
         <li class="nav-parent nav-active active">
-          <a href=""><i class="fa fa-users" aria-hidden="true"></i> <span>Groups Management</span></a>
+          <a href=""><i class="fa fa-users" aria-hidden="true"></i> <span>{{trans('app.groups_management')}}</span></a>
           <ul class="children" style="display: block">
-            <li class="active"><a href="{{ route('city.index') }}"><i class="fa fa-caret-right"></i>City</a></li>
-            <li ><a href="{{ route('county.index') }}"><i class="fa fa-caret-right"></i>County</a></li>
-            <li ><a href="{{ route('guild.index') }}"><i class="fa fa-caret-right"></i>Guild</a></li>
+            <li class="active"><a href="{{ route('city.index') }}"><i class="fa fa-caret-right"></i>{{trans('app.city')}}</a></li>
+            <li ><a href="{{ route('county.index') }}"><i class="fa fa-caret-right"></i>{{trans('app.county')}}</a></li>
+            <li ><a href="{{ route('guild.index') }}"><i class="fa fa-caret-right"></i>{{trans('app.guild')}}</a></li>
           </ul>
         </li>
+        @endif
       </ul>
     </div><!-- leftpanelinner -->
   </div><!-- leftpanel -->
@@ -130,10 +136,9 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
-                <li><a href="{{route('profile')}}"><i class="glyphicon glyphicon-user"></i> My Profile</a></li>
-                <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Account Settings</a></li>
-                <li><a href="#"><i class="glyphicon glyphicon-question-sign"></i> Help</a></li>
-                <li onclick="logout();"><a href="javascript:void(0)"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+                <li><a href="{{route('profile')}}"><i class="glyphicon glyphicon-user"></i> {{trans('app.profile')}}</a></li>
+                <li><a href="{{route('showLanguage')}}"><i class="fa fa-language" aria-hidden="true"></i>&nbsp; {{trans('app.language')}}</a></li>
+                <li onclick="logout();"><a href="javascript:void(0)"><i class="glyphicon glyphicon-log-out"></i> {{trans('app.logout')}}</a></li>
               </ul>
               <form action="{{route('logout')}}" method="POST" name="formLogout">{{csrf_field()}}</form>
             </div>
@@ -151,7 +156,7 @@
     </div><!-- headerbar -->
         
     <div class="pageheader">
-      <h2><i class=""></i>{{ isset($titlePage) ? $titlePage : session('titlePage') }}<span></span></h2>
+      <h2><i class="fa fa-list"></i>{{ isset($titlePage) ? $titlePage : session('titlePage') }}<span></span></h2>
       <div class="breadcrumb-wrapper">
       </div>
     </div>

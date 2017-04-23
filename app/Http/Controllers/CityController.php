@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\CityRequest;
 
 class CityController extends Controller
 {
@@ -13,7 +14,7 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cityList = \App\City::paginate(5);
+        $cityList = \App\City::orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'City List';
 
         return view('city.cityList', compact('cityList', 'titlePage'));
@@ -26,7 +27,7 @@ class CityController extends Controller
      */
     public function create()
     {
-        $titlePage = 'Create a city';
+        $titlePage = '';
         $users = \App\User::where('role_id', config('attribute.role.approver'))->get();
 
         return view('city.create',compact('titlePage', 'users'));
@@ -38,7 +39,7 @@ class CityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CityRequest $request)
     {
         try
         {

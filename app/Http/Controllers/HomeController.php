@@ -21,6 +21,29 @@ class HomeController extends Controller
         return redirect('/home');
     }
 
+    function showLanguage(Request $request)
+    {
+
+        $languages = [
+            ['id' => 'vi', 'name' => 'Vietnamese'],
+            ['id' => 'en', 'name' => 'English'],
+        ];
+
+        if ($request->isMethod('POST'))
+        {
+            $locale = $request->has('language') ? $request->get('language') : 'en';
+            if(in_array($locale, ['en', 'vi']))
+            {
+                \App::setLocale($locale);
+                session()->put('current_locale', $locale);
+
+                return redirect()->back()->with('status', 'Change language sucessfully');
+            }
+        }
+
+        return view('language', compact('languages'));
+    }
+
     /**
      * Show the application dashboard.
      *

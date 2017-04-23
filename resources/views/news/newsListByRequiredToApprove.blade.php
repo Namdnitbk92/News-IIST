@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('content')
-@includeIf('partials.modal', ['message' => 'Are you sure delete approved on this new ?'])
+@includeIf('partials.modal', ['message' => trans('app.confirm_remove_approve')])
 @includeIf('partials.result')
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
     </div><!-- panel-btns -->
-    <h3 class="panel-title">List</h3>
+    <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
   <div class="panel-body">
       <div class="input-group">
@@ -21,10 +21,10 @@
   <table id="countyTable" class="table table-hover table-mc-light-blue table-bordered table-stripped">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Subtitle</th>
-          <th>Status</th>
+          <th>{{trans('app.id')}}</th>
+          <th>{{trans('app.title')}}</th>
+          <th>{{trans('app.description')}}</th>
+          <th>{{trans('app.status')}}</th>
           <th></th>
         </tr>
       </thead>
@@ -40,8 +40,9 @@
                   $new->status_id == 2 ? 'warning' : 'danger'
                 )}}">{{ (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description }}</span>
 	          </td>
-	          <td class="table-action-hide">
-                   <a href="javascript:void(0)" onclick="deleteApproved('{{$new->id}}')" class="delete-row" style="opacity: 0;">
+	          <td class="table-action-hide" style="font-size:20px;">
+                  <a {!! addTooltip('show detail') !!} href="{{route('news.show', ['id' => $new->id])}}" style="opacity: 0;"><i class="fa fa-info"></i></a>
+                   <a href="javascript:void(0)" {!! addTooltip('remove this required') !!}  onclick="deleteApproved('{{$new->id}}')" class="delete-row" style="opacity: 0;">
                     <i class="fa fa-trash-o"></i>
                    </a>
                  <form name="formDel{{$new->id}}" action="{{route('deleteApproved')}}" method="POST">

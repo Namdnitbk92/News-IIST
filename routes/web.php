@@ -21,6 +21,8 @@ Route::group(['middleware' => 'auth'] , function (){
 	    return view('home');
 	});
 
+	Route::match(array('GET', 'POST'), '/showLanguage', 'HomeController@showLanguage')->name('showLanguage');
+
 	Route::get('/home', 'HomeController@index')->name('home');
 
 	Route::get('/back', 'HomeController@back')->name('back');
