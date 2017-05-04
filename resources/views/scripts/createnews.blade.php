@@ -57,6 +57,49 @@ $(document).ready(function(){
 	    minimumResultsForSearch: -1
 	  });
 
+    $('#file_type').change(function (e){
+      type = $(this).val();
+      if(type === 'text')
+      {
+        $('i.file-name').text('  Upload text file');
+        $('._files').fadeIn();
+      }
+      else if(type === 'audio')
+      {
+        $('i.file-name').text('  Upload audio file');
+        $('._files').fadeIn();
+      }
+      else if(type === 'video')
+      {
+        $('i.file-name').text('  Upload video file');
+        $('._files').fadeIn();
+      } else 
+      {
+        $('._files').fadeOut();
+      }
+      
+    });
+
+    $('#new_type').change(function (e){
+      type = $(this).val();
+      if(type === 'basic')
+      {
+        $('.create_content_additional').fadeIn();
+        $('.create_content_quickly').fadeOut();
+      }
+      else if(type === 'quickly')
+      {
+        $('.create_content_additional').fadeOut();
+        $('.create_content_quickly').fadeIn();
+      }
+      else
+      {
+        $('.create_content_additional').fadeOut();
+        $('.create_content_quickly').fadeOut();
+      }
+      
+    });
+
       // We can attach the `fileselect` event to all file inputs on the page
       $(document).on('change', ':file', function() {
         var input = $(this),
@@ -115,30 +158,44 @@ $(document).ready(function(){
      	$('#publishTime').val(new Date('{{$new->publish_time}}').toISOString());
      @endif
 
-     $('select[id=place]').change(function (){
-     	var place = $('select[id=place]').select2('val');
-     	if (place === 'city')
-     	{
-     		$('div.city_list').show(500);
-     		$('div.county_list').hide();
-     		$('div.guild_list').hide();
-     	}
-     	else if(place === 'county')
-     	{
-     		$('div.city_list').hide();
-     		$('div.county_list').show(500);
-     		$('div.guild_list').hide();
-     	}
-     	else
-     	{
-     		$('div.city_list').hide();
-     		$('div.county_list').hide();
-     		$('div.guild_list').show(500);
-     	}
-
-     })
-
+     @if(!empty(\Auth::user()->belong_to_place))
+        $('select[id=place]').select2('val', '{{\Auth::user()->belong_to_place}}');
+        $('select[id=place]').select2('disable');
+        displayPlace('{{\Auth::user()->belong_to_place}}', '{{\Auth::user()->original_place_id}}');
+     @else 
+       $('select[id=place]').change(function (){
+            displayPlace();
+         })
+     @endif
 });
+
+function displayPlace(place, original_place_id)
+{
+  if (place === 'city')
+  {
+    $('div.city_list').show();
+    $('div.county_list').hide();
+    $('div.guild_list').hide();
+    $('select[name=city]').select2('disable');
+    original_place_id ? $('select[name=city]').select2('val', original_place_id) : void 0;
+  }
+  else if(place === 'county')
+  {
+    $('div.city_list').hide();
+    $('div.county_list').show();
+    $('div.guild_list').hide();
+    $('select[name=county]').select2('disable');
+    original_place_id ? $('select[name=county]').select2('val', original_place_id) : void 0;
+  }
+  else
+  {
+    $('div.city_list').hide();
+    $('div.county_list').hide();
+    $('div.guild_list').show();
+    $('select[name=guild]').select2('disable');
+    original_place_id ? $('select[name=guild]').select2('val', original_place_id) : void 0;
+  }
+}
 
 function doSomething()
 {

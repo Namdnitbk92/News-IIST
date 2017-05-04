@@ -30,3 +30,15 @@ function addTooltip($content)
 {
 	return 'class="tooltips" data-toggle="tooltip" title="" data-original-title="'.$content.'"';
 }
+
+function isRequired()
+{
+	return '<label style="color:red;">*</label>';
+}
+
+function displayPreview($id)
+{
+	$src = route('news.show', ['id' => $id]);
+	return '<a href=""><i class="fa fa-eye"></i>&nbsp;</a><div class="box"><iframe style="
+    " src="' .$src. '" width = "800px" height = "400px"></iframe></div>';
+}

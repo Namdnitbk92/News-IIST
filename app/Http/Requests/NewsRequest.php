@@ -17,13 +17,33 @@ class NewsRequest extends BaseRequest
 	    ];
 	}
 
-	public function getRules()
+	public function getRules($request)
 	{
-	    return [
-	        'title' => 'required|unique:news|max:255',
+		$rules = [
+	        'title' => 'required|max:255',
 	        'publish_time' => 'required',
-	        'audio-file' => 'required|file|mimetypes:video/avi,video/mpeg,video/mp4,audio/mpeg,audio/mp4,text/csv,text/plain'
+	        'audio_text' => 'required',
+	        'attach-file' => 'required|file|mimetypes:application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 	    ];
+	    $filesType = $request->get('file_type');
+	    if ($filesType === 'text')
+	    {
+	    	$rules = array_merge($rules, ['audio-file' => 'required|file|mimetypes:text/csv,text/plain']);
+	    }
+	    else if($filesType === 'audio')
+	    {
+	    	$rules = array_merge($rules, ['audio-file' => 'required|file|mimetypes:audio/mpeg,audio/mp4']);
+	    }
+	    else if($filesType === 'video')
+	    {
+	    	$rules = array_merge($rules, ['audio-file' => 'required|file|mimetypes:video/avi,video/mpeg,video/mp4']);
+	    }
+	    else
+	    {
+	    	$rules = array_merge($rules, ['audio-file' => 'required']);
+	    }
+
+	    return $rules;
 	}
 
 	public function getQuickRules()

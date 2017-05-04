@@ -20,6 +20,8 @@ class CreateNewsTable extends Migration
             $table->string('status_id')->nullable();
             $table->string('audio_path')->nullable();
             $table->text('audio_text')->nullable();
+            $table->text('attach_path_file')->nullable();
+            $table->text('file_type')->nullable();
             $table->string('place_id')->nullable();
             $table->string('user_id')->nullable();
             $table->string('approved_by')->nullable();

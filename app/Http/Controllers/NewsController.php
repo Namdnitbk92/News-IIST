@@ -17,7 +17,7 @@ class NewsController extends Controller
     {
         // abort(500);    
         $news = \App\News::where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
-        $titlePage = 'News List';
+        $titlePage = trans('app.news_list');
         $quantity = count($news);
 
         $formQuickCreateNew = $this->genrenateFormQuickCreate();
@@ -75,7 +75,11 @@ class NewsController extends Controller
         {
             \DB::beginTransaction();
             $new = \App\News::create(
-                array_merge($request->all(),
+                array_merge(
+                    [
+                        'title' => $request->get('title'),
+                        'audio_text' => $request->get('audio_text'),
+                    ],
                     [
                         'publish_time' => \Carbon\Carbon::now(),
                         'status_id' => 1,
@@ -116,7 +120,7 @@ class NewsController extends Controller
                 return $this->quickCreateNew($request);
             }
 
-            $this->validate($request, $request->getRules());
+            $this->validate($request, $request->getRules($request));
 
             $file = $request->file('audio-file');
             $mimeType = $file->getMimeType();
@@ -145,16 +149,27 @@ class NewsController extends Controller
                     return redirect(route('news.create'))->with('status', $up->getMessage()); 
                 }
             }
-            else
+
+            $attachFile = $request->file('attach-file');
+
+            $attach_path = "";
+            if ($attachFile !== null)
             {
-                // $audioText = $request->get('audio-text');
-                // if ($audioText !== null && $audioText !== "")
-                // {
-                //     $googleProvider = new \duncan3dc\Speaker\Providers\GoogleProvider;
-                //     $textToSpeech = new \duncan3dc\Speaker\TextToSpeech($audioText, $googleProvider);
-                //     file_put_contents("/tmp/hello.mp3", $textToSpeech->getAudioData());
-                //     return redirect()->back();
-                // }
+                try
+                {
+                    
+                    ini_set('max_execution_time', 6000);
+                    $result = \Cloudder::upload($attachFile)->getResult();
+
+                    if (!is_string($result))
+                        $attach_path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+                    else
+                        $attach_path = '';
+                }
+                catch(Exception $up)
+                {
+                    return redirect(route('news.create'))->with('status', $up->getMessage()); 
+                }
             }
             
             if (($path !== "" && !is_null($path)) || (is_string($result) && strlen($result) > 0))
@@ -163,26 +178,28 @@ class NewsController extends Controller
                 {
                     \DB::beginTransaction();
                     $type = $request->get('type');
+                    $type = empty($type) ? \Auth::user()->belong_to_place : $type;
                     $place_data = [
-                        'type' => $request->get('type'),
+                        'type' => $type,
                     ];
                     if ($type === 'county')
                     {
-                        $place_data['original_place_id'] = $request->get('county');
+                        $place_data['original_place_id'] = !empty($request->get('county')) ? $request->get('county') : \Auth::user()->original_place_id;
                     }
                     else if ($type === 'guild')
                     {
-                        $place_data['original_place_id'] = $request->get('guild');
+                        $place_data['original_place_id'] = !empty($request->get('guild')) ? $request->get('guild') : \Auth::user()->original_place_id;
                     }
                     else 
                     {
-                        $place_data['original_place_id'] = $request->get('city');
+                        $place_data['original_place_id'] = !empty($request->get('city')) ? $request->get('city') : \Auth::user()->original_place_id;
                     }
                     $publishTime = date( "Y-m-d H:i:s", strtotime($request->get('publish_time'))) ?? Carbon::now();
 
                     $audio_text = (is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
                     
                     $place = \App\Places::create($place_data);
+                    
                     $new = \App\News::create(
                         array_merge(
                             $request->except(['publish_time', 'audio_text']), 
@@ -192,6 +209,7 @@ class NewsController extends Controller
                                 'place_id' => $place->id,
                                 'publish_time' => $publishTime,
                                 'audio_text' => $audio_text,
+                                'attach_path_file' => $attach_path,
                             ]
                     ));
                 }
@@ -207,18 +225,18 @@ class NewsController extends Controller
                 }
                 else
                 {
-                    return redirect(route('news.create'))->with('status', 'Create a new has occurred failed cause'.$ec->getMessage()); 
+                    return redirect(route('news.create'))->with('status', 'Xảy ra lỗi khi thêm mới'.$ec->getMessage())->withInput(); 
                 }
                 
             }
         }
         catch(Exception $e)
         {
-            throw new Exception('create new is failed, cause : '.$e->getMessage());
+            throw new Exception('Xảy ra lỗi khi thêm mới : '.$e->getMessage());
         }
 
         return redirect(route('news.show', ['id' => $new->id]))
-                ->with('status', trans('app.notification.create_success')); 
+                ->with('status', trans('app.notification.create_success'))->withInput(); 
     }
 
     /**
@@ -283,7 +301,7 @@ class NewsController extends Controller
         $guilds = \App\Guild::all();
         $cities = \App\City::all();
         
-        return view('news.create_news', compact('new', 'cities', 'guilds', 'counties'));
+        return view('news.edit', compact('new', 'cities', 'guilds', 'counties'));
     }
 
     /**
@@ -293,10 +311,12 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(NewsRequest $request, $id)
     {
         try
         {
+            $this->validate($request, $request->getRules($request));
+
             $file = $request->file('audio-file');
             
             $path = "";
@@ -320,30 +340,51 @@ class NewsController extends Controller
                 }
                 catch(Exception $up)
                 {
-                    return redirect(route('news.create'))->with('status', $up->getMessage()); 
+                    return redirect(route('news.create'))->with('status', $up->getMessage())->withInput(); 
                 }
             }
 
+            $attachFile = $request->file('attach-file');
+            $attach_path = "";
+            if ($attachFile !== null)
+            {
+                try
+                {
+                    
+                    ini_set('max_execution_time', 6000);
+                    $result = \Cloudder::upload($attachFile)->getResult();
+
+                    if (!is_string($result))
+                        $attach_path = array_key_exists('url', $result) ? $result['url'] : $result['secure_url'];
+                    else
+                        $attach_path = '';
+                }
+                catch(Exception $up)
+                {
+                    return redirect(route('news.create'))->with('status', $up->getMessage())->withInput(); 
+                }
+            }
+            
             try
             {
                 \DB::beginTransaction();
                 $new = \App\News::find($id);
                 $type = $request->get('type');
+                $type = empty($type) ? \Auth::user()->belong_to_place : $type;
                 $place_data = [
-                    'type' => $request->get('type'),
+                    'type' => $type,
                 ];
-
                 if ($type === 'county')
                 {
-                    $place_data['original_place_id'] = $request->get('county');
+                    $place_data['original_place_id'] = !empty($request->get('county')) ? $request->get('county') : \Auth::user()->original_place_id;
                 }
                 else if ($type === 'guild')
                 {
-                    $place_data['original_place_id'] = $request->get('guild');
+                    $place_data['original_place_id'] = !empty($request->get('guild')) ? $request->get('guild') : \Auth::user()->original_place_id;
                 }
                 else 
                 {
-                    $place_data['original_place_id'] = $request->get('city');
+                    $place_data['original_place_id'] = !empty($request->get('city')) ? $request->get('city') : \Auth::user()->original_place_id;
                 }
                 $publish_time = $request->get('publish_time');
                 $audio_text = (isset($result) && is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
@@ -359,12 +400,14 @@ class NewsController extends Controller
                     $place = \App\Places::create($place_data);
                     $placeId = $place->id;
                 }
+
                 $new->update(
                     array_merge(empty($publish_time) ? $request->except('publish_time') : $request->all(), 
                     [
                         'audio_path' => empty($path) ? $new->audio_path : $path, 
                         'place_id' => $placeId,
                         'audio_text' => $audio_text,
+                        'attach_path_file' => $attach_path,
                     ]
                 ));
             }
@@ -381,16 +424,16 @@ class NewsController extends Controller
             else
             {
                 return redirect(route('news.create'))
-                    ->with('status', 'Update a new has occurred failed cause'.$ec->getMessage()); 
+                    ->with('status', 'Xảy ra lỗi khi cập nhật'.$ec->getMessage())->withInput(); 
             }
         }
         catch(Exception $e)
         {
-            throw new Exception('update new is failed, cause : '.$e->getMessage());
+            throw new Exception('Xảy ra lỗi khi cập nhật: '.$e->getMessage());
         }
 
         return redirect()->route('news.edit', ['id' => $new->id])
-                    ->with('status', trans('app.notification.edit_success'));
+                    ->with('status', trans('app.notification.edit_success'))->withInput();
     }
 
     /**
@@ -420,7 +463,7 @@ class NewsController extends Controller
             \DB::rollBack();
 
             return redirect(route('news.index'))
-                ->with('error', 'Delete this new has errors cause : ' . $ec->getMessage());
+                ->with('error', 'Xảy ra lỗi khi xóa dữ liệu : ' . $ec->getMessage());
 
         }
          
@@ -514,12 +557,12 @@ class NewsController extends Controller
                 \DB::beginTransaction();
                 $copyNew = $new->replicate();
                 $copyNew->save();
-                $msg = "Copy this new is successfully, the newly new has newId :" . $copyNew->id;
+                $msg = "Copy nội dung thông báo thành công , mã thông báo mới  :" . $copyNew->id;
             }
             catch(Exception $e)
             {
                 \DB::rollBack();
-                $msg = "Copy this new has occurred errors cause :" . $e->getMessage();
+                $msg = "Copy nội dung thông báo không thành công  :" . $e->getMessage();
 
                 return redirect()->back()->with('status', $msg);
             }
@@ -543,11 +586,11 @@ class NewsController extends Controller
             try
             {
                 \DB::beginTransaction();
-                $msg = "Makes approve notification for this new is successfully, please waiting for approved by superior!!";
+                $msg = "Tạo yêu cầu phê duyệt nội dung thành công, xin hãy đợi kết quả phê duyệt từ người quản lý!!";
                 $manager = $new->getManager();
                 if (is_null($manager))
                 {
-                    return redirect()->back()->with('error', 'You must to update locate for this news, this new not belong to any places and no one to manage!');
+                    return redirect()->back()->with('error', 'Bạn cần cập nhật thêm thông tin về vị trí mà nội dung đưa ra thông báo tới (Quận , phường , huyện nào...)) để xác nhận người quản lý!');
                 }
 
                 $new->approved_by = $manager;
@@ -557,7 +600,7 @@ class NewsController extends Controller
             catch(Exception $e)
             {
                 \DB::rollBack();
-                $msg = "Make approve notification for this new has occurred errors cause :" . $e->getMessage();
+                $msg = "Tạo yêu cầu lỗi :" . $e->getMessage();
 
                 return redirect()->back()->with('status', $msg);
             }
@@ -566,7 +609,7 @@ class NewsController extends Controller
         }
         else
         {
-            return redirect()->back()->with('error', 'The newId can not empty');
+            return redirect()->back()->with('error', 'Mã nội dung thông báo không được trống');
         }
 
         return redirect(route('news.show', ['id' => $new->id]))
@@ -610,7 +653,7 @@ class NewsController extends Controller
             try
             {
                 \DB::beginTransaction();
-                $msg = "Remove required to approve on this new is successfully!!";
+                $msg = "Từ chối yêu cầu phê duyệt cho nội dung thành công!";
                 $new->approved_by = null;
                 $new->status_id = config('attribute.status.new');
                 $new->save();
@@ -618,7 +661,7 @@ class NewsController extends Controller
             catch(Exception $e)
             {
                 \DB::rollBack();
-                $msg = "Remove required to approve on this new has occurred errors cause :" . $e->getMessage();
+                $msg = "Xuất hiện lỗi khi từ chối:" . $e->getMessage();
 
                 return redirect()->back()->with('status', $msg);
             }
@@ -627,7 +670,7 @@ class NewsController extends Controller
         }
         else
         {
-            return redirect()->back()->with('error', 'The newId can not empty');
+            return redirect()->back()->with('error', 'Mã nội dung thông báo không được trống');
         }
 
         return redirect(route('news.show', ['id' => $new->id]))

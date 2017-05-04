@@ -66,4 +66,7 @@ return [
 	'detail_information' => 'Detail information',
 	'new_approved' => 'This new was approved!',
 	'require_new_publish_time' => 'To approve this new is failed cause its publish time is invalid (required greater of equal published current time )!!',
+	'file_type' => 'Files type',
+	'create_new_type' => 'New create type',
+	'attach_file' => 'Attach File',
 ];

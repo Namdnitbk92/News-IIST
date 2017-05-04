@@ -12,7 +12,7 @@ class News extends Model
     protected $table = 'news';
 
     protected $fillable = [
-        'title', 'sub_title', 'status_id', 'audio_path', 'place_id', 'user_id', 'audio_text', 'publish_time',
+        'title', 'sub_title', 'status_id', 'audio_path', 'attach_path_file', 'place_id', 'user_id', 'audio_text', 'publish_time', 'file_type',
     ];
 
     /**

@@ -5,7 +5,7 @@
 
 <div class="row">
   @include('partials.result')
-  <form id="copyNew" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
+  <!-- <form id="copyNew" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
     {{csrf_field()}}
   </form>
   <form id="noticeApprove" method="POST" action="{{ route('noticeApprove', ['id' => $new->id]) }}">
@@ -14,11 +14,11 @@
   <form id="deleteNew" method="POST" action="{{ route('news.destroy', ['id' => $new->id]) }}">
     {{csrf_field()}}
     {{ method_field('DELETE') }}
-  </form>
+  </form> -->
   <div class="panel panel-default panel-alt widget-messaging">
     <div class="panel-heading">
         <div class="panel-btns">
-          @if(Auth::user()->isCreater())
+          <!-- @if(Auth::user()->isCreater())
           <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
           <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
           <a {!! addTooltip(trans('app.makes_required_approve')) !!} class="panel-edit" href="javascript:void(0);" onclick="noticeApprove();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
@@ -28,7 +28,7 @@
           <a {!! addTooltip(trans('app.approve_new')) !!} class="approve-new panel-edit">
             <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
           </a>
-          @endif
+          @endif -->
         </div><!-- panel-btns -->
         <h3 class="panel-title">{{ isset($new) ? $new->title : '' }}</h3>
       </div>
@@ -63,8 +63,17 @@
           </li>
           <li>
               <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="{{isset($new) ? $new->audio_path : ''}}"></iframe>
+                <!-- <iframe class="embed-responsive-item" src="{{isset($new) ? $new->audio_path.'?autoplay=false' : ''}}"></iframe> -->
+                <video class="embed-responsive-item" controls>
+                    <source src="{{isset($new) ? $new->audio_path.'?autoplay=false' : ''}}" type="video/mp4">
+                </video>
               </div>  
+          </li>
+          <li>
+            <h3>{{trans('app.attach_file')}}</h3>
+            <h4>
+              <embed src="{{isset($new) ? $new->attach_path_file : ''}}" width="100%" height="100%" />
+            </h4>
           </li>
           <li>
             <h3>{{trans('app.text')}}</h3>
@@ -74,7 +83,7 @@
       </div><!-- panel-body -->
     </div>
 </div>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   $('.approve-new').click(function (){
       $('#myModal').modal('show');
   });
@@ -125,7 +134,7 @@
     });
   }
 
-</script>
+</script> -->
 <style>
   .panel-btns > a {
     font-size:25px;

@@ -66,4 +66,7 @@ return [
 	'detail_information' => 'Thông tin chi tiết',
 	'new_approved' => '',
 	'require_new_publish_time' => 'Yêu cầu thời gian phát thông báo phải sau hoặc tại thời điểm hiện tại!',
+	'file_type' => 'Loại files',
+	'create_new_type' => 'Kiểu tạo mới',
+	'attach_file' => 'Files đính kèm',
 ];
