@@ -13,7 +13,7 @@
 	        {!! displayFieldError($errors, 'name') !!}
 	    </div>
 	    <div class="col-sm-6">
-	    	<label class="control-label">{{trans('app.county')}}</label>
+	    	<label class="control-label">{{trans('app.city')}}</label>
 	         {!! renderSelect($city, 'id', 'name', 'city_id', 'city_id' ,'select2') !!}
 	    </div>
 	</div>

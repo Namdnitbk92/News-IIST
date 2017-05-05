@@ -66,7 +66,7 @@
         @if(Auth::user()->isCreater() || Auth::user()->isAdmin())
         <li class="nav-parent"><a href=""><i class="fa fa-edit"></i> <span>{{trans('app.news_management')}}</span></a>
           <ul class="children" style="display: block">
-            <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> {{trans('app.create_new')}}</a></li>
+            <!-- <li class="active"><a href="{{ route('news.create') }}"><i class="fa fa-caret-right"></i> {{trans('app.create_new')}}</a></li> -->
             <li ><a href="{{ route('news.index') }}"><i class="fa fa-caret-right"></i> {{trans('app.news_list')}}</a></li>
           </ul>
         </li>

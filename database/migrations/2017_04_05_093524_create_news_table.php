@@ -25,6 +25,7 @@ class CreateNewsTable extends Migration
             $table->string('place_id')->nullable();
             $table->string('user_id')->nullable();
             $table->string('approved_by')->nullable();
+            $table->string('reason')->nullable();
             $table->dateTime('publish_time')->nullable();
             $table->timestamps();
         });

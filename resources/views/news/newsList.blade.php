@@ -6,7 +6,9 @@
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-      <!-- <a href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;{{trans('app.create_new_quickly')}}</a> -->
+    @if(Auth::user()->isCreater())
+      <a href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;{{trans('app.create_new')}}</a>
+    @endif  
     </div><!-- panel-btns -->
     <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
@@ -31,7 +33,7 @@
               <th>{{trans('app.description')}}</th>
               <th>{{trans('app.file_type')}}</th>
               <th>{{trans('app.status')}}</th>
-              <th>Action</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -92,6 +94,31 @@
    </div>
 </div>
 </div>
+
+<!-- Modal -->
+<div id="newModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><i class="fa fa-information"></i></h4>
+      </div>
+      <div class="modal-body">
+        <?php unset($new)?>
+        @includeIf('news.create_news')
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="doSomething()" data-dismiss="modal"><i class="fa fa-thumbs-o-up"></i>&nbsp;{{ isset($btn_custom) ? $btn_custom : trans('app.ok')}}</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;{{trans('app.close')}}</button>
+      </div> -->
+    </div>
+
+  </div>
+</div>
+
+
 <style>
 .box{
     display: none;
@@ -131,10 +158,10 @@ a:hover + .box,.box:hover{
     $('form[name=searchForm]').submit();
   });
 
-  // function quickNews()
-  // {
-  //   $('#myModal').modal('show');
-  // }
+  function quickNews()
+  {
+    $('#newModal').modal('show');
+  }
 
   // function doSomething()
   // {

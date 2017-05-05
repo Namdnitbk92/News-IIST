@@ -17,9 +17,7 @@ Route::get('/passwordReset', 'UserController@passwordReset')->name('passwordRese
 
 Route::group(['middleware' => 'auth'] , function (){
 
-	Route::get('/', function (){
-	    return view('home');
-	});
+	Route::get('/', 'HomeController@index');
 
 	Route::match(array('GET', 'POST'), '/showLanguage', 'HomeController@showLanguage')->name('showLanguage');
 

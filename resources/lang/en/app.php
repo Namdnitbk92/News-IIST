@@ -69,4 +69,5 @@ return [
 	'file_type' => 'Files type',
 	'create_new_type' => 'New create type',
 	'attach_file' => 'Attach File',
+	'communication_range' => 'Range of Communication',
 ];

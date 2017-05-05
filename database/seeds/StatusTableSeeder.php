@@ -13,19 +13,19 @@ class StatusTableSeeder extends Seeder
     {
     	DB::table('status')->insert([
             'status_id' => 1,
-            'description' => 'New',
+            'description' => 'Mới tạo',
         ]);
         DB::table('status')->insert([
             'status_id' => 2,
-            'description' => 'In Progress',
+            'description' => 'Đang đợi duyệt',
         ]);
         DB::table('status')->insert([
             'status_id' => 3,
-            'description' => 'Approved',
+            'description' => 'Đã phê duyệt',
         ]);
         DB::table('status')->insert([
             'status_id' => 4,
-            'description' => 'Cancelled',
+            'description' => 'Đã hủy ',
         ]);
     }
 }

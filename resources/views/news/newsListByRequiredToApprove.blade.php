@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
-@includeIf('partials.modal', ['message' => trans('app.confirm_remove_approve')])
+@includeIf('partials.modal', ['message' => trans('app.confirm_approve_new')])
 @includeIf('partials.result')
+<div id="message" class="alert alert-success hide"></div>
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
@@ -41,14 +42,18 @@
                 )}}">{{ (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description }}</span>
 	          </td>
 	          <td class="table-action-hide" style="font-size:20px;">
-                  <a {!! addTooltip('show detail') !!} href="{{route('news.show', ['id' => $new->id])}}" style="opacity: 0;"><i class="fa fa-info"></i></a>
-                   <a href="javascript:void(0)" {!! addTooltip('remove this required') !!}  onclick="deleteApproved('{{$new->id}}')" class="delete-row" style="opacity: 0;">
+                  <a {!! addTooltip('Xem chi tiết') !!} href="{{route('news.show', ['id' => $new->id])}}" style="opacity: 0;"><i class="fa fa-info"></i></a>
+                   <a href="javascript:void(0)" {!! addTooltip('Hủy phê duyệt') !!}  onclick="confirmApprove('{{$new->id}}')" class="delete-row" style="opacity: 0;">
                     <i class="fa fa-trash-o"></i>
                    </a>
-                 <form name="formDel{{$new->id}}" action="{{route('deleteApproved')}}" method="POST">
-                    {{csrf_field()}}
-                    <input type="hidden" name="id" value="{{$new->id}}"/>                    
-                 </form>
+                    <a {!! addTooltip(trans('app.approve_new')) !!} onclick="confirmOkApprove('{{$new->id}}')" class="approve-new panel-edit">
+                      <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                    </a>
+                <form name="formDel{{$new->id}}" action="{{route('deleteApproved')}}" method="POST">
+                  {{csrf_field()}}
+                  <input type="hidden" name="id" value="{{$new->id}}"/> 
+                  <input type="hidden" name="reason" value=""/>  
+                </form>
 	          </td>
 	        </tr>
 		    @endforeach
@@ -60,6 +65,37 @@
 
    </div>
 </div>
+
+<!-- Modal -->
+<div id="approveModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+     
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><i class="fa fa-information">Chú ý</i></h4>
+      </div>
+      <div class="modal-body">
+      <form class="form" >
+        <div class="form-group describe_news {{ addErrorClass($errors, 'reason') }}">
+            <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Lý do từ chối duyệt  {!!isRequired()!!}</label>
+            <div class="col-sm-8">
+              <textarea class="form-control" rows="5" name="reason" id="comment" value="{{isset($new) ? $new->audio_text : old('reason')}}"></textarea>
+              {!! displayFieldError($errors, 'reason') !!}
+            </div>
+          </div>
+        </form>  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="cancelApprove()" data-dismiss="modal"><i class="fa fa-thumbs-o-up"></i>&nbsp;{{ isset($btn_custom) ? $btn_custom : trans('app.ok')}}</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;{{trans('app.close')}}</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script type="text/javascript">
 	// Show aciton upon row hover
     jQuery('#countyTable tbody tr').hover(function(){
@@ -68,18 +104,58 @@
       jQuery(this).find('.table-action-hide a').animate({opacity: 0});
     });
 
-    function deleteApproved(id)
+    function cancelApprove()
     {
-      localStorage.setItem('newId', id);
-      $('#myModal').modal('show');
+      id = localStorage.getItem('newId');
+      $('form[name=formDel'+id+']>input[name=reason]').val($('textarea[name=reason]').val());
+
+      if (id)
+        $('form[name=formDel'+id+']').submit();
     }
    
     function doSomething()
     {
       var id = localStorage.getItem('newId');
       if (id)
-        $('form[name=formDel'+ id +']').submit();
+        sendApprove(id);
     }
+
+    function confirmApprove(id)
+    {
+      $('#approveModal').modal('show');
+      localStorage.setItem('newId', id);
+    }
+
+    function confirmOkApprove(id)
+    {
+      $('#myModal').modal('show');
+      localStorage.setItem('newId', id);
+    }
+
+     function sendApprove(id)
+      {
+        $.ajax({
+          url : '{{route("approveNew")}}',
+          method : 'POST',
+          data : {
+            newId : id
+          }
+        }).done(function (res){
+          $('#message').removeClass('hide');
+          $('#message').addClass('show');
+          $('#message').text(res.message);
+          if (res.status == 500)
+          {
+            $('#message').removeClass('alert-success');
+            $('#message').addClass('alert-danger');
+          }
+          else
+          {
+            $('li ._status').empty();
+            $('li ._status').append('<span class="label label-warning">' + res.status_text +'</span>');
+          } 
+        });
+      }
 
 </script>
 

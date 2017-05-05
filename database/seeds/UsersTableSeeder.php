@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
         factory(App\User::class, 10)->create();
 
         DB::table('users')->insert([
-            'name' => 'test',
+            'name' => 'attendee',
             'email' => 'attendee@test.com',
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
@@ -25,17 +25,17 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name' => 'test',
+            'name' => 'cm',
             'email' => 'cm@test.com',
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
             'role_id' => 2,
-            'belong_to_place' => 'guild',
+            'belong_to_place' => 'county',
             'original_place_id' => 1,
         ]);
 
         DB::table('users')->insert([
-            'name' => 'test',
+            'name' => 'am',
             'email' => 'am@test.com',
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
@@ -45,7 +45,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name' => 'test',
+            'name' => 'us',
             'email' => 'us@test.com',
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
@@ -55,21 +55,31 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name' => 'test',
+            'name' => 'complainmanager',
             'email' => 'complainmanager@test.com',
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
             'role_id' => 5,
-            'belong_to_place' => 'guild',
+            'belong_to_place' => 'county',
+            'original_place_id' => 1,
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'admin',
+            'email' => 'admin@test.com',
+            'password' => bcrypt('123123'),
+            'api_token' => str_random(60),
+            'role_id' => 6,
+            'belong_to_place' => 'county',
             'original_place_id' => 1,
         ]);
 
         DB::table('users')->insert([
             'name' => 'test',
-            'email' => 'admin@test.com',
+            'email' => 'test@test.com',
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
-            'role_id' => 6,
+            'role_id' => 1,
             'belong_to_place' => 'guild',
             'original_place_id' => 1,
         ]);

@@ -69,4 +69,5 @@ return [
 	'file_type' => 'Loại files',
 	'create_new_type' => 'Kiểu tạo mới',
 	'attach_file' => 'Files đính kèm',
+	'communication_range' => 'Phạm vi truyền thông',
 ];

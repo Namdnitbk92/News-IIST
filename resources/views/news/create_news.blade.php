@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="row " >
     <div class="panel panel-default">
       <div class="panel-heading" style="background: #1caf9a;">
@@ -26,13 +23,12 @@
       </div>
       <div style="border-top: 2px solid #1caf9a;"></div>
       <br>
-      <form class="form" style="padding:5%" enctype="multipart/form-data" method="POST" novalidate="novalidate" id="newsForm" action="{{ !isset($new) ? route('news.store') : route('news.update', ['id' => $new->id]) }}">
+      <form class="form" style="padding:2%" enctype="multipart/form-data" method="POST" novalidate="novalidate" id="newsForm" action="{{ !isset($new) ? route('news.store') : route('news.update', ['id' => $new->id]) }}">
           {{ csrf_field() }}
           @if(isset($new))
               <input type="hidden" name="_method" value="put" />
           @endif
           <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-          @include('partials.result')
           <div class="create_content_additional" style="display:none;">
              <!--section 1-->
             <div class="form-group {{ addErrorClass($errors, 'title') }}">
@@ -50,23 +46,10 @@
               </div>
             </div>
 
-            <div class="form-group {{ addErrorClass($errors, 'publish_time') }}">
-              <label class="col-sm-4"><i class="fa fa-calendar"></i>&nbsp;&nbsp;{{trans('app.publish_time')}} {!!isRequired()!!}</label>
-              <div class="col-sm-8">
-                <div class="input-group">
-                   <span class="input-group-addon" style="color: #428bca;">
-                      <i class="glyphicon glyphicon-calendar"></i>
-                   </span>
-                   <div class="input-group">
-                      <input id="publishTime" name="publish_time" type="datetime-local" class="form-control" value="{{old('publish_time')}}"/>
-                   </div>
-                </div>
-              {!! displayFieldError($errors, 'publish_time') !!}
-              </div>
-            </div>
+            
 
             <!--section 2-->
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label class="col-sm-4"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp;{{trans('app.place')}} {!!isRequired()!!}</label>
                 <div class="col-sm-8">
                   <select class="select2" id="place" name="type">
@@ -75,32 +58,32 @@
                     <option value="guild">{{trans('app.guild')}}</option>
                   </select>
                 </div>
-              </div>
+              </div> -->
 
 
                 <div class="form-group city_list" style="display:none;">
-                  <label class="col-sm-4">{{trans('app.city')}}</label>
+                  <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;&nbsp; {{trans('app.communication_range')}}</label>
                   <div class="col-sm-8">
                     {!! renderSelect($cities, 'id', 'name', 'city', 'city' ,'select2') !!}
                   </div>
                 </div>
                 
                 <div class="form-group county_list" style="display:none;">
-                  <label class="col-sm-4">{{trans('app.county')}}</label>
+                  <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>    {{trans('app.communication_range')}}</label>
                   <div class="col-sm-8">
                      {!! renderSelect($counties, 'id', 'name', 'county', 'county' ,'select2') !!}
                   </div>
                 </div>
                 
                 <div class="form-group guild_list" style="display:none;">
-                  <label class="col-sm-4">{{trans('app.guild')}}</label>
+                  <label class="col-sm-4"><i class="fa fa-envelope" aria-hidden="true"></i>{{trans('app.communication_range')}}</label>
                   <div class="col-sm-8">
                     {!! renderSelect($guilds, 'id', 'name', 'guild', 'guild' ,'select2') !!}
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-4"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp;{{trans('app.file_type')}} {!!isRequired()!!}</label>
+                  <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;{{trans('app.file_type')}} {!!isRequired()!!}</label>
                   <div class="col-sm-8 {{ addErrorClass($errors, 'audio-file') }}">
                     <select class="select2" id="file_type" name="file_type">
                     <option value="none">Hãy chọn kiểu files</option>
@@ -119,7 +102,7 @@
                   <label class="col-sm-4">
                   </label>
                   <div class="col-sm-8">
-                      <div class="input-group ">
+                      <div class="input-group files-upload">
                           <label class="input-group-btn">
                               <span class="btn btn-primary">
                                   <i class="fa fa-upload file-name"></i>&nbsp;&hellip; <input type="file" name="audio-file" style="display: none;" multiple>
@@ -142,23 +125,33 @@
               </div>
             </div>
             <br/>
-            <div class="form-group {{ addErrorClass($errors, 'audio_text') }}">
-              <label class="col-sm-4"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp; Mô tả files {!!isRequired()!!}</label>
+            <div style="display:none;" class="form-group describe_news {{ addErrorClass($errors, 'audio_text') }}">
+              <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Nội dung truyền thông  {!!isRequired()!!}</label>
               <div class="col-sm-8">
-              <a href="javascript:void(0)" style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</a>
                 <textarea class="form-control" rows="5" name="audio_text" id="comment" value="{{isset($new) ? $new->audio_text : old('audio_text')}}"></textarea>
+                <a href="javascript:void(0)" style="margin:5px;" class="btn btn-warning"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;&nbsp;  Convert to audio/video</a>
                 {!! displayFieldError($errors, 'audio_text') !!}
               </div>
+              
+            </div>
+            <div class="form-group {{ addErrorClass($errors, 'publish_time') }}">
+              <label class="col-sm-4"><i class="fa fa-calendar"></i>&nbsp;&nbsp;{{trans('app.publish_time')}} {!!isRequired()!!}</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                   <span class="input-group-addon" style="color: #428bca;">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                   </span>
+                   <div class="input-group">
+                      <input id="publishTime" name="publish_time" type="datetime-local" class="form-control" value="{{old('publish_time')}}"/>
+                   </div>
+                </div>
+              {!! displayFieldError($errors, 'publish_time') !!}
+              </div>
+            </div>
+            <div style="float:right;margin-right:5px;">  
+              <button type="submit" class="btn btn-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp; {{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</button>
 
-              @if(isset($new))
-                <span class="next" style="float:right;margin-right:5px;">
-                  <a href="{{route('news.show',['id' => $new->id])}}" class="btn btn-warning" href="javascript:void(0)">
-                  <i class="fa fa-eye"></i>&nbsp;
-                    {{trans('app.view_new_detail')}}
-                  </a>
-                </span>
-              @endif
-              <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</button>
+              <button type="button" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
             </div>
             </div>
           </div>
@@ -167,7 +160,7 @@
        <!--quick create-->
 
           <div class="create_content_quickly" style="display:none;">
-              <form class="form" style="padding:5%;" enctype="multipart/form-data" method="POST" novalidate="novalidate" id="newsForm" action="{{ route('news.store')}}">
+              <form class="form" style="padding:2%;" enctype="multipart/form-data" method="POST" novalidate="novalidate" id="newsForm" action="{{ route('news.store')}}">
             {{ csrf_field() }}
                 <input type="hidden" name="quickCreate" value="yes">
                 <div class="form-group {{ addErrorClass($errors, 'title') }}">
@@ -178,28 +171,20 @@
                     </div>
                   </div>
                   <div class="form-group {{ addErrorClass($errors, 'audio_text') }}">
-                    <label class="col-sm-4">Nội dung text {!!isRequired()!!}</label>
+                    <label class="col-sm-4">Nội dung truyền thông {!!isRequired()!!}</label>
                     <div class="col-sm-8">
                       <textarea class="form-control" rows="5" name="audio_text" id="audio_text"></textarea>
                       {!! displayFieldError($errors, 'audio_text') !!}
                     </div>
                   </div>
-
-                  @if(isset($new))
-                    <span class="next" style="float:right;margin-right:5px;">
-                      <a href="{{route('news.show',['id' => $new->id])}}" class="btn btn-warning" href="javascript:void(0)">
-                      <i class="fa fa-eye"></i>&nbsp;
-                        {{trans('app.view_new_detail')}}
-                      </a>
-                    </span>
-                  @endif
-                  <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</button>
+                  <div style="float:right;margin-right:5px;">  
+                      <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</button>
+                      <button type="button" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
+                  </div>
               </form>
           </div>
       </div><!-- panel-body -->
     </div><!-- panel -->
     
   </div><!-- row -->
-@includeIf('partials.modal', ['message' => trans('app.confirm_create_new') ])
-@endsection
 @include('scripts.createnews')

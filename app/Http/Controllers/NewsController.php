@@ -20,9 +20,13 @@ class NewsController extends Controller
         $titlePage = trans('app.news_list');
         $quantity = count($news);
 
-        $formQuickCreateNew = $this->genrenateFormQuickCreate();
+        $counties = \App\County::all();
+        $guilds = \App\Guild::all();
+        $cities = \App\City::all();
 
-        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'formQuickCreateNew'));
+        // $formQuickCreateNew = $this->genrenateFormQuickCreate();
+
+        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities'));
     }
 
     public function getNewListAvaiableApprove()
@@ -32,6 +36,10 @@ class NewsController extends Controller
             'status_id' => 1,
         ];
 
+        $counties = \App\County::all();
+        $guilds = \App\Guild::all();
+        $cities = \App\City::all();
+
         $news = \App\News::where($conds)->where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('created_at', 'desc')->paginate(5);
         
         $titlePage = trans('app.list_available_approve');
@@ -39,7 +47,7 @@ class NewsController extends Controller
 
         $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
-        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'formQuickCreateNew'));
+        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities'));
     }
 
     private function genrenateFormQuickCreate()
@@ -123,12 +131,13 @@ class NewsController extends Controller
             $this->validate($request, $request->getRules($request));
 
             $file = $request->file('audio-file');
-            $mimeType = $file->getMimeType();
             $path = "";
+
             if ($file !== null)
             {
                 try
                 {
+                    $mimeType = $file->getMimeType();
                     if ($mimeType === 'text/plain')
                     {
                         $result = file_exists($file) ? file_get_contents($file) : '';
@@ -157,7 +166,6 @@ class NewsController extends Controller
             {
                 try
                 {
-                    
                     ini_set('max_execution_time', 6000);
                     $result = \Cloudder::upload($attachFile)->getResult();
 
@@ -172,7 +180,7 @@ class NewsController extends Controller
                 }
             }
             
-            if (($path !== "" && !is_null($path)) || (is_string($result) && strlen($result) > 0))
+            if (($path !== "" && !is_null($path)) || ($request->get('file_type') === 'text'))
             {
                 try
                 {
@@ -196,10 +204,8 @@ class NewsController extends Controller
                     }
                     $publishTime = date( "Y-m-d H:i:s", strtotime($request->get('publish_time'))) ?? Carbon::now();
 
-                    $audio_text = (is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
-                    
+                    $audio_text = $request->get('audio_text');
                     $place = \App\Places::create($place_data);
-                    
                     $new = \App\News::create(
                         array_merge(
                             $request->except(['publish_time', 'audio_text']), 
@@ -387,7 +393,7 @@ class NewsController extends Controller
                     $place_data['original_place_id'] = !empty($request->get('city')) ? $request->get('city') : \Auth::user()->original_place_id;
                 }
                 $publish_time = $request->get('publish_time');
-                $audio_text = (isset($result) && is_string($result) && strlen($result) > 0) ? $result : $request->get('audio_text');
+                $audio_text = $request->get('audio_text');
                 $place = \DB::table('places')->where('place_id', $new->place_id);
 
                 if (!is_null($place->first()))
@@ -541,10 +547,15 @@ class NewsController extends Controller
     {
         $news = \App\News::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
         $quantity = count($news);
+
+        $counties = \App\County::all();
+        $guilds = \App\Guild::all();
+        $cities = \App\City::all();
+
         $titlePage = trans('app.news_list');
         $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
-        return view('news.newsList', compact('news', 'quantity', 'titlePage', 'formQuickCreateNew'));
+        return view('news.newsList', compact('news', 'quantity', 'titlePage', 'counties', 'guilds', 'cities'));
     }
 
     public function copyNew(Request $request)
@@ -646,7 +657,6 @@ class NewsController extends Controller
 
     public function deleteApproved(Request $request)
     {
-
         $new = \App\News::find($request->get('id'));
         if (!empty($new))
         {
@@ -655,7 +665,8 @@ class NewsController extends Controller
                 \DB::beginTransaction();
                 $msg = "Từ chối yêu cầu phê duyệt cho nội dung thành công!";
                 $new->approved_by = null;
-                $new->status_id = config('attribute.status.new');
+                $new->status_id = config('attribute.status.canceled');
+                $new->reason = $request->get('reason');
                 $new->save();
             }
             catch(Exception $e)

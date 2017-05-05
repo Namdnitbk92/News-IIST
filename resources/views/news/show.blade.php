@@ -18,6 +18,7 @@
   <div class="panel panel-default panel-alt widget-messaging">
     <div class="panel-heading">
         <div class="panel-btns">
+          <a class="panel-edit btn btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i></a>&nbsp;</a>
           <!-- @if(Auth::user()->isCreater())
           <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
           <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
@@ -83,6 +84,12 @@
       </div><!-- panel-body -->
     </div>
 </div>
+
+<script>
+function goBack() {
+    window.history.back();
+}
+</script>
 <!-- <script type="text/javascript">
   $('.approve-new').click(function (){
       $('#myModal').modal('show');

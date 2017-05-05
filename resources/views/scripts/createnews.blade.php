@@ -57,22 +57,28 @@ $(document).ready(function(){
 	    minimumResultsForSearch: -1
 	  });
 
+
     $('#file_type').change(function (e){
       type = $(this).val();
       if(type === 'text')
       {
-        $('i.file-name').text('  Upload text file');
+        $('.files-upload').hide();
         $('._files').fadeIn();
-      }
+        $('.describe_news').show();
+      } 
       else if(type === 'audio')
       {
+        $('.files-upload').show();
         $('i.file-name').text('  Upload audio file');
         $('._files').fadeIn();
+        $('.describe_news').hide();
       }
       else if(type === 'video')
       {
+        $('.files-upload').show();
         $('i.file-name').text('  Upload video file');
         $('._files').fadeIn();
+        $('.describe_news').hide();
       } else 
       {
         $('._files').fadeOut();

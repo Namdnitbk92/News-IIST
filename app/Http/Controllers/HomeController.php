@@ -51,25 +51,10 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $news = \App\News::all();
-        $newsOne = [];
-        $newsSecond = [];
-        $plot = count($news) / 2;
+        $news = \App\News::where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('publish_time', 'ASC')->take(10)->get();
 
-        for ($i = $plot ;$i >= 0 ;$i-- )
-        {
-            array_push($newsOne, $news[$i]);
-
-            if (count($news) - 1 >= $plot && $plot > $i)
-            {
-                array_push($newsSecond, $news[$plot]);
-                $plot++;
-            }
-        }
-
-        $request->session()->flash('showChannel', 'true');
-
-        return view('home',compact('newsOne', 'newsSecond'));
+        $titlePage = 'DashBoard';
+        return view('home',compact('news', 'titlePage'));
     }
 
     public function getNotifications()

@@ -17,5 +17,5 @@
 @endif
 
 <script type="text/javascript">
-	setTimeout(function (){$('._message').hide(2000);}, 3000);
+	// setTimeout(function (){$('._message').hide(2000);}, 3000);
 </script>
