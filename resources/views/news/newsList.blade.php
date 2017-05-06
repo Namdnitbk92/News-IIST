@@ -6,14 +6,19 @@
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-    @if(Auth::user()->isCreater())
-      <a href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;{{trans('app.create_new')}}</a>
-    @endif  
+      <form style="float:right;" method="get" action="{{route('search_news')}}" id="search">
+      {{ csrf_field() }}
+        <input name="search" type="text" size="40" placeholder="Tìm kiếm..." />
+      </form>
+      <!-- <form style="float:right;" action="{{route('search_news')}}" method="GET" name="searchForm">
+        {{ csrf_field() }}
+        <input type="search" id="search" name="search"  placeholder="">
+      </form> -->
     </div><!-- panel-btns -->
     <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
   <div class="panel-body">
-      <div class="input-group">
+     <!-- <div class="input-group">
          <span class="input-group-addon trigger_search" style="color: #428bca;">
             <i class="glyphicon glyphicon-search"></i>
          </span>
@@ -23,6 +28,11 @@
               <input type="search" id="search" name="search" class="form-control" placeholder="" aria-controls="table2">
             </form>
          </div>
+      </div> -->
+      <div class="input-group" style="float:right;padding:5px;">
+         @if(Auth::user()->isCreater() && $titlePage === trans('app.news_list'))
+          <a class="btn btn-primary-alt" href="javascript:void(0)" onclick="quickNews()"><i class="fa fa-plus"></i>&nbsp;&nbsp;{{trans('app.create_new')}}</a>
+        @endif 
       </div>
       <div class="table-responsive-vertical shadow-z-1" style="padding-top:1%;">
       <table id="table" class="table table-hover table-mc-light-blue table-bordered table-stripped">
@@ -54,7 +64,7 @@
                   $new->status_id == 2 ? 'warning' : 'danger'
                 )}}">{{ (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description }}</span>
     	          </td>
-                <td style="font-size:20px;">
+                <td style="font-size:20px;width:20%;">
                   <form id="copyNew{{$new->id}}" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
                     {{csrf_field()}}
                   </form>
@@ -65,18 +75,25 @@
                     {{csrf_field()}}
                     {{ method_field('DELETE') }}
                   </form>
-                  {!!displayPreview("$new->id") !!}
-                  @if(Auth::user()->isCreater())
-                    <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
-                    <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy('{{$new->id}}');"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+                  <a {!! addTooltip('Xem trước nội dung') !!} onclick="preview('{{$new->id}}')" class="panel-edit" href="javascript:void(0)"><i class="fa fa-eye "></i></a>&nbsp;
+                @if(Auth::user()->isCreater())
+                    @if($titlePage === trans('app.news_list'))
+                      @if($new->status_id === '1')
+                      <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
+                      @endif
+                      <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy('{{$new->id}}');"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+                      
+                      <a  {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew('{{$new->id}}');"><i style="color: red;" class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
+                      @endif
+                      @if(Auth::user()->isApprover())
+                      <a {!! addTooltip(trans('app.approve_new')) !!} class="approve-new panel-edit">
+                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                      </a>
+                    @endif  
+                    @if($new->status_id === '1')
                     <a {!! addTooltip(trans('app.makes_required_approve')) !!} class="panel-edit" href="javascript:void(0);" onclick="noticeApprove('{{$new->id}}');"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
-                    <a  {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew('{{$new->id}}');"><i style="color: red;" class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
                     @endif
-                    @if(Auth::user()->isApprover())
-                    <a {!! addTooltip(trans('app.approve_new')) !!} class="approve-new panel-edit">
-                      <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-                    </a>
-                    @endif
+                  @endif
                 </td>
     	        </tr>
     		    @endforeach
@@ -101,9 +118,9 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header" style="background: #f0ad4e;">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title"><i class="fa fa-information"></i></h4>
+        <h4 class="modal-title"><i class="fa fa-information"></i>Tạo mới nội dung</h4>
       </div>
       <div class="modal-body">
         <?php unset($new)?>
@@ -119,30 +136,28 @@
 </div>
 
 
-<style>
-.box{
-    display: none;
-    width: 100%;
-    border-radius: 15% solid blue;
-}
+<!-- Preview Modal -->
+<div id="previewModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
 
-iframe
-{
-  top: 50%;
-  left: 50%;
-  height : 700px;
-  margin-top: -20em; /*set to a negative number 1/2 of your height*/
-  margin-left: -30em; /*set to a negative number 1/2 of your width*/
-}
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="background: #f0ad4e;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><i class="fa fa-information"></i>Xem trước nội dung</h4>
+      </div>
+      <div class="modal-body">
+        <?php unset($new)?>
+        @includeIf('news.show', ['new' => \App\News::find(1)])
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Thoát</button>
+      </div>
+    </div>
 
-a:hover + .box,.box:hover{
-    display: block;
-    position: relative;
-    z-index: 100;
-    
-}
+  </div>
+</div>
 
-</style>
 <script>
 	function redirect(id)
 	{
@@ -220,5 +235,38 @@ a:hover + .box,.box:hover{
     });
   }
 
+  function fillDataPreviewNew(id)
+  {
+    $.ajax({
+      url : "{{route('getPreview')}}",
+      data: {newId : id},
+      type : 'POST',
+    }).done(function(res)
+    {
+        res = res.new ? JSON.parse(res.new) : res;
+        console.log(res);
+       $('.new-title').text(res.title ? res.title : '');
+       $('.new-created').text(res.created_at ? res.created_at : ''); 
+       $('.new-username').text(res.username ? res.username : res.user_id); 
+       $('.new-place').text(res.place !== '' ? res.place : res.address);
+       $('.new-status').text(res.status ? res.status : '');
+       $('.new-publish-at').text(res.publish_time ? res.publish_time : '');
+       $('video>source').attr('src', res.audio_path ? res.audio_path : '');
+       $('video').load();
+       $('embed').attr('src', res.attach_path_file ? res.attach_path_file : '');
+       $('.new-text').text(res.audio_text ? res.audio_text : '');
+    });
+  }
+
+  function preview(id)
+  {
+    if (id)
+      fillDataPreviewNew(id);
+    
+    $('#previewModal').modal('show');
+  }
+
 </script>
+
+@includeIf('partials.search_styles')
 @endsection

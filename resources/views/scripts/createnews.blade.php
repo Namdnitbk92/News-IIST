@@ -2,7 +2,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	// With Form Validation Wizard
-  	var $validator = jQuery("#newsForm").validate({
+  	var $validator = jQuery("#newsForm, #newsFormQuick").validate({
 	    highlight: function(element) {
 	      jQuery(element).closest('.form-group').removeClass('has-success').addClass('has-error');
 	    },
@@ -10,75 +10,41 @@ $(document).ready(function(){
 	      jQuery(element).closest('.form-group').removeClass('has-error');
 	    }
 	 });
-	  // Progress Wizard
-	  $('#progressWizard').bootstrapWizard({
-	  	'tabClass': 'nav nav-pills nav-justified nav-disabled-click',
-	    'nextSelector': '.next',
-	    'previousSelector': '.previous',
-	    'finishSelector': '.finish',
-	    onTabClick: function(tab, navigation, index) {
-	      return false;
-	    },
-	    onNext: function(tab, navigation, index) {
-		  var $valid = jQuery('#newsForm').valid();
-	      if(!$valid) {
-	        
-	        $validator.focusInvalid();
-	        return false;
-	      }
-	      var $total = navigation.find('li').length;
-	      var $current = index+1;
-	      var $percent = ($current/$total) * 100;
-	      jQuery('#progressWizard').find('.progress-bar').css('width', $percent+'%');
-	      console.log(index);
-	      if (index >= 2)
-	      {
-	      	$('#progressWizard .next').addClass('hide').removeClass('show');
-	      	$('#progressWizard .finish').addClass('show').removeClass('hide');
-	      } 
-	    },
-	    onPrevious: function(tab, navigation, index) {
-	      var $total = navigation.find('li').length;
-	      var $current = index+1;
-	      var $percent = ($current/$total) * 100;
-	      jQuery('#progressWizard').find('.progress-bar').css('width', $percent+'%');
-
-	      if (index < 2)
-	      {
-	      	$('#progressWizard .next').addClass('show').removeClass('hide');
-	      	$('#progressWizard .finish').addClass('hide').removeClass('show');
-	      }
-	     
-	    }
-	  });
 
 	  jQuery(".select2").select2({
 	    width: '100%',
 	    minimumResultsForSearch: -1
 	  });
 
+    $('button[type=reset]').click(function (){
+      $('select[name="new_type"]').select2('val', 'none');$('select[name="new_type"]').trigger('change');
+      $('input[name=title]').val('');
+      $('input[name=sub_title]').val('');
+      $('#file_type').select2('val', "");
+    })
+
 
     $('#file_type').change(function (e){
       type = $(this).val();
       if(type === 'text')
       {
-        $('.files-upload').hide();
+        $('.files-upload').fadeOut();
         $('._files').fadeIn();
-        $('.describe_news').show();
+        $('.describe_news').fadeIn();
       } 
       else if(type === 'audio')
       {
-        $('.files-upload').show();
-        $('i.file-name').text('  Upload audio file');
+        $('.files-upload').fadeIn();
+        $('i.xxx').text(' Audio file');
         $('._files').fadeIn();
-        $('.describe_news').hide();
+        $('.describe_news').fadeOut();
       }
       else if(type === 'video')
       {
-        $('.files-upload').show();
-        $('i.file-name').text('  Upload video file');
+        $('.files-upload').fadeIn();
+        $('i.xxx').text(' Video file');
         $('._files').fadeIn();
-        $('.describe_news').hide();
+        $('.describe_news').fadeOut();
       } else 
       {
         $('._files').fadeOut();
@@ -207,5 +173,10 @@ function doSomething()
 {
   	form = document.getElementById("newsForm").submit();
 }
+
+var tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0,-1);
+document.getElementById("publishTime").defaultValue = localISOTime;
+
 </script>
 @endsection

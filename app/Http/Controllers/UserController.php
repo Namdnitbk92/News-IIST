@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
         $users = \App\User::orderBy('created_at', 'desc')->paginate(5);
-        $titlePage = 'Users List';
+        $titlePage = 'Danh sách người dùng';
 
         return view('users.users', compact('users', 'titlePage'));
     }
@@ -28,7 +28,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = \App\Role::all();
-        $titlePage = 'Create new user';
+        $titlePage = 'Tạo mới người dùng';
 
         return view('users.create', compact('roles', 'titlePage'));
     }
@@ -97,12 +97,12 @@ class UserController extends Controller
         {
             \DB::rollBack();
 
-            return redirect()->back()->with('error', 'Create user has failed cause !!' . $e->getMessage());
+            return redirect()->back()->with('error', 'Tạo mới người dùng loi !!' . $e->getMessage());
         }
 
         \DB::commit();
 
-        return redirect()->back()->with('status', 'Create user successfully!!');
+        return redirect()->back()->with('status', 'Tạo mới người dùng thành công!');
     }
 
     /**
@@ -170,7 +170,7 @@ class UserController extends Controller
 
         \DB::commit();
 
-        return redirect()->back()->with('status', 'update user successfully!!');
+        return redirect()->back()->with('status', 'Cập nhật thành công!');
     }
 
     /**
@@ -196,6 +196,6 @@ class UserController extends Controller
 
         \DB::commit();
 
-        return redirect()->back()->with('status', 'Delete user successfully!!');
+        return redirect()->back()->with('status', 'Xóa thành công!');
     }
 }

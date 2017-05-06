@@ -45,7 +45,6 @@ class NewsController extends Controller
         $titlePage = trans('app.list_available_approve');
         $quantity = count($news);
 
-        $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
         return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities'));
     }
@@ -202,7 +201,8 @@ class NewsController extends Controller
                     {
                         $place_data['original_place_id'] = !empty($request->get('city')) ? $request->get('city') : \Auth::user()->original_place_id;
                     }
-                    $publishTime = date( "Y-m-d H:i:s", strtotime($request->get('publish_time'))) ?? Carbon::now();
+                    $publishTime = date("Y-m-d H:i:s", strtotime($request->get('publish_time'))) ?? Carbon::now();
+
 
                     $audio_text = $request->get('audio_text');
                     $place = \App\Places::create($place_data);
@@ -241,7 +241,7 @@ class NewsController extends Controller
             throw new Exception('Xảy ra lỗi khi thêm mới : '.$e->getMessage());
         }
 
-        return redirect(route('news.show', ['id' => $new->id]))
+        return redirect(route('news.index'))
                 ->with('status', trans('app.notification.create_success'))->withInput(); 
     }
 
@@ -623,7 +623,7 @@ class NewsController extends Controller
             return redirect()->back()->with('error', 'Mã nội dung thông báo không được trống');
         }
 
-        return redirect(route('news.show', ['id' => $new->id]))
+        return redirect()->back()
                 ->with('status', $msg ?? '');
     }
 

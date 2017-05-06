@@ -41,11 +41,12 @@ class UsersRequest extends BaseRequest
 	 */
 	public function messages()
 	{
-	    return [
-	        'name.required' => 'User name is required',
-	        'email.required'  => 'User email is required.',
-	        'role_id.required'  => 'User role is required.',
-	        'password.required' => 'Password is required.'
-	    ];
+	    // return [
+	    //     'name.required' => 'User name is required',
+	    //     'email.required'  => 'User email is required.',
+	    //     'role_id.required'  => 'User role is required.',
+	    //     'password.required' => 'Password is required.'
+	    // ];
+	    return [];
 	}
 }

@@ -35,6 +35,10 @@ Route::group(['middleware' => 'auth'] , function (){
 		});
 	});
 
+	Route::post('/getPreview', 'HomeController@getPreview')->name('getPreview');
+
+	
+
 	Route::group(['middleware' => 'is.users.manager'] , function (){
 		Route::resource('users', 'UserController');
 		Route::get('user/search', 'UserController@search')->name('search_users');

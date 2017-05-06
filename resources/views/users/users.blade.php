@@ -1,16 +1,21 @@
 @extends('layouts.app')
 @section('content')
+@includeIf('partials.search_styles')
 @includeIf('partials.result')
 @includeIf('partials.modal', ['message' => trans('app.confirm_delete_users')])
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-        <a href="{{route('users.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;New user</a>
+        <form style="float:right;" name="searchForm" method="get" action="{{route('search_users')}}" id="search">
+        {{ csrf_field() }}
+          <input name="search" type="text" size="40" placeholder="Tìm kiếm..." />
+        </form>
+        <!-- <a href="{{route('users.create')}}" class="panel-add"><i class="fa fa-plus"></i>&nbsp;Thêm mới &nbsp;</a> -->
     </div><!-- panel-btns -->
-    <h3 class="panel-title">List </h3>
+    <h3 class="panel-title">Danh sách </h3>
   </div>
   <div class="panel-body">
-      <div class="input-group">
+      <!-- <div class="input-group">
          <span class="input-group-addon" style="color: #428bca;">
             <i class="glyphicon glyphicon-search"></i>
          </span>
@@ -20,15 +25,20 @@
               <input type="search" id="search" name="search" class="form-control" placeholder="" aria-controls="table2">
             </form>
          </div>
+      </div> -->
+      <div class="input-group" style="float:right;padding:5px;">
+         @if(Auth::user()->isUsersManager() || Auth::user()->isAdmin())
+          <a class="btn btn-primary-alt" href="{{route('users.create')}}" ><i class="fa fa-plus"></i>&nbsp;&nbsp;Thêm mới người dùng</a>
+        @endif 
       </div>
-
 <div class="table-responsive-vertical shadow-z-1" style="padding-top:1%;">
   <table id="userTable" class="table table-hover table-mc-light-blue table-bordered table-stripped">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
+          <th>Tên</th>
+          <th>Địa chỉ mail</th>
+          <th>Phạm vi hoạt động</th>
           <th></th>
         </tr>
       </thead>
@@ -41,6 +51,7 @@
 	          <td data-title="Role">
 	            {{ $user->email }}
 	          </td>
+            <td></td>
 	          <td class="table-action-hide" style="font-size: 20px;">
 	          	  <a href="javascript:void(0)" onclick="editUser('{{$user->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
                    <a href="javascript:void(0)" onclick="deleteUser('{{$user->id}}')" class="delete-row" style="opacity: 0;">

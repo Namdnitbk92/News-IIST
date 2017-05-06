@@ -1,23 +1,28 @@
 @extends('layouts.app')
 @section('content')
+@includeIf('partials.search_styles')
 @includeIf('partials.modal', ['message' => trans('app.confirm_approve_new')])
 @includeIf('partials.result')
 <div id="message" class="alert alert-success hide"></div>
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
+    <form style="float:right;" method="get" action="" id="search">
+      {{ csrf_field() }}
+        <input name="search" type="text" size="40" placeholder="Tìm kiếm..." />
+      </form>
     </div><!-- panel-btns -->
     <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
   <div class="panel-body">
-      <div class="input-group">
+      <!-- <div class="input-group">
          <span class="input-group-addon" style="color: #428bca;">
             <i class="glyphicon glyphicon-search"></i>
          </span>
          <div class="input-group">
             <input id="tableSearch" name="tableSearch" type="text" class="form-control"/>
          </div>
-      </div>
+      </div> -->
 <div class="table-responsive-vertical shadow-z-1" style="padding-top:1%;">
   <table id="countyTable" class="table table-hover table-mc-light-blue table-bordered table-stripped">
       <thead>
@@ -26,7 +31,7 @@
           <th>{{trans('app.title')}}</th>
           <th>{{trans('app.description')}}</th>
           <th>{{trans('app.status')}}</th>
-          <th></th>
+          <th>Hành động</th>
         </tr>
       </thead>
       <tbody>

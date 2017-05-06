@@ -16,18 +16,18 @@
                         @if(isset($news) && count($news) > 0)
                         	@foreach($news as $new)
                         	<div class="media">
-	                            <a href="{{route('news.show', ['id' => $new->id])}}" class="pull-left">
+	                            <a href="javascript:void(0)" class="pull-left">
 					                <video  width="400px" controls>
 					                    <source src="{{isset($new) ? $new->audio_path.'?autoplay=false' : ''}}">
 					                </video>
 	                            </a>
 	                            <div class="media-body">
 	                              <h4 class="filename text-primary">{{$new->title}}</h4>
-	                              <small class="text-muted">File Type <b>{{$new->file_type}}</b></small><br>
-	                              <small class="text-muted">Status&nbsp;&nbsp;&nbsp;<label class="label label-{{$new->status_id == 1 ? 'success' : (
+	                              <small class="text-muted">Loại file <b>{{$new->file_type}}</b></small><br>
+	                              <small class="text-muted">Trạng thái&nbsp;&nbsp;&nbsp;<label class="label label-{{$new->status_id == 1 ? 'success' : (
                 $new->status_id == 2 ? 'warning' : 'danger'
               )}}"> {{$new->status->description}}</label></small><br>
-	                              <small class="text-muted">Publish at {{$new->publish_time}}</small>
+	                              <small class="text-muted">Phát vào lúc {{$new->publish_time}}</small>
 	                            </div>
 	                        </div>
                         	@endforeach

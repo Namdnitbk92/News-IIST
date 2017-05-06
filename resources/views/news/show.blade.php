@@ -1,10 +1,6 @@
-@extends('layouts.app')
-@includeIf('partials.modal', ['message' => trans('app.confirm_approve_new') ])
-@section('content')
 <div id="message" class="alert alert-success hide"></div>
 
 <div class="row">
-  @include('partials.result')
   <!-- <form id="copyNew" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
     {{csrf_field()}}
   </form>
@@ -18,7 +14,7 @@
   <div class="panel panel-default panel-alt widget-messaging">
     <div class="panel-heading">
         <div class="panel-btns">
-          <a class="panel-edit btn btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i></a>&nbsp;</a>
+          
           <!-- @if(Auth::user()->isCreater())
           <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
           <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
@@ -31,26 +27,26 @@
           </a>
           @endif -->
         </div><!-- panel-btns -->
-        <h3 class="panel-title">{{ isset($new) ? $new->title : '' }}</h3>
+        <h3 class="panel-title new-title">{{ isset($new) ? $new->title : '' }}</h3>
       </div>
       <div class="panel-body">
         <ul>
           <li>
-            <h5 class="pull-right">{{ isset($new) ? $new->created_at : '' }}</h5>
+            <h5 class="pull-right new-created">{{ isset($new) ? $new->created_at : '' }}</h5>
             <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> {{trans('app.created_at')}}</h4>
           </li>
           <li>
-            <h5 class="pull-right">{{ isset($user) ? $user->name : '' }}</h5>
-            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> {{trans('app.created_by')}} <b> </h4>
+            <h5 class="pull-right new-username">{{ isset($user) ? $user->name : '' }}</h5>
+            <h4 class="sender"><i class="fa fa-calendar" aria-hidden="true"></i> <label class="new-create-by">{{trans('app.created_by')}}</label> <b> </h4>
           </li>
           <li>
-            <h5 class="pull-right">{{ isset($place) ? $place->name : '' }} {{ $address ?? '' }}</h5>
+            <h5 class="pull-right new-place">{{ isset($place) ? $place->name : '' }} {{ $address ?? '' }}</h5>
             <h4 class="sender"> <i class="fa fa-building-o" aria-hidden="true"></i> By {{trans('app.place')}} <b> </h4>
           </li>
           <li><i class="fa fa-hand-o-right" aria-hidden="true"></i>  
-            {{trans('app.status')}} 
+            <label class="">{{trans('app.status')}} </label>
             <h5 class="pull-right _status">
-              <span class="label label-{{$new->status_id == 1 ? 'success' : (
+              <span class="new-status label label-{{$new->status_id == 1 ? 'success' : (
                 $new->status_id == 2 ? 'warning' : 'danger'
               )}}">
               {{ isset($new) && $new->status() ? $new->status()->first()->description ?? '' : '' }}
@@ -59,7 +55,7 @@
             </h5>
           </li>
           <li>
-            <h5 class="pull-right" style="color:#f0ad4e; font-weight: bold;">{{ isset($new) ? $new->publish_time : '' }}</h5>
+            <h5 class="pull-right new-publish-at" style="color:#f0ad4e; font-weight: bold;">{{ isset($new) ? $new->publish_time : '' }}</h5>
             <h4 class="sender"><i class="fa fa-calendar"></i>&nbsp;{{trans('app.publish_time')}}</h4>
           </li>
           <li>
@@ -78,7 +74,7 @@
           </li>
           <li>
             <h3>{{trans('app.text')}}</h3>
-            <h4>{{ isset($new) ? $new->audio_text : '' }}</h4>
+            <h4 class="new-text">{{ isset($new) ? $new->audio_text : '' }}</h4>
           </li>
         </ul>
       </div><!-- panel-body -->
@@ -148,4 +144,3 @@ function goBack() {
     margin:5px !important;
   }
 </style>
-@endsection
