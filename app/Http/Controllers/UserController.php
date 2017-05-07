@@ -14,7 +14,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = \App\User::orderBy('created_at', 'desc')->paginate(5);
+        $original_place_id = \Auth::user()->original_place_id;
+        $belong_to_place = \Auth::user()->belong_to_place;
+        $conds = ['belong_to_place' => $belong_to_place, 'original_place_id' => $original_place_id];
+        $users = \App\User::where($conds)->orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'Danh sách người dùng';
 
         return view('users.users', compact('users', 'titlePage'));
@@ -28,9 +31,13 @@ class UserController extends Controller
     public function create()
     {
         $roles = \App\Role::all();
-        $titlePage = 'Tạo mới người dùng';
+        $places = \Auth::user()->getListPlaceByUser();
+        $counties = $places['counties'];
+        $guilds = $places['guilds'];
+        $cities = $places['cities'];
 
-        return view('users.create', compact('roles', 'titlePage'));
+        $titlePage = 'Tạo mới người dùng';
+        return view('users.create', compact('roles', 'titlePage', 'cities', 'guilds', 'counties'));
     }
 
     public function profile(Request $request)
@@ -78,17 +85,23 @@ class UserController extends Controller
         {
             \DB::beginTransaction();
             $pw = $request->get('password');
-            $data = [
-                    'belong_to_place' => \Auth::user()->belong_to_place,
-                    'original_place_id' => \Auth::user()->original_place_id,
-                    ];
+            $data = [];
 
             if ($request->has('password'))
             {
                 $data['password'] = bcrypt($pw);
             }
 
-            $guild = \App\User::create(array_merge(
+            foreach ($request->get('original_place_id') as $key => $value) {
+                if (!empty($value))
+                {
+                    $data['original_place_id'] = $value;
+                }
+            }
+
+            $data['belong_to_place'] = $request->get('place_type');
+            
+            $user = \App\User::create(array_merge(
                 $request->except('password'),
                 $data
             ));
@@ -102,7 +115,7 @@ class UserController extends Controller
 
         \DB::commit();
 
-        return redirect()->back()->with('status', 'Tạo mới người dùng thành công!');
+        return redirect(route('users.index'))->with('status', 'Tạo mới người dùng thành công!');
     }
 
     /**
@@ -128,6 +141,10 @@ class UserController extends Controller
     {
         $user = \App\User::find($id);
         $roles = \App\Role::all(); 
+        $places = \Auth::user()->getListPlaceByUser();
+        $counties = $places['counties'];
+        $guilds = $places['guilds'];
+        $cities = $places['cities'];
 
         if (empty($user))
         {
@@ -136,7 +153,7 @@ class UserController extends Controller
 
         $titlePage = 'Edit User [' . $user->name . '] information';
 
-        return view('users.create', compact('user', 'titlePage', 'roles'));
+        return view('users.create', compact('user', 'titlePage', 'roles', 'counties', 'cities', 'guilds'));
     }
 
     /**
@@ -159,6 +176,15 @@ class UserController extends Controller
                 $data['password'] = bcrypt($pw);
             }
 
+            foreach ($request->get('original_place_id') as $key => $value) {
+                if (!empty($value))
+                {
+                    $data['original_place_id'] = $value;
+                }
+            }
+
+            $data['belong_to_place'] = $request->get('place_type');
+
             $user->update($data);
         }
         catch(Exception $e)
@@ -170,7 +196,7 @@ class UserController extends Controller
 
         \DB::commit();
 
-        return redirect()->back()->with('status', 'Cập nhật thành công!');
+        return redirect(route('users.index'))->with('status', 'Cập nhật thành công!');
     }
 
     /**

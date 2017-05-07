@@ -70,7 +70,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('123123'),
             'api_token' => str_random(60),
             'role_id' => 6,
-            'belong_to_place' => 'county',
+            'belong_to_place' => 'city',
             'original_place_id' => 1,
         ]);
 

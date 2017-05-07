@@ -37,6 +37,7 @@
         <tr>
           <th>ID</th>
           <th>Tên</th>
+          <th>Vai trò</th>
           <th>Địa chỉ mail</th>
           <th>Phạm vi hoạt động</th>
           <th></th>
@@ -48,10 +49,11 @@
 		     <tr onclick="redirect('{{$user->id}}')">
 	          <td data-title="ID">{{ $user->id }}</td>
 	          <td data-title="Name">{{ $user->name }}</td>
+            <td data-title="Name">{{ $user->role()->first()->description }}</td>
 	          <td data-title="Role">
 	            {{ $user->email }}
 	          </td>
-            <td></td>
+            <td>{{$user->getAddressByUser()}}</td>
 	          <td class="table-action-hide" style="font-size: 20px;">
 	          	  <a href="javascript:void(0)" onclick="editUser('{{$user->id}}')" style="opacity: 0;"><i class="fa fa-pencil"></i></a>
                    <a href="javascript:void(0)" onclick="deleteUser('{{$user->id}}')" class="delete-row" style="opacity: 0;">

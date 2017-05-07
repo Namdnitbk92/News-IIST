@@ -38,6 +38,69 @@ class User extends Authenticatable
         return 'email';
     }
 
+    public function getAddressByUser()
+    {
+        $belong_to_place = $this->belong_to_place;
+        $original_place_id = $this->original_place_id;
+
+        switch ($belong_to_place) {
+                case 'city':
+                    $original_place = \App\City::find($original_place_id);
+                    $address = $original_place ? $original_place->name : '';
+                    break;
+                
+                case 'county':
+                    $original_place = \App\County::find($original_place_id);
+                    if ($original_place)
+                    {
+                        $address = $original_place->name .' - '. $original_place->city()->first()->name;
+                    }
+                    break; 
+
+                case 'guild':
+                    $original_place = \App\Guild::find($original_place_id);
+                    if ($original_place)
+                    {
+                        $address = $original_place->name .' - '. $original_place->county()->first()->name .' - ' . $original_place->county()->first()->city()->first()->name;
+                    }
+                    break;   
+
+                default:
+                    $address = '';
+                    break;
+            }
+
+        return $address ?? '';
+    }
+
+    public function getListPlaceByUser()
+    {
+        $belong_to_place = \Auth::user()->belong_to_place;
+        $original_place_id = \Auth::user()->original_place_id;
+
+        switch ($belong_to_place) {
+            case 'city':
+                $cities = \App\City::all();
+                $counties = \App\County::all();
+                break;
+
+            case 'county':
+                $counties = \App\County::where('id', $original_place_id)->get();
+                $guilds = \App\Guild::where('county_id', $original_place_id)->get();
+                break;
+            
+            case 'guild':
+            
+                break;
+        }
+
+        return [
+            'cities' => isset($cities) ? $cities : [],
+            'counties' => isset($counties) ? $counties: [],
+            'guilds' => isset($guilds) ? $guilds: [],
+        ];
+    }
+
     public function isAdmin()
     {
         return $this->role_id === config('attribute.role.admin')."";

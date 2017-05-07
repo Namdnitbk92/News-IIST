@@ -17,7 +17,7 @@ function addErrorClass($errors, $field)
 
 function renderSelect($data, $value, $desribe, $nameSelect, $idSelect, $cssClass)
 {
-	$options = '';
+	$options = '<option value="">Hãy chọn</option>';
 	foreach ($data as $d) {
 		$options .= '<option value="' . $d[$value] . '">' .$d[$desribe]. '</option>';
 	}
