@@ -79,9 +79,9 @@
                 @if(Auth::user()->isCreater())
                     @if($titlePage === trans('app.news_list'))
                       @if($new->status_id === '1')
-                      <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
+                      <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="javascript:void(0)" onclick="quickNews('{{$new->id}}')"><i class="fa fa-edit"></i></a>&nbsp;
                       @endif
-                      <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy('{{$new->id}}');"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+                      <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="quickNews('{{$new->id}}');"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
                       
                       <a  {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew('{{$new->id}}');"><i style="color: red;" class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
                       @endif
@@ -164,6 +164,54 @@
 		window.location.href = "/news/" + id;
 	}
 
+  function fillDataForm(id)
+  {
+    localStorage.setItem('newIdUpdate', id);
+    $.ajax({
+      url : "{{route('getNewDetail')}}",
+      type : 'POST',
+      data : {'newId' : id}
+    }).done(function (res){
+      if (res.errorCode !== 0)
+        return;
+
+      res = JSON.parse(res.new);
+      $('.modal-title').text('Sửa nội dung');
+      $('.btn-action-new').text('Sửa nội dung');
+      $('input[name=title]').val(res.title);
+      $('input[name=sub_title]').val(res.sub_title);
+      $('select[name=file_type]').val(res.file_type);
+      $('select[name=file_type]').select2('val', (res.file_type ? res.file_type : 'text'));
+      $('#file_type').trigger('change');
+      var date = res.publish_time ? new Date(res.publish_time) : new Date();
+      var tzoffset = date.getTimezoneOffset() * 60000; 
+      var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0,-1);
+      document.getElementById("publishTime").defaultValue = localISOTime;
+
+      var action = $('button[name=btnCreate]');
+      action.attr('action', 'update');
+    })
+  }
+
+  // $('#newsForm').on('submit', function(e){
+  //     e.preventDefault();
+  // })
+
+  $('button[name=btnCreate]').click(function (){
+    var action = $('button[name=btnCreate]').attr('action');
+    if (action === 'create')
+    {
+      $('#newsForm').attr('action', '{{route("news.store")}}');
+    }
+    else 
+    {
+      $('#newsForm').append('<input type="hidden" name="newId" value="'+ localStorage.getItem('newIdUpdate') +'"/>');
+      $('#newsForm').attr('action', '{{route("updateNew")}}')
+    }
+
+    $('#newsForm').submit();
+  })
+
   // function runScript()
   // {
   //   $('form[name=searchForm]').submit();
@@ -173,8 +221,13 @@
     $('form[name=searchForm]').submit();
   });
 
-  function quickNews()
+  function quickNews(id)
   {
+    if(id)
+    {
+      fillDataForm(id);
+    }
+    $('select[name="new_type"]').select2('val', 'basic');$('select[name="new_type"]').trigger('change');
     $('#newModal').modal('show');
   }
 

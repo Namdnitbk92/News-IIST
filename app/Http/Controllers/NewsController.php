@@ -687,4 +687,22 @@ class NewsController extends Controller
         return redirect(route('news.show', ['id' => $new->id]))
                 ->with('status', $msg ?? '');
     }
+
+    public function getNewDetail(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $new = \App\News::find($request->get('newId'));
+
+            return response()->json([
+                'errorCode' => 0,
+                'new' => json_encode($new) ?: [],
+            ]);
+        }
+    }
+
+    public function updateNew(Request $request)
+    {dd($request->all());
+        return $this->update($request, $request->get('newId'));
+    }
 }

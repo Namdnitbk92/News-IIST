@@ -83,7 +83,7 @@
                   <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;{{trans('app.file_type')}} {!!isRequired()!!}</label>
                   <div class="col-sm-8 {{ addErrorClass($errors, 'audio-file') }}">
                     <select class="select2 required" id="file_type" name="file_type" >
-                    <option value="">Hãy chọn kiểu files</option>
+                      <option value="">Hãy chọn kiểu files</option>
                       <option value="text">Text</option>
                       <option value="audio">Audio</option>
                       <option value="video">Video</option>
@@ -149,7 +149,7 @@
               </div>
             </div>
             <div style="float:right;margin-right:5px;">  
-              <button type="submit" class="btn btn-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp; {{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</button>
+              <button type="button" action="create" name="btnCreate" class="btn btn-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp; <label class="btn-action-new">{{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</label></button>
 
               <button type="reset" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
             </div>
@@ -161,7 +161,7 @@
 
           <div class="create_content_quickly" style="display:none;">
               <form class="form" style="padding:2%;" enctype="multipart/form-data" method="POST" novalidate="novalidate" id="newsFormQuick" action="{{ route('news.store')}}">
-            {{ csrf_field() }}
+                {{ csrf_field() }}
                 <input type="hidden" name="quickCreate" value="yes">
                 <div class="form-group {{ addErrorClass($errors, 'title') }}">
                     <label class="col-sm-4">Tiêu đề nội dung {!!isRequired()!!}</label>
@@ -176,7 +176,7 @@
                     </div>
                   </div>
                   <div style="float:right;margin-right:5px;">  
-                      <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</button>
+                      <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; <label class="btn-action-new">{{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</label></button>
                       <button type="reset" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
                   </div>
               </form>
