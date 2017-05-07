@@ -82,7 +82,6 @@
                       <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="javascript:void(0)" onclick="quickNews('{{$new->id}}')"><i class="fa fa-edit"></i></a>&nbsp;
                       @endif
                       <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="quickNews('{{$new->id}}', 'copy');"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
-                      
                       <a  {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew('{{$new->id}}');"><i style="color: red;" class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
                       @endif
                       @if(Auth::user()->isApprover())
@@ -101,7 +100,7 @@
           </tbody>
         </table>
       </div>
-      {{ $news->render() }}
+      {{ $news->render() }} 
       @if(isset($new))
           <div class="row" style="position: inherit;bottom:10%;">
             <label class="label label-success pull-right">
@@ -210,7 +209,7 @@
   $('button[name=btnCreate]').click(function (){
     var action = $('button[name=btnCreate]').attr('action');
     if (action === 'create')
-    {  
+    {
       $('#newsForm').attr('action', '{{route("news.store")}}');
     }
     else 

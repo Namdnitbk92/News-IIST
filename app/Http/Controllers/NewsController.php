@@ -341,11 +341,11 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(NewsRequest $request, $id)
+    public function update(Request $request, $id)
     {
         try
         {
-            $this->validate($request, $request->getRules($request));
+            // $this->validate($request, $request->getRules($request));
 
             $file = $request->file('audio-file');
             
