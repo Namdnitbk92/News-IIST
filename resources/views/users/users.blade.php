@@ -49,7 +49,7 @@
 		     <tr onclick="redirect('{{$user->id}}')">
 	          <td data-title="ID">{{ $user->id }}</td>
 	          <td data-title="Name">{{ $user->name }}</td>
-            <td data-title="Name">{{ $user->role()->first()->description }}</td>
+            <td data-title="Name">{{ !empty($user->role()) && !empty($user->role()->first()) ? $user->role()->first()->description : ''}}</td>
 	          <td data-title="Role">
 	            {{ $user->email }}
 	          </td>

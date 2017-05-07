@@ -86,7 +86,7 @@ class UserController extends Controller
             \DB::beginTransaction();
             $pw = $request->get('password');
             $data = [];
-
+            $data['role_id'] = $request->has('role_id') ? $request->get('role_id') : 6;
             if ($request->has('password'))
             {
                 $data['password'] = bcrypt($pw);
@@ -110,7 +110,7 @@ class UserController extends Controller
         {
             \DB::rollBack();
 
-            return redirect()->back()->with('error', 'Tạo mới người dùng loi !!' . $e->getMessage());
+            return redirect()->back()->with('error', 'Tạo mới người dùng loi !!' . $e->getMessage())->withInput();
         }
 
         \DB::commit();

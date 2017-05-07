@@ -16,7 +16,6 @@ class UsersRequest extends BaseRequest
 	    return [
 	        'name' => 'required||max:255',
 	        'email' => 'required|email|unique:users',
-	        'role_id' => 'required',
 	        'password' => 'required|max:20',
 	    ];
 	}
