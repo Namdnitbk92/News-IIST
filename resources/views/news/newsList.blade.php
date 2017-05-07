@@ -210,7 +210,7 @@
   $('button[name=btnCreate]').click(function (){
     var action = $('button[name=btnCreate]').attr('action');
     if (action === 'create')
-    {
+    { 
       $('#newsForm').attr('action', '{{route("news.store")}}');
     }
     else 
