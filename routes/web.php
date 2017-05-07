@@ -35,8 +35,9 @@ Route::group(['middleware' => 'auth'] , function (){
 		});
 	});
 
+	Route::post('/updateNew', 'NewsController@updateNew')->name('updateNew');
 	Route::post('/getPreview', 'HomeController@getPreview')->name('getPreview');
-
+	Route::post('/getNewDetail', 'NewsController@getNewDetail')->name('getNewDetail');
 	
 
 	Route::group(['middleware' => 'is.users.manager'] , function (){

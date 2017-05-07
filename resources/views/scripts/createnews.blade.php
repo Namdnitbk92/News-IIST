@@ -21,6 +21,11 @@ $(document).ready(function(){
       $('input[name=title]').val('');
       $('input[name=sub_title]').val('');
       $('#file_type').select2('val', "");
+      var action = $('button[name=btnCreate]');
+      action.attr('action', 'create');
+
+      $('.modal-title').text('Tạo mới nội dung');
+      $('.btn-action-new').text('Tạo mới nội dung');
     })
 
 

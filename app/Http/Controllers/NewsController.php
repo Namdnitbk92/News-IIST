@@ -115,20 +115,21 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(NewsRequest $request)
+    public function store(Request $request)
     {
         try
         {
-            $isQuickCreate = $request->has('quickCreate');
-            if($isQuickCreate)
-            {
-                $this->validate($request, $request->getQuickRules());
+            // $isQuickCreate = $request->has('quickCreate');
+            // if($isQuickCreate)
+            // {
+            //     $this->validate($request, $request->getQuickRules());
 
-                return $this->quickCreateNew($request);
-            }
+            //     return $this->quickCreateNew($request);
+            // }
 
-            $this->validate($request, $request->getRules($request));
+            // $this->validate($request, $request->getRules($request));
 
+            $action = $request->get('action');
             $file = $request->file('audio-file');
             $path = "";
 
@@ -179,7 +180,7 @@ class NewsController extends Controller
                 }
             }
             
-            if (($path !== "" && !is_null($path)) || ($request->get('file_type') === 'text'))
+            if (($path !== "" && !is_null($path)) || ($request->get('file_type') === 'text') || $action === 'copy')
             {
                 try
                 {
@@ -206,18 +207,42 @@ class NewsController extends Controller
 
                     $audio_text = $request->get('audio_text');
                     $place = \App\Places::create($place_data);
-                    $new = \App\News::create(
-                        array_merge(
+
+                    
+                    $newId = $request->get('newId');
+
+                    $data = [];
+                    if ($action === 'copy' && !empty($newId))
+                    {
+                        $newTemp = \App\News::find($newId);
+                        $data =  array_merge(
                             $request->except(['publish_time', 'audio_text']), 
-                            [
-                                'status_id' => 1,
-                                'audio_path' => $path, 
-                                'place_id' => $place->id,
-                                'publish_time' => $publishTime,
-                                'audio_text' => $audio_text,
-                                'attach_path_file' => $attach_path,
-                            ]
-                    ));
+                                    [
+                                        'status_id' => 1,
+                                        'audio_path' => !empty($path) ? $path : $newTemp->audio_path, 
+                                        'place_id' => $place->id,
+                                        'publish_time' => !empty($publishTime) ? $publishTime : $newTemp->publish_time,
+                                        'audio_text' => !empty($audio_text) ? $audio_text : $newTemp->audio_text,
+                                        'attach_path_file' => !empty($attach_path) ? $attach_path : $newTemp->attach_path,
+                                    ]
+                            );
+                    } 
+                    else
+                    {
+                        $data =  array_merge(
+                            $request->except(['publish_time', 'audio_text']), 
+                                    [
+                                        'status_id' => 1,
+                                        'audio_path' => $path, 
+                                        'place_id' => $place->id,
+                                        'publish_time' => $publishTime,
+                                        'audio_text' => $audio_text,
+                                        'attach_path_file' => $attach_path,
+                                    ]
+                            );
+                    }
+
+                    $new = \App\News::create($data);
                 }
                 catch(Exception $ec)
                 {
@@ -233,7 +258,6 @@ class NewsController extends Controller
                 {
                     return redirect(route('news.create'))->with('status', 'Xảy ra lỗi khi thêm mới'.$ec->getMessage())->withInput(); 
                 }
-                
             }
         }
         catch(Exception $e)
@@ -242,7 +266,7 @@ class NewsController extends Controller
         }
 
         return redirect(route('news.index'))
-                ->with('status', trans('app.notification.create_success'))->withInput(); 
+                ->with('status', isset($action) ? 'Sao chép nội dung thành công' : trans('app.notification.create_success'))->withInput(); 
     }
 
     /**
@@ -429,7 +453,7 @@ class NewsController extends Controller
             }
             else
             {
-                return redirect(route('news.create'))
+                return redirect(route('news.index'))
                     ->with('status', 'Xảy ra lỗi khi cập nhật'.$ec->getMessage())->withInput(); 
             }
         }
@@ -438,7 +462,7 @@ class NewsController extends Controller
             throw new Exception('Xảy ra lỗi khi cập nhật: '.$e->getMessage());
         }
 
-        return redirect()->route('news.edit', ['id' => $new->id])
+        return redirect()->route('news.index', ['id' => $new->id])
                     ->with('status', trans('app.notification.edit_success'))->withInput();
     }
 
@@ -686,5 +710,23 @@ class NewsController extends Controller
 
         return redirect(route('news.show', ['id' => $new->id]))
                 ->with('status', $msg ?? '');
+    }
+
+    public function getNewDetail(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $new = \App\News::find($request->get('newId'));
+
+            return response()->json([
+                'errorCode' => 0,
+                'new' => json_encode($new) ?: [],
+            ]);
+        }
+    }
+
+    public function updateNew(Request $request)
+    {
+        return $this->update($request, $request->get('newId'));
     }
 }
