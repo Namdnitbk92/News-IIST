@@ -146,8 +146,9 @@
         <h4 class="modal-title"><i class="fa fa-information"></i>Xem trước nội dung</h4>
       </div>
       <div class="modal-body">
-        <?php unset($new)?>
-        @includeIf('news.show', ['new' => \App\News::find(1)])
+        @if(\App\News::count() > 0)
+          @includeIf('news.show', ['new' => \App\News::find(1)])
+        @endif
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Thoát</button>

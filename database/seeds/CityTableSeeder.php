@@ -11,6 +11,9 @@ class CityTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\City::class, 1)->create();
+        DB::table('city')->insert([
+            'name' => 'Thành phố Hà Nội',
+            'supervisor' => \App\User::where('role_id', 6)->first()->id,
+        ]);
     }
 }
