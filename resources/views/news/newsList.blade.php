@@ -118,10 +118,10 @@
         </table>
       </div>
       {{ $news->render() }} 
-      @if(isset($new))
+      @if(isset($news) && count($news) >= 0)
           <div class="row" style="position: inherit;bottom:10%;">
             <label class="label label-success pull-right">
-            {{$quantity ?? 0}} / {{ $new->getTotalRecordsByCreater() }} Records.</label>
+            {{$quantity ?? 0}} / {{ $total ?? 0 }} Records.</label>
           </div>
       @endif
    </div>

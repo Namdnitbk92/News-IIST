@@ -52,9 +52,25 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-        $users = \App\User::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
+        // $users = \App\User::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
+        $searchValue = $request->search;
+        $original_place_id = \Auth::user()->original_place_id;
+        $belong_to_place = \Auth::user()->belong_to_place;
+        $conds = ['belong_to_place' => $belong_to_place, 'original_place_id' => $original_place_id];
+        $users = \App\User::where($conds);
+
+        if (!empty($searchValue))
+        {
+            $users = $users->where(function($query) use ($searchValue) {
+                $query->where('name', 'like', '%' . $searchValue . '%')
+                ->orWhere('email', 'like', '%' . $searchValue . '%');
+            })->orderBy('created_at', 'desc');
+        }
+
+        $users = $users->paginate(5);
+
         $quantity = count($users);
-        $titlePage = 'Users List';
+        $titlePage = 'Danh sách người dùng';
 
         return view('users.users', compact('users', 'quantity'));
     }
@@ -162,7 +178,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'The user with id' . $id . 'is not exists on system..!');
         }
 
-        $titlePage = 'Edit User [' . $user->name . '] information';
+        $titlePage = 'Chỉnh sửa thông tin người dùng [' . $user->name . ']';
 
         return view('users.create', compact('user', 'titlePage', 'roles', 'counties', 'cities', 'guilds'));
     }
