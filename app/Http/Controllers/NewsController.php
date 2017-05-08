@@ -25,18 +25,21 @@ class NewsController extends Controller
            $query->from('places')
                     ->select('place_id')
                     ->where($conds);
-        })->orderBy('created_at', 'desc')->paginate(5);
+        })->orderBy('created_at', 'desc')->groupBy('id');
+
+        
 
         $titlePage = trans('app.news_list');
+        $total = $news->count();
+        $news = $news->paginate(5);
         $quantity = count($news);
-
         $counties = \App\County::all();
         $guilds = \App\Guild::all();
         $cities = \App\City::all();
 
         // $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
-        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities'));
+        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'total', 'counties', 'guilds', 'cities'));
     }
 
     public function getNewListAvaiableApprove()
@@ -599,7 +602,34 @@ class NewsController extends Controller
 
     public function search(Request $request)
     {
-        $news = \App\News::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
+        // $news = \App\News::search($request->search)->where('id', 1)
+        //         ->orderBy('created_at', 'desc')->paginate(10);
+
+        $searchValue = $request->search;
+
+        $belong_to_place = \Auth::user()->belong_to_place;
+        $original_place_id = \Auth::user()->original_place_id;  
+
+        $news = \App\News::whereIn('place_id', function($query) use ($belong_to_place, $original_place_id) {
+            $conds = ['type' => $belong_to_place, 'original_place_id' => $original_place_id];
+           $query->from('places')
+                    ->select('place_id')
+                    ->where($conds);
+        });
+
+        if (!empty($searchValue))
+        {
+            $news = $news->where(function($query) use ($searchValue) {
+                $query->where('title', 'like', '%' . $searchValue . '%')
+                ->orWhere('sub_title', 'like', '%' . $searchValue . '%')
+                ->orWhere('file_type', 'like', '%' . $searchValue . '%')
+                ->orWhere('reason', 'like', '%' . $searchValue . '%');
+            })->orderBy('created_at', 'desc')->groupBy('id');
+        }
+
+        $total = $news->count();
+        $news = $news->paginate(5);
+
         $quantity = count($news);
 
         $counties = \App\County::all();
@@ -607,9 +637,8 @@ class NewsController extends Controller
         $cities = \App\City::all();
 
         $titlePage = trans('app.news_list');
-        $formQuickCreateNew = $this->genrenateFormQuickCreate();
 
-        return view('news.newsList', compact('news', 'quantity', 'titlePage', 'counties', 'guilds', 'cities'));
+        return view('news.newsList', compact('news', 'quantity','total', 'titlePage', 'counties', 'guilds', 'cities'));
     }
 
     public function copyNew(Request $request)
