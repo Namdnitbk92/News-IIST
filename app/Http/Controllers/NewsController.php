@@ -16,7 +16,17 @@ class NewsController extends Controller
     public function index()
     {
         // abort(500);    
-        $news = \App\News::where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
+        $belong_to_place = \Auth::user()->belong_to_place;
+        $original_place_id = \Auth::user()->original_place_id;  
+        // $news = \App\News::where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
+
+        $news = \App\News::whereIn('place_id', function($query) use ($belong_to_place, $original_place_id) {
+            $conds = ['type' => $belong_to_place, 'original_place_id' => $original_place_id];
+           $query->from('places')
+                    ->select('place_id')
+                    ->where($conds);
+        })->orderBy('created_at', 'desc')->paginate(5);
+
         $titlePage = trans('app.news_list');
         $quantity = count($news);
 
@@ -31,20 +41,28 @@ class NewsController extends Controller
 
     public function getNewListAvaiableApprove()
     {
-        $conds = [
-            'user_id' => \Auth::user()->id,
-            'status_id' => 1,
-        ];
-
+        $belong_to_place = \Auth::user()->belong_to_place;
+        $original_place_id = \Auth::user()->original_place_id;  
         $counties = \App\County::all();
         $guilds = \App\Guild::all();
         $cities = \App\City::all();
 
-        $news = \App\News::where($conds)->where('publish_time', '>=', \Carbon\Carbon::now())->orderBy('created_at', 'desc')->paginate(5);
+        $news = \App\News::whereIn('place_id', function($query) use ($belong_to_place, $original_place_id) {
+            $conds = ['type' => $belong_to_place, 'original_place_id' => $original_place_id];
+            $query->from('places')
+                    ->select('place_id')
+                    ->where($conds);
+        })
+        ->where('publish_time', '>=', \Carbon\Carbon::now())
+        ->where('status_id', 2)
+        ->orderBy('created_at', 'desc')->paginate(5);
+
+        // $news = \App\News::where($conds)
+        //     ->where('publish_time', '>=', \Carbon\Carbon::now())
+        //     ->orderBy('created_at', 'desc')->paginate(5);
         
         $titlePage = trans('app.list_available_approve');
         $quantity = count($news);
-
 
         return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities'));
     }
@@ -81,6 +99,14 @@ class NewsController extends Controller
         try
         {
             \DB::beginTransaction();
+            $belong_to_place = \Auth::user()->belong_to_place;
+            $original_place_id = \Auth::user()->original_place_id;  
+            $place_data = [
+                        'type' => $belong_to_place,
+                        'original_place_id' => $original_place_id,
+                    ];
+
+            $places = \App\Places::create($place_data);        
             $new = \App\News::create(
                 array_merge(
                     [
@@ -91,6 +117,7 @@ class NewsController extends Controller
                         'publish_time' => \Carbon\Carbon::now(),
                         'status_id' => 1,
                         'user_id' => \Auth::user()->id,
+                        'place_id' => $places->id,
                     ]
                 )
             );
@@ -104,7 +131,7 @@ class NewsController extends Controller
 
         \DB::commit();
 
-        return redirect(route('news.show', ['id' => $new->id]))
+        return redirect(route('news.index'))
                 ->with('status', trans('app.notification.create_success')); 
     }
 
@@ -119,16 +146,15 @@ class NewsController extends Controller
     {
         try
         {
-            // $isQuickCreate = $request->has('quickCreate');
-            // if($isQuickCreate)
-            // {
-            //     $this->validate($request, $request->getQuickRules());
+            $isQuickCreate = $request->has('quickCreate');
+            if($isQuickCreate)
+            {
+                // $this->validate($request, $request->getQuickRules());
 
-            //     return $this->quickCreateNew($request);
-            // }
+                return $this->quickCreateNew($request);
+            }
 
             // $this->validate($request, $request->getRules($request));
-
             $action = $request->get('action');
             $file = $request->file('audio-file');
             $path = "";
@@ -626,6 +652,11 @@ class NewsController extends Controller
                 if (is_null($manager))
                 {
                     return redirect()->back()->with('error', 'Bạn cần cập nhật thêm thông tin về vị trí mà nội dung đưa ra thông báo tới (Quận , phường , huyện nào...)) để xác nhận người quản lý!');
+                }
+
+                if (!$new->hasApprove())
+                {
+                    return redirect()->back()->with('error','Thời gian phát nội dung không hợp lệ, hãy cập nhật lại trước khi gửi yêu cầu phê duyệt!');
                 }
 
                 $new->approved_by = $manager;

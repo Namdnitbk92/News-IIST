@@ -73,7 +73,7 @@
         @endif
         @if(Auth::user()->isUsersManager() || Auth::user()->isAdmin())
         <li>
-          <a href="{{ route('users.index') }}"><i class="fa fa-user-o"></i> <span>{{trans('app.users_management')}}</span></a>
+          <a href="{{ route('users.index') }}"><i class="fa fa-user"></i> <span>{{trans('app.users_management')}}</span></a>
           <!-- <ul class="children" style="display: block">
             <li class="active"><a href="{{ route('users.create') }}"><i class="fa fa-caret-right"></i>{{trans('app.create_new_entity')}}</a></li>
             <li ><a href="{{ route('users.index') }}"><i class="fa fa-caret-right"></i> {{trans('app.list')}}</a></li>

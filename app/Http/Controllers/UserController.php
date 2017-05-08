@@ -83,6 +83,8 @@ class UserController extends Controller
     {
         try
         {
+            $belong_to_place = \Auth::user()->belong_to_place;
+            $original_place_id = \Auth::user()->original_place_id;
             \DB::beginTransaction();
             $pw = $request->get('password');
             $data = [];
@@ -98,13 +100,20 @@ class UserController extends Controller
                     $data['original_place_id'] = $value;
                 }
             }
-
             $data['belong_to_place'] = $request->get('place_type');
-            
-            $user = \App\User::create(array_merge(
+           
+            $data = array_merge(
                 $request->except('password'),
                 $data
-            ));
+            );
+
+            if($belong_to_place === 'guild')
+            {
+                $data['original_place_id'] = $original_place_id;
+                $data['belong_to_place'] = $belong_to_place;
+            }
+
+            $user = \App\User::create($data);
         }
         catch(Exception $e)
         {

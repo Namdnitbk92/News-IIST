@@ -55,7 +55,7 @@ $factory->define(App\News::class, function (Faker\Generator $faker) {
 
 $factory->define(App\City::class, function (Faker\Generator $faker) {
     return [
-        'name' => 'Ha Noi',
+        'name' => 'Thành phố Hà Nội',
         'supervisor' => \App\User::where('role_id', 3)->first()->id,
     ];
 });
