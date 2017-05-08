@@ -148,17 +148,20 @@
         }).done(function (res){
           $('#message').removeClass('hide');
           $('#message').addClass('show');
-          $('#message').text(res.message);
-          if (res.status == 500)
-          {
-            $('#message').removeClass('alert-success');
-            $('#message').addClass('alert-danger');
-          }
-          else
-          {
-            $('li ._status').empty();
-            $('li ._status').append('<span class="label label-warning">' + res.status_text +'</span>');
-          } 
+          $('#message').text(res.message ? res.message : '');
+            if (res.status == 500)
+            {
+              $('#message').removeClass('alert-success');
+              $('#message').addClass('alert-danger');
+            }
+            else
+            {
+              $('#message').removeClass('alert-danger');
+              $('#message').addClass('alert-success');
+            }
+            setTimeout(function(){
+              window.location.reload();
+            },2500);
         });
       }
 

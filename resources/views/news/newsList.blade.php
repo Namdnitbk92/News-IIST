@@ -43,6 +43,7 @@
               <th>{{trans('app.description')}}</th>
               <th>{{trans('app.file_type')}}</th>
               <th>{{trans('app.status')}}</th>
+              <th>Lý do từ chối</th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -60,10 +61,26 @@
                   {{ $new->file_type }}
                 </td>
     	          <td data-title="Status">
-    	          	<span class="label label-{{$new->status_id == 1 ? 'success' : (
-                  $new->status_id == 2 ? 'warning' : 'danger'
-                )}}">{{ (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description }}</span>
+                  <?php $statusText = (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description;?>
+                  @if($new->status_id == 1)
+                    <span class="label label-success">
+                        {{$statusText}}
+                    </span>
+                  @elseif($new->status_id == 2)
+                    <span class="label label-warning">
+                        {{$statusText}}
+                    </span>
+                  @elseif($new->status_id == 3)
+                    <span class="label label-primary">
+                        {{$statusText}}
+                    </span>
+                  @else
+                    <span class="label label-danger">
+                        {{$statusText}}
+                    </span>
+                  @endif
     	          </td>
+                <td>{{$new->reason ?? ''}}</td>
                 <td style="font-size:20px;width:20%;">
                   <form id="copyNew{{$new->id}}" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
                     {{csrf_field()}}
@@ -179,8 +196,9 @@
       $('.modal-title').text('Sửa nội dung');
       $('.btn-action-new').text('Sửa nội dung');
       $('input[name=title]').val(res.title);
-      $('input[name=sub_title]').val(res.sub_title);
-      $('select[name=file_type]').val(res.file_type);
+      $('input[name=sub_title]').val(res.sub_title ? res.sub_title : '');
+      $('textarea[name=audio_text]').val(res.audio_text ? res.audio_text : '');
+      $('select[name=file_type]').val(res.file_type ? res.file_type : '');
       $('select[name=file_type]').select2('val', (res.file_type ? res.file_type : 'text'));
       $('#file_type').trigger('change');
       var date = res.publish_time ? new Date(res.publish_time) : new Date();

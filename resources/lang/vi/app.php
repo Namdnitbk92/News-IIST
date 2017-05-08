@@ -64,10 +64,10 @@ return [
 		'delete_success' => 'Xóa thành công',
 	],
 	'detail_information' => 'Thông tin chi tiết',
-	'new_approved' => '',
+	'new_approved' => 'Phê duyệt nội dung thành công',
 	'require_new_publish_time' => 'Yêu cầu thời gian phát thông báo phải sau hoặc tại thời điểm hiện tại!',
 	'file_type' => 'Loại files',
-	'create_new_type' => 'Kiểu tạo mới',
+	'create_new_type' => 'Kiểu tạo nội dung truyền thông',
 	'attach_file' => 'Files đính kèm',
 	'communication_range' => 'Phạm vi truyền thông',
 ];

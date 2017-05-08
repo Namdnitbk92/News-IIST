@@ -579,16 +579,20 @@ class NewsController extends Controller
                     \DB::rollBack();
                     return response()->json([
                         'status' => 500,
-                        'message' => 'has errors appeared cause' . $e->getMessage(),
+                        'message' => 'Có lỗi xảy ra' . $e->getMessage(),
                     ]);
                 }
                 \DB::commit();
             }
+
+            return response()->json([
+                'status' => 200,
+                'message' => trans('app.new_approved'),
+            ]);
         }
 
         return response()->json([
             'status' => 200,
-            'status_text' => $new->status()->first()->description,
             'message' => trans('app.new_approved'),
         ]);
     }
@@ -648,18 +652,18 @@ class NewsController extends Controller
             {
                 \DB::beginTransaction();
                 $msg = "Tạo yêu cầu phê duyệt nội dung thành công, xin hãy đợi kết quả phê duyệt từ người quản lý!!";
-                $manager = $new->getManager();
-                if (is_null($manager))
-                {
-                    return redirect()->back()->with('error', 'Bạn cần cập nhật thêm thông tin về vị trí mà nội dung đưa ra thông báo tới (Quận , phường , huyện nào...)) để xác nhận người quản lý!');
-                }
+                // $manager = $new->getManager();
+                // if (is_null($manager))
+                // {
+                //     return redirect()->back()->with('error', 'Bạn cần cập nhật thêm thông tin về vị trí mà nội dung đưa ra thông báo tới (Quận , phường , huyện nào...)) để xác nhận người quản lý!');
+                // }
 
                 if (!$new->hasApprove())
                 {
                     return redirect()->back()->with('error','Thời gian phát nội dung không hợp lệ, hãy cập nhật lại trước khi gửi yêu cầu phê duyệt!');
                 }
 
-                $new->approved_by = $manager;
+                $new->approved_by = \Auth::user()->id;
                 $new->status_id = config('attribute.status.inprogress');
                 $new->save();
             }
@@ -686,26 +690,23 @@ class NewsController extends Controller
     {
         $user = \Auth::user();
         $titlePage = trans('app.list_required_approve');
-        if ($user->isCreater())
+        $news = [];
+        
+        if ($user->isApprover())
         {
-            $conds = [
-                'user_id' => $user->id,
-                'status_id' => config('attribute.status.inprogress'),
-            ];
+            $belong_to_place = \Auth::user()->belong_to_place;
+            $original_place_id = \Auth::user()->original_place_id;  
 
-            $where = \App\News::where($conds)
-                ->where('approved_by', '<>', 'NULL');
+            $news = \App\News::whereIn('place_id', function($query) use ($belong_to_place, $original_place_id) {
+                $conds = ['type' => $belong_to_place, 'original_place_id' => $original_place_id];
+                $query->from('places')
+                        ->select('place_id')
+                        ->where($conds);
+            })
+            ->where('status_id', config('attribute.status.inprogress'))
+            ->where('approved_by', '<>', 'NULL')
+            ->where('publish_time', '>=', \Carbon\Carbon::now())->paginate(10);
         }
-        else
-        {
-            $conds = [
-                'approved_by' => $user->id,
-                'status_id' => config('attribute.status.inprogress'),
-            ];
-
-            $where = \App\News::where($conds);
-        }
-        $news = $where->where('publish_time', '>=', \Carbon\Carbon::now())->paginate(10);
 
         return view('news.newsListByRequiredToApprove', compact('news', 'titlePage'));
     }
@@ -739,7 +740,7 @@ class NewsController extends Controller
             return redirect()->back()->with('error', 'Mã nội dung thông báo không được trống');
         }
 
-        return redirect(route('news.show', ['id' => $new->id]))
+        return redirect()->back()
                 ->with('status', $msg ?? '');
     }
 

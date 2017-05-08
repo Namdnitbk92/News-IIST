@@ -113,13 +113,15 @@ class UserController extends Controller
                 $data['belong_to_place'] = $belong_to_place;
             }
 
+            $data['api_token'] = str_random(60);
+
             $user = \App\User::create($data);
         }
         catch(Exception $e)
         {
             \DB::rollBack();
 
-            return redirect()->back()->with('error', 'Tạo mới người dùng loi !!' . $e->getMessage())->withInput();
+            return redirect()->back()->with('error', 'Tạo mới người dùng lỗi !!' . $e->getMessage())->withInput();
         }
 
         \DB::commit();
