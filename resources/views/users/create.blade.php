@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
 @includeIf('partials.result')
+<div id="message" class="alert alert-success hide"></div>
 <form method="POST" name="formUsers" action="{{isset($user) ? route('users.update', ['id' => $user->id]) : route('users.store')}}">
 	{{csrf_field()}}
 	@if(isset($user))
@@ -115,47 +116,66 @@
 		$("select[name=role_id]").select2('val', parseInt('{{ $user->role_id }}'));
 	@endif
 
+	// $("select[name=role_id] option[value='6']").remove();
 
 	$('select[name=place_type]').change(function (e){
 		var type = $('select[name=place_type]').val();
+		var role = $('select[name=role_id]').val();
 		var userPlace = '{{\Auth::user()->belong_to_place}}';
-			if (type === 'city')
-			{
-				$('.guild_list').hide();
-				$('.county_list').hide();
-				$('.city_list').show();
-				$("select[name=role_id]").select2('enable');
-			}
-			else if(type === 'county')
-			{
-				if (userPlace == 'city')
-				{
-					$("select[name=role_id]").select2('val', '6');
-					$("select[name=role_id]").select2('disable');
-				}
-				else
-				{
-					$("select[name=role_id]").select2('enable');
-				}
-								
-				$('.guild_list').hide();
-				$('.county_list').show();
-				$('.city_list').hide();
-			}
-			else if(type === 'guild')
+		if (type === 'city')
+		{
+			$('.guild_list').hide();
+			$('.county_list').hide();
+			$('.city_list').show();
+			$("select[name=role_id]").select2('enable');
+		}
+		else if(type === 'county')
+		{
+			if (userPlace == 'city')
 			{
 				$("select[name=role_id]").select2('val', '6');
 				$("select[name=role_id]").select2('disable');
-				$('.guild_list').show();
-				$('.county_list').hide();
-				$('.city_list').hide();
 			}
-			else 
+			else
 			{
-				$('.guild_list').hide();
-				$('.county_list').hide();
-				$('.city_list').hide();
+				$("select[name=role_id]").select2('enable');
 			}
+							
+			$('.guild_list').hide();
+			$('.county_list').show();
+			$('.city_list').hide();
+		}
+		else if(type === 'guild')
+		{
+			$("select[name=role_id]").select2('val', '6');
+			$("select[name=role_id]").select2('disable');
+			$('.guild_list').show();
+			$('.county_list').hide();
+			$('.city_list').hide();
+		}
+		else 
+		{
+			$('.guild_list').hide();
+			$('.county_list').hide();
+			$('.city_list').hide();
+		}
+		console.log(type, userPlace, role);
+		if (type == userPlace && role == '{{\Auth::user()->role_id}}')
+		{
+			$('#message').removeClass('hide');
+		    $('#message').addClass('show');
+			$('#message').html('<i class="fa fa-remove"></i>&nbsp;&nbsp;Bạn không đủ quyền!');
+	        $('#message').removeClass('alert-success');
+	        $('#message').addClass('alert-danger');
+	        $('.btn-block').attr('disabled', true);
+			// $("select[name=role_id] option[value='6']").remove();
+		}
+		else
+		{
+			$('#message').removeClass('show');
+		    $('#message').addClass('hide');
+			$('.btn-block').attr('disabled', false);
+		}
 	});
 
 	$('span.see-pw').click(function (){

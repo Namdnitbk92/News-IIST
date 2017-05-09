@@ -1,31 +1,9 @@
 <div id="message" class="alert alert-success hide"></div>
 
 <div class="row">
-  <!-- <form id="copyNew" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
-    {{csrf_field()}}
-  </form>
-  <form id="noticeApprove" method="POST" action="{{ route('noticeApprove', ['id' => $new->id]) }}">
-    {{csrf_field()}}
-  </form>
-  <form id="deleteNew" method="POST" action="{{ route('news.destroy', ['id' => $new->id]) }}">
-    {{csrf_field()}}
-    {{ method_field('DELETE') }}
-  </form> -->
   <div class="panel panel-default panel-alt widget-messaging">
     <div class="panel-heading">
         <div class="panel-btns">
-          
-          <!-- @if(Auth::user()->isCreater())
-          <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="{{route('news.edit', ['id' => $new->id])}}"><i class="fa fa-edit "></i></a>&nbsp;
-          <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="copy();"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
-          <a {!! addTooltip(trans('app.makes_required_approve')) !!} class="panel-edit" href="javascript:void(0);" onclick="noticeApprove();"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
-          <a {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew();"><i class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
-          @endif
-          @if(Auth::user()->isApprover())
-          <a {!! addTooltip(trans('app.approve_new')) !!} class="approve-new panel-edit">
-            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-          </a>
-          @endif -->
         </div><!-- panel-btns -->
         <h3 class="panel-title new-title">{{ isset($new) ? $new->title : '' }}</h3>
       </div>
@@ -46,12 +24,16 @@
           <li><i class="fa fa-hand-o-right" aria-hidden="true"></i>  
             <label class="">{{trans('app.status')}} </label>
             <h5 class="pull-right _status">
+            @if(isset($new))
               <span class="new-status label label-{{$new->status_id == 1 ? 'success' : (
                 $new->status_id == 2 ? 'warning' : 'danger'
               )}}">
               {{ isset($new) && $new->status() ? $new->status()->first()->description ?? '' : '' }}
             </span>
-
+            @else
+              <span class="new-status label label-">
+              </span>
+            @endif
             </h5>
           </li>
           <li>
@@ -60,7 +42,6 @@
           </li>
           <li>
               <div class="embed-responsive embed-responsive-16by9">
-                <!-- <iframe class="embed-responsive-item" src="{{isset($new) ? $new->audio_path.'?autoplay=false' : ''}}"></iframe> -->
                 <video class="embed-responsive-item" controls>
                     <source src="{{isset($new) ? $new->audio_path.'?autoplay=false' : ''}}" type="video/mp4">
                 </video>
@@ -86,58 +67,6 @@ function goBack() {
     window.history.back();
 }
 </script>
-<!-- <script type="text/javascript">
-  $('.approve-new').click(function (){
-      $('#myModal').modal('show');
-  });
-
-  function copy()
-  {
-    $('form[id=copyNew]').submit();
-  }
-
-  function noticeApprove()
-  {
-    $('form[id=noticeApprove]').submit();
-  }
-
-  function deleteNew()
-  {
-    $('form[id=deleteNew]').submit();
-  }
-
-  function noticeApprove()
-  {
-    $('form[id=noticeApprove]').submit();
-  }
-
-
-  function doSomething()
-  {
-    $.ajax({
-      url : '{{route("approveNew")}}',
-      method : 'POST',
-      data : {
-        newId : '{{$new->id}}'
-      }
-    }).done(function (res){
-      $('#message').removeClass('hide');
-      $('#message').addClass('show');
-      $('#message').text(res.message);
-      if (res.status == 500)
-      {
-        $('#message').removeClass('alert-success');
-        $('#message').addClass('alert-danger');
-      }
-      else
-      {
-        $('li ._status').empty();
-        $('li ._status').append('<span class="label label-warning">' + res.status_text +'</span>');
-      } 
-    });
-  }
-
-</script> -->
 <style>
   .panel-btns > a {
     font-size:25px;
