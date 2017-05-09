@@ -17,7 +17,24 @@ class UserController extends Controller
         $original_place_id = \Auth::user()->original_place_id;
         $belong_to_place = \Auth::user()->belong_to_place;
         $conds = ['belong_to_place' => $belong_to_place, 'original_place_id' => $original_place_id];
-        $users = \App\User::where($conds)->orderBy('created_at', 'desc')->paginate(5);
+        
+        if ($belong_to_place === 'city')
+        {
+            $condsTemp = ['belong_to_place' => 'county', 'role_id' => 6];
+        }
+        else if($belong_to_place === 'county')
+        {
+            $condsTemp = ['belong_to_place' => 'guild', 'role_id' => 6];
+        }
+
+        $users = \App\User::where($conds);
+
+        if (!empty($condsTemp))
+        {
+            $users = $users->orWhere($condsTemp);
+        }
+
+        $users = $users->orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'Danh sách người dùng';
 
         return view('users.users', compact('users', 'titlePage'));
@@ -57,7 +74,22 @@ class UserController extends Controller
         $original_place_id = \Auth::user()->original_place_id;
         $belong_to_place = \Auth::user()->belong_to_place;
         $conds = ['belong_to_place' => $belong_to_place, 'original_place_id' => $original_place_id];
+
+        if ($belong_to_place === 'city')
+        {
+            $condsTemp = ['belong_to_place' => 'county', 'role_id' => 6];
+        }
+        else if($belong_to_place === 'county')
+        {
+            $condsTemp = ['belong_to_place' => 'guild', 'role_id' => 6];
+        }
+
         $users = \App\User::where($conds);
+
+        if (!empty($condsTemp))
+        {
+            $users = $users->orWhere($condsTemp);
+        }
 
         if (!empty($searchValue))
         {
