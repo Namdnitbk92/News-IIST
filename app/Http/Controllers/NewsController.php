@@ -25,12 +25,10 @@ class NewsController extends Controller
            $query->from('places')
                     ->select('place_id')
                     ->where($conds);
-        })->orderBy('created_at', 'desc')->groupBy('id');
-
-        
+        })->orderBy('created_at', 'desc');
 
         $titlePage = trans('app.news_list');
-        $total = $news->count();
+        $total = 0;
         $news = $news->paginate(5);
         $quantity = count($news);
         $counties = \App\County::all();
@@ -624,10 +622,10 @@ class NewsController extends Controller
                 ->orWhere('sub_title', 'like', '%' . $searchValue . '%')
                 ->orWhere('file_type', 'like', '%' . $searchValue . '%')
                 ->orWhere('reason', 'like', '%' . $searchValue . '%');
-            })->orderBy('created_at', 'desc')->groupBy('id');
+            })->orderBy('created_at', 'desc');
         }
 
-        $total = $news->count();
+        $total = 0;
         $news = $news->paginate(5);
 
         $quantity = count($news);
