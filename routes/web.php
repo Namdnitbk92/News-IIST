@@ -38,11 +38,12 @@ Route::group(['middleware' => 'auth'] , function (){
 	Route::post('/updateNew', 'NewsController@updateNew')->name('updateNew');
 	Route::post('/getPreview', 'HomeController@getPreview')->name('getPreview');
 	Route::post('/getNewDetail', 'NewsController@getNewDetail')->name('getNewDetail');
-	
 
 	Route::group(['middleware' => 'is.users.manager'] , function (){
 		Route::resource('users', 'UserController');
 		Route::get('user/search', 'UserController@search')->name('search_users');
+		Route::post('/getUserDetail', 'UserController@getUserDetail')->name('getUserDetail');
+		Route::post('/updateUser', 'UserController@updateUser')->name('updateUser');
 	});
 
 	Route::get('/profile', 'UserController@profile')->name('profile');

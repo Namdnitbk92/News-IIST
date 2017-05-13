@@ -255,7 +255,8 @@
     {
       fillDataForm(id, action);
     }
-    $('select[name="new_type"]').select2('val', 'basic');$('select[name="new_type"]').trigger('change');
+    $('select[name="new_type"]').select2('val', 'basic');
+    $('select[name="new_type"]').trigger('change');
     $('#newModal').modal('show');
   }
 

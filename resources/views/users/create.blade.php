@@ -1,6 +1,3 @@
-@extends('layouts.app')
-@section('content')
-@includeIf('partials.result')
 <div id="message" class="alert alert-success hide"></div>
 <form method="POST" name="formUsers" action="{{isset($user) ? route('users.update', ['id' => $user->id]) : route('users.store')}}">
 	{{csrf_field()}}
@@ -15,7 +12,7 @@
 	    </div>
 	    <div class="col-sm-6">
 	    	<label class="control-label">{{trans('app.address')}}</label>
-	    	<input placeholder="exp : Nguyen chi thanh - street,etc...." type="text" name="address" class="form-control" value="{{isset($user) ? $user->address : ''}}" required>
+	    	<input placeholder="" type="text" name="address" class="form-control" value="{{isset($user) ? $user->address : ''}}" required>
 	    </div>
 	</div>
 
@@ -86,9 +83,9 @@
 
 	<div class="row mb10">
 	    <div class="col-sm-3">
-	    	<button class="btn btn-success btn-block" type="submit">
-	    	<i class="fa fa-check"></i>&nbsp;
-	    	{{isset($user) ? trans('app.edit_new_entity') : trans('app.create_new_entity') }}</button>    
+	    	<!-- <button class="btn btn-success btn-block" type="submit">
+	    		<i class="fa fa-check"></i>&nbsp;
+	    	</button> -->
 	    </div>
 	</div>    
 </form>
@@ -111,6 +108,25 @@
 	$("#guild").select2({
 	    width: '100%',
 	 });
+
+	function showError(flag)
+	{console.log(flag)
+		if (flag === true)
+		{	
+			$('#message').removeClass('hide');
+		    $('#message').addClass('show');
+			$('#message').html('<i class="fa fa-remove"></i>&nbsp;&nbsp;Bạn không đủ quyền!');
+	        $('#message').removeClass('alert-success');
+	        $('#message').addClass('alert-danger');
+	        $('#btn-block').attr('disabled', true);
+    	}
+    	else
+    	{
+    		$('#message').removeClass('show');
+		    $('#message').addClass('hide');
+			$('#btn-block').attr('disabled', false);
+    	}
+	}
 	
 	@if(isset($user))
 		$("select[name=role_id]").select2('val', parseInt('{{ $user->role_id }}'));
@@ -159,24 +175,30 @@
 			$('.county_list').hide();
 			$('.city_list').hide();
 		}
-		console.log(type, userPlace, role);
+
 		if (type == userPlace && role == '{{\Auth::user()->role_id}}')
 		{
-			$('#message').removeClass('hide');
-		    $('#message').addClass('show');
-			$('#message').html('<i class="fa fa-remove"></i>&nbsp;&nbsp;Bạn không đủ quyền!');
-	        $('#message').removeClass('alert-success');
-	        $('#message').addClass('alert-danger');
-	        $('.btn-block').attr('disabled', true);
-			// $("select[name=role_id] option[value='6']").remove();
+			showError(true);
 		}
 		else
 		{
-			$('#message').removeClass('show');
-		    $('#message').addClass('hide');
-			$('.btn-block').attr('disabled', false);
+			showError(false);
 		}
 	});
+
+	$('select[name=role_id]').change(function (e){
+		var role = $('select[name=role_id]').val();
+		var userPlace = '{{\Auth::user()->belong_to_place}}';
+		
+		if (('county' == userPlace || 'city' == userPlace) && role == 1)
+		{
+			showError(true);
+		}
+		else
+		{
+			showError(false);
+		}
+	})
 
 	$('span.see-pw').click(function (){
 		var $input = $('input[name=password]');
@@ -203,4 +225,3 @@
 		  }
 	 });
 </script>
-@endsection

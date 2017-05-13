@@ -14,16 +14,33 @@ class UserController extends Controller
      */
     public function index()
     {
+        // \App\User::create([
+        //     'name' => 'adminTP',
+        //     'api_token' => str_random(60),
+        //     'email' => 'adminTP@test.com',
+        //     'password' => bcrypt('123123'),
+        //     'role_id' => 6,
+        //     'original_place_id' => 1,
+        //     'belong_to_place' => 'city',
+        // ]);
+
+        $roles = \App\Role::all();
+        $places = \Auth::user()->getListPlaceByUser();
+        $counties = $places['counties'];
+        $guilds = $places['guilds'];
+        $cities = $places['cities'];
+
         $original_place_id = \Auth::user()->original_place_id;
         $belong_to_place = \Auth::user()->belong_to_place;
         $conds = ['belong_to_place' => $belong_to_place, 'original_place_id' => $original_place_id];
-        
         if ($belong_to_place === 'city')
         {
+            $tableChild = 'county';
             $condsTemp = ['belong_to_place' => 'county', 'role_id' => 6];
         }
         else if($belong_to_place === 'county')
         {
+            $tableChild = 'guild';
             $condsTemp = ['belong_to_place' => 'guild', 'role_id' => 6];
         }
 
@@ -31,13 +48,21 @@ class UserController extends Controller
 
         if (!empty($condsTemp))
         {
-            $users = $users->orWhere($condsTemp);
+            $users = $users->orWhere(function ($query) use ($condsTemp, $original_place_id, $tableChild) {
+                $query->where($condsTemp)
+                ->whereIn('original_place_id', function ($querySub) use ($original_place_id, $tableChild){
+                    $querySub->select('id')
+                    ->from($tableChild)
+                    ->where(($tableChild == 'county' ? 'city_id' : 'county_id'), $original_place_id)
+                    ->get();
+                });
+            });
         }
 
         $users = $users->orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'Danh sách người dùng';
 
-        return view('users.users', compact('users', 'titlePage'));
+        return view('users.users', compact('users', 'titlePage', 'roles', 'cities', 'guilds', 'counties'));
     }
 
     /**
@@ -69,7 +94,14 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-        // $users = \App\User::search($request->search)->orderBy('created_at', 'desc')->paginate(10);
+        $roles = \App\Role::all();
+        $places = \Auth::user()->getListPlaceByUser();
+        $counties = $places['counties'];
+        $guilds = $places['guilds'];
+        $cities = $places['cities'];
+
+
+
         $searchValue = $request->search;
         $original_place_id = \Auth::user()->original_place_id;
         $belong_to_place = \Auth::user()->belong_to_place;
@@ -77,10 +109,12 @@ class UserController extends Controller
 
         if ($belong_to_place === 'city')
         {
+            $tableChild = 'county';
             $condsTemp = ['belong_to_place' => 'county', 'role_id' => 6];
         }
         else if($belong_to_place === 'county')
         {
+            $tableChild = 'guild';
             $condsTemp = ['belong_to_place' => 'guild', 'role_id' => 6];
         }
 
@@ -88,7 +122,15 @@ class UserController extends Controller
 
         if (!empty($condsTemp))
         {
-            $users = $users->orWhere($condsTemp);
+            $users = $users->orWhere(function ($query) use ($condsTemp, $original_place_id, $tableChild) {
+                $query->where($condsTemp)
+                ->whereIn('original_place_id', function ($querySub) use ($original_place_id, $tableChild){
+                    $querySub->select('id')
+                    ->from($tableChild)
+                    ->where(($tableChild == 'county' ? 'city_id' : 'county_id'), $original_place_id)
+                    ->get();
+                });
+            });
         }
 
         if (!empty($searchValue))
@@ -104,7 +146,7 @@ class UserController extends Controller
         $quantity = count($users);
         $titlePage = 'Danh sách người dùng';
 
-        return view('users.users', compact('users', 'quantity'));
+        return view('users.users', compact('users', 'quantity', 'titlePage', 'roles', 'cities', 'guilds', 'counties'));
     }
 
     public function editProfile()
@@ -127,7 +169,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UsersRequest $request)
+    public function store(Request $request)
     {
         try
         {
@@ -226,23 +268,39 @@ class UserController extends Controller
     {
         try
         {
+            $belong_to_place = \Auth::user()->belong_to_place;
+            $original_place_id = \Auth::user()->original_place_id;
+            
             \DB::beginTransaction();
             $user = \App\User::find($id);
-            $pw = $request->get('password');
             $data = $request->all();
             if ($request->has('password'))
-            {
+            {   
+                $pw = $request->get('password');
                 $data['password'] = bcrypt($pw);
             }
 
+            $hasVal = false;
             foreach ($request->get('original_place_id') as $key => $value) {
                 if (!empty($value))
                 {
                     $data['original_place_id'] = $value;
+                    $hasVal = true;
+                    break;
                 }
             }
 
             $data['belong_to_place'] = $request->get('place_type');
+
+            if(!$hasVal)
+            {
+                $data['original_place_id'] = $original_place_id;
+            }
+
+            if(empty($data['belong_to_place']))
+            {
+                $data['belong_to_place'] = $belong_to_place;
+            }
 
             $user->update($data);
         }
@@ -283,4 +341,28 @@ class UserController extends Controller
 
         return redirect()->back()->with('status', 'Xóa thành công!');
     }
+
+    public function getUserDetail(Request $request)
+    {
+        if ($request->ajax() && $request->has('userId'))
+        {
+            $user = \App\User::find($request->get('userId'));
+
+            return response()->json([
+                'errorCode' => 0,
+                'user' => isset($user) ? json_encode($user) : [],
+            ]);
+        }
+
+        return response()->json([
+            'errorCode' => 0,
+            'user' => [],
+        ]);
+    }
+
+    public function updateUser(Request $request)
+    {
+        return $this->update($request, $request->get('userId'));
+    }
+
 }
