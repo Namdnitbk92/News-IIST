@@ -64,8 +64,9 @@ class NewsController extends Controller
         
         $titlePage = trans('app.list_available_approve');
         $quantity = count($news);
-
-        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities'));
+        $listAvaiableApprove = true;
+        
+        return view('news.newsList', compact('news', 'titlePage', 'quantity', 'counties', 'guilds', 'cities', 'listAvaiableApprove'));
     }
 
     private function genrenateFormQuickCreate()

@@ -6,10 +6,12 @@
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
+    @if (!isset($listAvaiableApprove))
       <form style="float:right;" method="get" action="{{route('search_news')}}" id="search">
       {{ csrf_field() }}
         <input name="search" type="text" size="40" placeholder="Tìm kiếm..." />
       </form>
+    @endif
       <!-- <form style="float:right;" action="{{route('search_news')}}" method="GET" name="searchForm">
         {{ csrf_field() }}
         <input type="search" id="search" name="search"  placeholder="">
@@ -43,7 +45,7 @@
               <th>{{trans('app.description')}}</th>
               <th>{{trans('app.file_type')}}</th>
               <th>{{trans('app.status')}}</th>
-              <th>Lý do từ chối</th>
+              <th style="width:20%;">Lý do từ chối</th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -80,7 +82,7 @@
                     </span>
                   @endif
     	          </td>
-                <td>{{$new->reason ?? ''}}</td>
+                <td style="width:20%;">{{$new->reason ?? ''}}</td>
                 <td style="font-size:20px;width:20%;">
                   <form id="copyNew{{$new->id}}" method="POST" action="{{ route('copyNew', ['id' => $new->id]) }}">
                     {{csrf_field()}}
@@ -99,7 +101,9 @@
                       <a {!! addTooltip(trans('app.update_new')) !!} class="panel-edit" href="javascript:void(0)" onclick="quickNews('{{$new->id}}')"><i class="fa fa-edit"></i></a>&nbsp;
                       @endif
                       <a {!! addTooltip(trans('app.copy_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="quickNews('{{$new->id}}', 'copy');"><i class="fa fa-files-o" aria-hidden="true"></i></a>&nbsp;
+                      @if($new->status_id != 2)
                       <a  {!! addTooltip(trans('app.delete_new')) !!} class="panel-edit" href="javascript:void(0);" onclick="deleteNew('{{$new->id}}');"><i style="color: red;" class="fa fa-trash-o" aria-hidden="true"></i></a>&nbsp;
+                      @endif
                       @endif
                       @if(Auth::user()->isApprover())
                       <a {!! addTooltip(trans('app.approve_new')) !!} class="approve-new panel-edit">
@@ -354,6 +358,13 @@
   }
 
 </script>
+<style>
+  .table thead > tr > th {
+    background: #f0ad4e;
+    color : white;
+    font-weight: bold;
+  }
+</style>
 
 @includeIf('partials.search_styles')
 @endsection

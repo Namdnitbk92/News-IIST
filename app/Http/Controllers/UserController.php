@@ -100,8 +100,6 @@ class UserController extends Controller
         $guilds = $places['guilds'];
         $cities = $places['cities'];
 
-
-
         $searchValue = $request->search;
         $original_place_id = \Auth::user()->original_place_id;
         $belong_to_place = \Auth::user()->belong_to_place;
@@ -118,11 +116,19 @@ class UserController extends Controller
             $condsTemp = ['belong_to_place' => 'guild', 'role_id' => 6];
         }
 
-        $users = \App\User::where($conds);
+        // if (!empty($searchValue))
+        // {
+            $users = \App\User::where(function($query) use ($searchValue) {
+                $query->where('name', 'like', '%' . $searchValue . '%')
+                ->orWhere('email', 'like', '%' . $searchValue . '%');
+            });
+        // }
+
+        $users = $users->where($conds);
 
         if (!empty($condsTemp))
         {
-            $users = $users->orWhere(function ($query) use ($condsTemp, $original_place_id, $tableChild) {
+            $users = $users->orWhere(function ($query) use ($condsTemp, $original_place_id, $tableChild, $searchValue) {
                 $query->where($condsTemp)
                 ->whereIn('original_place_id', function ($querySub) use ($original_place_id, $tableChild){
                     $querySub->select('id')
@@ -133,15 +139,7 @@ class UserController extends Controller
             });
         }
 
-        if (!empty($searchValue))
-        {
-            $users = $users->where(function($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                ->orWhere('email', 'like', '%' . $searchValue . '%');
-            })->orderBy('created_at', 'desc');
-        }
-
-        $users = $users->paginate(5);
+        $users = $users->orderBy('created_at', 'desc')->paginate(5);
 
         $quantity = count($users);
         $titlePage = 'Danh sách người dùng';

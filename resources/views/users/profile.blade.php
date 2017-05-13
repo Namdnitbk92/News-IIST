@@ -23,7 +23,7 @@
             @endif
             <div class="mb20"></div>
             
-            <button onclick="editProfile();" class="btn btn-success mr5"><i class="fa fa-edit"></i> Chỉnh sửa thông tin người dùng</button>
+            <!-- <button onclick="editProfile();" class="btn btn-success mr5"><i class="fa fa-edit"></i> Chỉnh sửa thông tin người dùng</button> -->
           </div><!-- profile-header -->
           
           <!-- Nav tabs -->

@@ -46,9 +46,9 @@
                   $new->status_id == 2 ? 'warning' : 'danger'
                 )}}">{{ (is_null($new->status()) || is_null($new->status()->first())) ? '' : $new->status()->first()->description }}</span>
 	          </td>
-	          <td class="table-action-hide" style="font-size:20px;">
-                  <a {!! addTooltip('Xem chi tiết') !!} href="{{route('news.show', ['id' => $new->id])}}" style="opacity: 0;"><i class="fa fa-info"></i></a>
-                   <a href="javascript:void(0)" {!! addTooltip('Hủy phê duyệt') !!}  onclick="confirmApprove('{{$new->id}}')" class="delete-row" style="opacity: 0;">
+	          <td class="" style="font-size:20px;">
+                  <!-- <a {!! addTooltip('Xem chi tiết') !!} href="{{route('news.show', ['id' => $new->id])}}" style="opacity: 0;"><i class="fa fa-info"></i></a> -->
+                   <a href="javascript:void(0)" {!! addTooltip('Hủy phê duyệt') !!}  onclick="confirmApprove('{{$new->id}}')" class="delete-row">
                     <i class="fa fa-trash-o"></i>
                    </a>
                     <a {!! addTooltip(trans('app.approve_new')) !!} onclick="confirmOkApprove('{{$new->id}}')" class="approve-new panel-edit">
@@ -103,11 +103,11 @@
 
 <script type="text/javascript">
 	// Show aciton upon row hover
-    jQuery('#countyTable tbody tr').hover(function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 1});
-    },function(){
-      jQuery(this).find('.table-action-hide a').animate({opacity: 0});
-    });
+    // jQuery('#countyTable tbody tr').hover(function(){
+    //   jQuery(this).find('.table-action-hide a').animate({opacity: 1});
+    // },function(){
+    //   jQuery(this).find('.table-action-hide a').animate({opacity: 0});
+    // });
 
     function cancelApprove()
     {
@@ -166,5 +166,11 @@
       }
 
 </script>
-
+<style>
+  .table thead > tr > th {
+    background: #f0ad4e;
+    color : white;
+    font-weight: bold;
+  }
+</style>
 @endsection

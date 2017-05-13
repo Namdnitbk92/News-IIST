@@ -110,7 +110,7 @@
 	 });
 
 	function showError(flag)
-	{console.log(flag)
+	{
 		if (flag === true)
 		{	
 			$('#message').removeClass('hide');
@@ -175,7 +175,6 @@
 			$('.county_list').hide();
 			$('.city_list').hide();
 		}
-
 		if (type == userPlace && role == '{{\Auth::user()->role_id}}')
 		{
 			showError(true);
@@ -189,9 +188,9 @@
 	$('select[name=role_id]').change(function (e){
 		var role = $('select[name=role_id]').val();
 		var userPlace = '{{\Auth::user()->belong_to_place}}';
-		
-		if (('county' == userPlace || 'city' == userPlace) && role == 1)
-		{
+		var type = $('select[name=place_type]').val();
+		if ((('county' == userPlace || 'city' == userPlace) && role == 1) || (role == 6 && type == userPlace) || (role == 6 && userPlace === 'guild'))
+		{console.log('vao')
 			showError(true);
 		}
 		else
