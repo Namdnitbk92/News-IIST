@@ -241,6 +241,19 @@
       $('#newsForm').attr('action', '{{route("updateNew")}}')
     }
 
+    var audioFile = $('input[name=audio-file]').val();
+    var files_type = $('#file_type').val();
+
+    if(!audioFile && (files_type === 'audio' || files_type === 'video'))
+    {
+      $('.show-audio-error').fadeIn();
+      return;
+    }
+    else
+    {
+      $('.show-audio-error').fadeOut();
+    }
+
     $('#newsForm').submit();
   })
 

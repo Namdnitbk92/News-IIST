@@ -11,6 +11,15 @@ $(document).ready(function(){
 	    }
 	 });
 
+    $('input[name=audio-file]').change(function(){
+      var value = $(this).val();
+
+      if(!value)
+        $('.show-audio-error').fadeIn();
+      else
+        $('.show-audio-error').fadeOut();
+    })
+
 	  jQuery(".select2").select2({
 	    width: '100%',
 	    minimumResultsForSearch: -1
@@ -28,8 +37,12 @@ $(document).ready(function(){
       $('.btn-action-new').text('Tạo mới nội dung');
     })
 
+     $('input[name=audio-file]').rules('add', {
+          required: true,
+      })
 
     $('#file_type').change(function (e){
+
       type = $(this).val();
       if(type === 'text')
       {

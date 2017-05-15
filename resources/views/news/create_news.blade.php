@@ -102,11 +102,17 @@
                       <div class="input-group files-upload" >
                           <label class="input-group-btn">
                               <span class="btn btn-primary">
-                                  <i class="fa fa-upload"></i>&nbsp;Chọn file&hellip; <input type="file" name="audio-file" style="display: none;" required>
+                                  <i class="fa fa-upload"></i>&nbsp;Chọn file&hellip; <input required="" type="file" name="audio-file" style="display: none;">
                               </span>
                           </label>
                           <input type="text" class="form-control" readonly>
                       </div>
+                  </div>
+                  <div class="form-group show-audio-error" style="display:none;">
+                    <label class="col-sm-4"></label>
+                    <div class="col-sm-8">
+                      <label class="" style="color:red;">Trường bắt buộc.</span>
+                    </div>
                   </div>
               </div>
               <div class="form-group {{ addErrorClass($errors, 'audio_text') }}">

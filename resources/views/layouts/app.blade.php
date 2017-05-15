@@ -236,7 +236,6 @@
 
   localStorage.clear();
 
-
   $.extend( $.validator.messages, {
     required: "Trường bắt buộc.",
     remote: "Hãy sửa cho đúng.",
