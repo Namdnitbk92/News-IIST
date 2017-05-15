@@ -28,7 +28,7 @@ $(document).ready(function(){
     $('button[type=reset]').click(function (){
       $('select[name="new_type"]').select2('val', 'none');$('select[name="new_type"]').trigger('change');
       $('input[name=title]').val('');
-      $('input[name=sub_title]').val('');
+      $('textarea[name=sub_title]').val('');
       $('#file_type').select2('val', "");
       var action = $('button[name=btnCreate]');
       action.attr('action', 'create');
@@ -195,6 +195,12 @@ function doSomething()
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; 
 var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0,-1);
 document.getElementById("publishTime").defaultValue = localISOTime;
+
+$('#newModal').on('hidden.bs.modal', function () {
+  $('#newsForm')[0].reset();
+  $('#file_type').select2('val', '');
+  $('#file_type').trigger('change');
+})
 
 </script>
 @endsection

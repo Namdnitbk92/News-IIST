@@ -601,10 +601,8 @@ class NewsController extends Controller
 
     public function search(Request $request)
     {
-        // $news = \App\News::search($request->search)->where('id', 1)
-        //         ->orderBy('created_at', 'desc')->paginate(10);
-
         $searchValue = $request->search;
+        $searchValue = !empty($searchValue) ? trim($searchValue) : '';
 
         $belong_to_place = \Auth::user()->belong_to_place;
         $original_place_id = \Auth::user()->original_place_id;  

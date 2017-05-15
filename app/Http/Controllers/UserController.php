@@ -101,6 +101,7 @@ class UserController extends Controller
         $cities = $places['cities'];
 
         $searchValue = $request->search;
+        $searchValue = !empty($searchValue) ? trim($searchValue) : '';
         $original_place_id = \Auth::user()->original_place_id;
         $belong_to_place = \Auth::user()->belong_to_place;
         $conds = ['belong_to_place' => $belong_to_place, 'original_place_id' => $original_place_id];

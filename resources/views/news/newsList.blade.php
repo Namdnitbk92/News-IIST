@@ -40,7 +40,6 @@
       <table id="table" class="table table-hover table-mc-light-blue table-bordered table-stripped">
           <thead>
             <tr>
-              <th>{{trans('app.id')}}</th>
               <th>{{trans('app.title')}}</th>
               <th>{{trans('app.description')}}</th>
               <th>{{trans('app.file_type')}}</th>
@@ -54,7 +53,6 @@
           	@foreach($news as $new)
     			     <!-- <tr onclick="redirect('{{$new->id}}')"> -->
                <tr>
-    	          <td data-title="ID">{{ $new->id }}</td>
     	          <td data-title="Title">{{ $new->title }}</td>
     	          <td data-title="SubTitle">
     	            {{ $new->sub_title }}
@@ -117,6 +115,8 @@
                 </td>
     	        </tr>
     		    @endforeach
+          @else
+          <tr><td colspan="6" style="text-align:center;">Không tìm thấy bản ghi</td></tr>
           @endif  
           </tbody>
         </table>
@@ -200,7 +200,7 @@
       $('.modal-title').text('Sửa nội dung');
       $('.btn-action-new').text('Sửa nội dung');
       $('input[name=title]').val(res.title);
-      $('input[name=sub_title]').val(res.sub_title ? res.sub_title : '');
+      $('textarea[name=sub_title]').val(res.sub_title ? res.sub_title : '');
       $('textarea[name=audio_text]').val(res.audio_text ? res.audio_text : '');
       $('select[name=file_type]').val(res.file_type ? res.file_type : '');
       $('select[name=file_type]').select2('val', (res.file_type ? res.file_type : 'text'));
@@ -348,7 +348,6 @@
     }).done(function(res)
     {
         res = res.new ? JSON.parse(res.new) : res;
-        console.log(res);
        $('.new-title').text(res.title ? res.title : '');
        $('.new-created').text(res.created_at ? res.created_at : ''); 
        $('.new-username').text(res.username ? res.username : res.user_id); 

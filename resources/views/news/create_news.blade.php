@@ -39,7 +39,8 @@
             <div class="form-group">
               <label class="col-sm-4"><i class="fa fa-file-text-o" aria-hidden="true"></i>&nbsp;&nbsp;{{trans('app.description')}}</label>
               <div class="col-sm-8">
-                <input placeholder="" type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : old('sub_title')}}"/>
+                <!-- <input placeholder="" type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : old('sub_title')}}"/> -->
+                <textarea class="form-control" rows="5" name="sub_title" id="comment" value="{{isset($new) ? $new->sub_title : old('sub_title')}}" required></textarea>
               </div>
             </div>
 
