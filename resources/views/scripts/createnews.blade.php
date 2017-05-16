@@ -2,7 +2,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	// With Form Validation Wizard
-  	var $validator = jQuery("#newsForm, #newsFormQuick").validate({
+  	var $validatorNewsForm = jQuery("#newsForm").validate({
 	    highlight: function(element) {
 	      jQuery(element).closest('.form-group').removeClass('has-success').addClass('has-error');
 	    },
@@ -10,6 +10,15 @@ $(document).ready(function(){
 	      jQuery(element).closest('.form-group').removeClass('has-error');
 	    }
 	 });
+
+  var $validatorNewsFormQuick = jQuery("#newsFormQuick").validate({
+    highlight: function(element) {
+      jQuery(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+    },
+    success: function(element) {
+      jQuery(element).closest('.form-group').removeClass('has-error');
+    }
+ });
 
     $('input[name=audio-file]').change(function(){
       var value = $(this).val();
@@ -26,7 +35,8 @@ $(document).ready(function(){
 	  });
 
     $('button[type=reset]').click(function (){
-      $('select[name="new_type"]').select2('val', 'none');$('select[name="new_type"]').trigger('change');
+      $('select[name="new_type"]').select2('val', 'none');
+      $('select[name="new_type"]').trigger('change');
       $('input[name=title]').val('');
       $('textarea[name=sub_title]').val('');
       $('#file_type').select2('val', "");
@@ -42,7 +52,7 @@ $(document).ready(function(){
       })
 
     $('#file_type').change(function (e){
-
+      $('input[name=name-audio-files]').val('');
       type = $(this).val();
       if(type === 'text')
       {
@@ -53,14 +63,14 @@ $(document).ready(function(){
       else if(type === 'audio')
       {
         $('.files-upload').fadeIn();
-        $('i.xxx').text(' Audio file');
+        $('i.xxx').html(' Audio file <label style="color:red;">*</label>');
         $('._files').fadeIn();
         $('.describe_news').fadeOut();
       }
       else if(type === 'video')
       {
         $('.files-upload').fadeIn();
-        $('i.xxx').text(' Video file');
+        $('i.xxx').html(' Video file <label style="color:red;">*</label>');
         $('._files').fadeIn();
         $('.describe_news').fadeOut();
       } else 
@@ -114,33 +124,6 @@ $(document).ready(function(){
           });
       });
 
-      //   $('#county').change(function (){
-      //     $.ajax({
-      //         url : '{{ route("getGuildList") }}',
-      //         method : 'GET',
-      //         data : {
-      //             'county_id' : $('#county').val(),
-      //             '_token' : '{{ csrf_token() }}'
-      //         },
-      //     }).done(function (response){
-      //       guilds = response.guilds;
-
-      //       if (guilds && guilds.length)
-      //       {
-      //         for (index in guilds)
-      //         {
-      //           $('#guild').show(500);
-      //           $('#guild').empty();
-      //           $('#guild').append('<option value="' + guilds[index].id + '">' + guilds[index].name + '</option>');
-      //         }
-      //       }
-      //       else 
-      //       {
-      //         $('#guild').empty();
-      //       }
-      //     });
-      // });
-
      $('#progressWizard .finish').click(function (){
         $('#myModal').modal('show');
      });
@@ -157,6 +140,20 @@ $(document).ready(function(){
             displayPlace();
          })
      @endif
+
+    $('#newModal').on('hidden.bs.modal', function () {
+      $('#newsForm')[0].reset();
+      $('#newsFormQuick')[0].reset();
+      $('#file_type').select2('val', '');
+      $('#file_type').trigger('change');
+      $('select[name="new_type"]').select2('val', 'none');
+      $('select[name="new_type"]').trigger('change');
+      $validatorNewsFormQuick.resetForm();
+      $validatorNewsForm.resetForm();
+      $('select[name="new_type"]').select2('enable');
+      $('input[name=name-audio-files]').val('');
+      setCurrentTime();
+    })
 });
 
 function displayPlace(place, original_place_id)
@@ -192,15 +189,15 @@ function doSomething()
   	form = document.getElementById("newsForm").submit();
 }
 
-var tzoffset = (new Date()).getTimezoneOffset() * 60000; 
-var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0,-1);
-document.getElementById("publishTime").defaultValue = localISOTime;
+function setCurrentTime()
+{
+  var tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+  var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0,-1);
+  document.getElementById("publishTime").defaultValue = localISOTime;
+  document.getElementById("publishTimeQuick").defaultValue = localISOTime;
+}
 
-$('#newModal').on('hidden.bs.modal', function () {
-  $('#newsForm')[0].reset();
-  $('#file_type').select2('val', '');
-  $('#file_type').trigger('change');
-})
-
+setCurrentTime();
+// $('#newModal').modal({backdrop: 'static', keyboard: false})  
 </script>
 @endsection

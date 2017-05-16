@@ -31,7 +31,8 @@
               {{ isset($new) && $new->status() ? $new->status()->first()->description ?? '' : '' }}
             </span>
             @else
-              <span class="new-status label label-">
+              <span class="new-status label label-info">
+                
               </span>
             @endif
             </h5>

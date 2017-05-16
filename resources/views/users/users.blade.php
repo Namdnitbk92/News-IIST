@@ -76,7 +76,7 @@
     </table>
   </div>
  {{ $users->render() }}
-
+ <div style="font-size:17px;font-weight:bold;float:right;padding:5px;">Tổng số <label class="label label-info">{{$total ?? 0}}</label> bản ghi</div>
    </div>
 </div>
 <?php unset($user);?>
@@ -181,6 +181,12 @@
       $('select[name=place_type]').select2('enable', true);
       $('.modal-title-user').text('Thêm người dùng');
       $('#btn-block').attr('action', 'create');
+      $('select[name^=original_place_id]').select2('val', '');
+      $('select[name=place_type]').select2('val', '');
+      $('select[name=place_type]').trigger('change');
+      $('select[name=role_id]').trigger('change');
+      
+      $validator.resetForm();
     }
 
     function popupNewUser(id, action)

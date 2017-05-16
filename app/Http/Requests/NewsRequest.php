@@ -11,31 +11,31 @@ class NewsRequest extends BaseRequest
 	 *
 	 * @return array
 	 */
-	public function rules()
-	{
-	    return [
-	    ];
-	}
+	// public function rules()
+	// {
+	//     return [
+	//     ];
+	// }
 
-	public function getRules($request)
+	public function rules()
 	{
 		$rules = [
 	        'title' => 'required|max:255',
 	        'publish_time' => 'required',
 	        'attach-file' => 'file|mimetypes:application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 	    ];
-	    $filesType = $request->get('file_type');
+	    $filesType = \Request::get('file_type');
 	    if ($filesType === 'text')
 	    {
-	    	$rules = array_merge($rules, ['audio_text' => 'required']);
+	    	// $rules = array_merge($rules, ['audio_text' => 'required']);
 	    }
 	    else if($filesType === 'audio')
 	    {
-	    	$rules = array_merge($rules, ['audio-file' => 'required|file|mimetypes:audio/mpeg,audio/mp4']);
+	    	$rules = array_merge($rules, ['audio-file' => 'file|mimetypes:audio/mpeg,audio/mp4']);
 	    }
 	    else if($filesType === 'video')
 	    {
-	    	$rules = array_merge($rules, ['audio-file' => 'required|file|mimetypes:video/avi,video/mpeg,video/mp4']);
+	    	$rules = array_merge($rules, ['audio-file' => 'file|mimetypes:video/avi,video/mpeg,video/mp4']);
 	    }
 
 	    return $rules;

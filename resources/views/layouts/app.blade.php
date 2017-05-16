@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/libs.css') }}">
     <!-- Scripts -->
     <script src="{{ asset('js/libs.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),

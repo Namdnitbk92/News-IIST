@@ -7,10 +7,10 @@
 <div class="panel panel-success">
   <div class="panel-heading">
     <div class="panel-btns">
-    <form style="float:right;" method="get" action="" id="search">
+    <!-- <form style="float:right;" method="get" action="" id="search">
       {{ csrf_field() }}
         <input name="search" type="text" size="40" placeholder="Tìm kiếm..." />
-      </form>
+      </form> -->
     </div><!-- panel-btns -->
     <h3 class="panel-title">{{trans('app.list')}}</h3>
   </div>
@@ -27,7 +27,6 @@
   <table id="countyTable" class="table table-hover table-mc-light-blue table-bordered table-stripped">
       <thead>
         <tr>
-          <th>{{trans('app.id')}}</th>
           <th>{{trans('app.title')}}</th>
           <th>{{trans('app.description')}}</th>
           <th>{{trans('app.status')}}</th>
@@ -38,7 +37,6 @@
       @if(isset($news) && count($news) > 0)
       	@foreach($news as $new)
 		     <tr>
-	          <td data-title="ID">{{ $new->id }}</td>
 	          <td data-title="Title">{{ $new->title }}</td>
             <td data-title="Subtitle">{{ $new->sub_title }}</td>
 	          <td data-title="Status">
@@ -62,12 +60,14 @@
 	          </td>
 	        </tr>
 		    @endforeach
+      @else 
+      <tr><td colspan="5" style="text-align:center;">Không tìm thấy bản ghi</td></tr>
       @endif  
       </tbody>
     </table>
   </div>
- {{ $news->render() }}
-
+ {{ isset($news) ? $news->render() : void}}
+ <div style="font-size:17px;font-weight:bold;float:right;padding:5px;">Tổng số <label class="label label-info">{{$total ?? 0}}</label> nội dung</div>
    </div>
 </div>
 
@@ -82,11 +82,11 @@
         <h4 class="modal-title"><i class="fa fa-information">Chú ý</i></h4>
       </div>
       <div class="modal-body">
-      <form class="form" >
+      <form class="form" id="cancelApprove" novalidate="novalidate">
         <div class="form-group describe_news {{ addErrorClass($errors, 'reason') }}">
             <label class="col-sm-4"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Lý do từ chối duyệt  {!!isRequired()!!}</label>
             <div class="col-sm-8">
-              <textarea class="form-control" rows="5" name="reason" id="comment" value="{{isset($new) ? $new->audio_text : old('reason')}}"></textarea>
+              <textarea class="form-control" rows="5" name="reason" id="comment" value="{{isset($new) ? $new->audio_text : old('reason')}}" required></textarea>
               {!! displayFieldError($errors, 'reason') !!}
             </div>
           </div>
@@ -108,6 +108,15 @@
     // },function(){
     //   jQuery(this).find('.table-action-hide a').animate({opacity: 0});
     // });
+    
+  var $validator = jQuery("#cancelApprove").validate({
+      highlight: function(element) {
+        jQuery(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+      },
+      success: function(element) {
+        jQuery(element).closest('.form-group').removeClass('has-error');
+      }
+   });
 
     function cancelApprove()
     {
@@ -137,8 +146,8 @@
       localStorage.setItem('newId', id);
     }
 
-     function sendApprove(id)
-      {
+    function sendApprove(id)
+    {
         $.ajax({
           url : '{{route("approveNew")}}',
           method : 'POST',
@@ -164,7 +173,6 @@
             },2500);
         });
       }
-
 </script>
 <style>
   .table thead > tr > th {

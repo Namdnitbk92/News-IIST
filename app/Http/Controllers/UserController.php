@@ -14,16 +14,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        // \App\User::create([
-        //     'name' => 'adminTP',
-        //     'api_token' => str_random(60),
-        //     'email' => 'adminTP@test.com',
-        //     'password' => bcrypt('123123'),
-        //     'role_id' => 6,
-        //     'original_place_id' => 1,
-        //     'belong_to_place' => 'city',
-        // ]);
-
         $roles = \App\Role::all();
         $places = \Auth::user()->getListPlaceByUser();
         $counties = $places['counties'];
@@ -59,10 +49,11 @@ class UserController extends Controller
             });
         }
 
+        $total = $users->count();
         $users = $users->orderBy('created_at', 'desc')->paginate(5);
         $titlePage = 'Danh sách người dùng';
 
-        return view('users.users', compact('users', 'titlePage', 'roles', 'cities', 'guilds', 'counties'));
+        return view('users.users', compact('users', 'titlePage', 'roles', 'cities', 'guilds', 'counties', 'total'));
     }
 
     /**
@@ -119,10 +110,10 @@ class UserController extends Controller
 
         // if (!empty($searchValue))
         // {
-            $users = \App\User::where(function($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                ->orWhere('email', 'like', '%' . $searchValue . '%');
-            });
+        $users = \App\User::where(function($query) use ($searchValue) {
+            $query->where('name', 'like', '%' . $searchValue . '%')
+            ->orWhere('email', 'like', '%' . $searchValue . '%');
+        });
         // }
 
         $users = $users->where($conds);
@@ -136,16 +127,21 @@ class UserController extends Controller
                     ->from($tableChild)
                     ->where(($tableChild == 'county' ? 'city_id' : 'county_id'), $original_place_id)
                     ->get();
+                })
+                ->where(function($subQuery) use ($searchValue) {
+                    $subQuery->where('name', 'like', '%' . $searchValue . '%')
+                        ->orWhere('email', 'like', '%' . $searchValue . '%');
                 });
             });
         }
 
+        $total = $users->count();
         $users = $users->orderBy('created_at', 'desc')->paginate(5);
 
         $quantity = count($users);
         $titlePage = 'Danh sách người dùng';
 
-        return view('users.users', compact('users', 'quantity', 'titlePage', 'roles', 'cities', 'guilds', 'counties'));
+        return view('users.users', compact('users', 'quantity', 'titlePage', 'roles', 'cities', 'guilds', 'counties', 'total'));
     }
 
     public function editProfile()
@@ -205,6 +201,18 @@ class UserController extends Controller
             $data['api_token'] = str_random(60);
 
             $user = \App\User::create($data);
+        }
+        catch(\Illuminate\Database\QueryException $pdoe)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Tạo mới người dùng lỗi !!' . $pdoe->getMessage())->withInput();
+        }
+        catch(PDOException $pdo)
+        {
+            \DB::rollBack();
+
+            return redirect()->back()->with('error', 'Tạo mới người dùng lỗi !!' . $pdo->getMessage())->withInput();
         }
         catch(Exception $e)
         {

@@ -28,7 +28,7 @@ class NewsController extends Controller
         })->orderBy('created_at', 'desc');
 
         $titlePage = trans('app.news_list');
-        $total = 0;
+        $total = $news->count();
         $news = $news->paginate(5);
         $quantity = count($news);
         $counties = \App\County::all();
@@ -116,7 +116,7 @@ class NewsController extends Controller
                         'audio_text' => $request->get('audio_text'),
                     ],
                     [
-                        'publish_time' => \Carbon\Carbon::now(),
+                        'publish_time' => $request->has('publish_time') ? $request->get('publish_time') : \Carbon\Carbon::now(),
                         'status_id' => 1,
                         'user_id' => \Auth::user()->id,
                         'place_id' => $places->id,
@@ -144,7 +144,7 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(NewsRequest $request)
     {
         try
         {
@@ -169,7 +169,6 @@ class NewsController extends Controller
                     if ($mimeType === 'text/plain')
                     {
                         $result = file_exists($file) ? file_get_contents($file) : '';
-
                     }
                     else
                     {
@@ -624,7 +623,7 @@ class NewsController extends Controller
             })->orderBy('created_at', 'desc');
         }
 
-        $total = 0;
+        $total = $news->count();
         $news = $news->paginate(5);
 
         $quantity = count($news);
@@ -717,6 +716,7 @@ class NewsController extends Controller
         $user = \Auth::user();
         $titlePage = trans('app.list_required_approve');
         $news = [];
+        $total = 0;
         
         if ($user->isApprover())
         {
@@ -731,10 +731,13 @@ class NewsController extends Controller
             })
             ->where('status_id', config('attribute.status.inprogress'))
             ->where('approved_by', '<>', 'NULL')
-            ->where('publish_time', '>=', \Carbon\Carbon::now())->paginate(10);
+            ->where('publish_time', '>=', \Carbon\Carbon::now());
+
+            $total = $news->count();
+            $news = $news->paginate(10);
         }
 
-        return view('news.newsListByRequiredToApprove', compact('news', 'titlePage'));
+        return view('news.newsListByRequiredToApprove', compact('news', 'titlePage', 'total'));
     }
 
     public function deleteApproved(Request $request)
@@ -783,7 +786,7 @@ class NewsController extends Controller
         }
     }
 
-    public function updateNew(Request $request)
+    public function updateNew(NewsRequest $request)
     {
         return $this->update($request, $request->get('newId'));
     }

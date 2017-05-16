@@ -40,12 +40,9 @@
               <label class="col-sm-4"><i class="fa fa-file-text-o" aria-hidden="true"></i>&nbsp;&nbsp;{{trans('app.description')}}</label>
               <div class="col-sm-8">
                 <!-- <input placeholder="" type="text" name="sub_title" class="form-control" value="{{isset($new) ? $new->sub_title : old('sub_title')}}"/> -->
-                <textarea class="form-control" rows="5" name="sub_title" id="comment" value="{{isset($new) ? $new->sub_title : old('sub_title')}}" required></textarea>
+                <textarea class="form-control" rows="5" name="sub_title" id="comment" value="{{isset($new) ? $new->sub_title : old('sub_title')}}"></textarea>
               </div>
             </div>
-
-            
-
             <!--section 2-->
               <!-- <div class="form-group">
                 <label class="col-sm-4"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp;{{trans('app.place')}} {!!isRequired()!!}</label>
@@ -100,19 +97,19 @@
                   <i class="fa fa-upload xxx"></i>&nbsp;&nbsp;
                   </label>
                   <div class="col-sm-8">
-                      <div class="input-group files-upload" >
+                      <div class="input-group files-upload">
                           <label class="input-group-btn">
                               <span class="btn btn-primary">
-                                  <i class="fa fa-upload"></i>&nbsp;Chọn file&hellip; <input required="" type="file" name="audio-file" style="display: none;">
+                                  <i class="fa fa-upload"></i>&nbsp;Chọn file&hellip; <input required="" type="file" id="audiofile" name="audio-file" style="display: none;">
                               </span>
                           </label>
-                          <input type="text" class="form-control" readonly>
+                          <input type="text" name="name-audio-files" class="form-control" readonly>
                       </div>
                   </div>
                   <div class="form-group show-audio-error" style="display:none;">
                     <label class="col-sm-4"></label>
                     <div class="col-sm-8">
-                      <label class="" style="color:red;">Trường bắt buộc.</span>
+                      <label class="" style="color:red;">Trường bắt buộc.</label>
                     </div>
                   </div>
               </div>
@@ -182,8 +179,21 @@
                       <textarea class="form-control" rows="5" name="audio_text" id="audio_text" required></textarea>
                     </div>
                   </div>
+                  <div class="form-group {{ addErrorClass($errors, 'publish_time') }}">
+                    <label class="col-sm-4"><i class="fa fa-calendar"></i>&nbsp;&nbsp;{{trans('app.publish_time')}} {!!isRequired()!!}</label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                         <span class="input-group-addon" style="color: #428bca;">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                         </span>
+                         <div class="input-group">
+                            <input id="publishTimeQuick" name="publish_time" type="datetime-local" class="form-control" value="'2011-09-29'" required/>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
                   <div style="float:right;margin-right:5px;">  
-                      <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; <label class="btn-action-new">{{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</label></button>
+                      <button type="button" action="create" class="btn btn-primary btn-quick-submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; <label class="btn-action-new">{{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</label></button>
                       <button type="reset" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
                   </div>
               </form>

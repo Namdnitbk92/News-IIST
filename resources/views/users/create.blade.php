@@ -190,7 +190,7 @@
 		var userPlace = '{{\Auth::user()->belong_to_place}}';
 		var type = $('select[name=place_type]').val();
 		if ((('county' == userPlace || 'city' == userPlace) && role == 1) || (role == 6 && type == userPlace) || (role == 6 && userPlace === 'guild'))
-		{console.log('vao')
+		{
 			showError(true);
 		}
 		else

@@ -128,6 +128,7 @@
             {{$quantity ?? 0}} / {{ $total ?? 0 }} Records.</label>
           </div> -->
       @endif
+      <div style="font-size:17px;font-weight:bold;float:right;padding:5px;">Tổng số <label class="label label-info">{{$total ?? 0}}</label> nội dung</div>
    </div>
 </div>
 </div>
@@ -197,6 +198,7 @@
         return;
 
       res = JSON.parse(res.new);
+      console.log(res);
       $('.modal-title').text('Sửa nội dung');
       $('.btn-action-new').text('Sửa nội dung');
       $('input[name=title]').val(res.title);
@@ -205,22 +207,44 @@
       $('select[name=file_type]').val(res.file_type ? res.file_type : '');
       $('select[name=file_type]').select2('val', (res.file_type ? res.file_type : 'text'));
       $('#file_type').trigger('change');
+      var fileType = res.file_type;
+      if (fileType === null)
+      {
+        $('select[name="new_type"]').select2('val', 'quickly');
+      }
+      else
+      {
+        $('select[name="new_type"]').select2('val', 'basic');
+      }
+
+      $('select[name="new_type"]').trigger('change');
+      $('select[name="new_type"]').select2('disable');
+
+      var _pathOriginal = res.audio_path ? res.audio_path : '';
+      var _index = _pathOriginal.indexOf('upload');
+      _pathOriginal = _pathOriginal.substring((_index !== -1 ? _index : 0), _pathOriginal.length);
+      $('input[name=name-audio-files]').val(_pathOriginal);
       var date = res.publish_time ? new Date(res.publish_time) : new Date();
       var tzoffset = date.getTimezoneOffset() * 60000; 
       var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0,-1);
       document.getElementById("publishTime").defaultValue = localISOTime;
+      document.getElementById("publishTimeQuick").defaultValue = localISOTime;
+      
       var btn = $('button[name=btnCreate]');
+      var btnQuick = $('.btn-quick-submit');
       if (action === 'copy')
       {
         $('.modal-title').text('Sao chép nội dung');
         $('.btn-action-new').text('Sao chép nội dung');
         btn.attr('action', 'create');
+        btnQuick.attr('action', 'create');
         $('#newsForm').append('<input type="hidden" name="newId" value="'+ id +'"/>');
         $('#newsForm').append('<input type="hidden" name="action" value="copy"/>');
       }
       else
       {
         btn.attr('action', 'update');
+        btnQuick.attr('action', 'update');
       }
     })
   }
@@ -228,6 +252,24 @@
   // $('#newsForm').on('submit', function(e){
   //     e.preventDefault();
   // })
+
+  var btnQuick = $('.btn-quick-submit');
+
+  btnQuick.click(function (e) {
+      var action = btnQuick.attr('action');
+
+      if (action === 'create')
+      {
+        $('#newsFormQuick').attr('action', '{{route("news.store")}}');
+      }
+      else 
+      {
+        $('#newsFormQuick').append('<input type="hidden" name="newId" value="'+ localStorage.getItem('newIdUpdate') +'"/>');
+        $('#newsFormQuick').attr('action', '{{route("updateNew")}}')
+      }
+
+      $('#newsFormQuick').submit();
+  })
 
   $('button[name=btnCreate]').click(function (){
     var action = $('button[name=btnCreate]').attr('action');
@@ -241,10 +283,10 @@
       $('#newsForm').attr('action', '{{route("updateNew")}}')
     }
 
-    var audioFile = $('input[name=audio-file]').val();
     var files_type = $('#file_type').val();
+    var _pathOriginal = $('input[name=name-audio-files]').val();
 
-    if(!audioFile && (files_type === 'audio' || files_type === 'video'))
+    if(!_pathOriginal && (files_type === 'audio' || files_type === 'video'))
     {
       $('.show-audio-error').fadeIn();
       return;
@@ -272,8 +314,7 @@
     {
       fillDataForm(id, action);
     }
-    $('select[name="new_type"]').select2('val', 'basic');
-    $('select[name="new_type"]').trigger('change');
+   
     $('#newModal').modal('show');
   }
 
@@ -375,6 +416,10 @@
     background: #f0ad4e;
     color : white;
     font-weight: bold;
+  }
+
+  html, body {
+    overflow: hidden;
   }
 </style>
 
