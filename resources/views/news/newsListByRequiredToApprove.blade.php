@@ -77,7 +77,7 @@
      
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header" style="background: #f0ad4e;">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title"><i class="fa fa-information">Chú ý</i></h4>
       </div>
@@ -173,6 +173,10 @@
             },2500);
         });
       }
+
+      $('#approveModal').on('hidden.bs.modal', function () {
+        $('textarea[name=reason]').val('');
+      });
 </script>
 <style>
   .table thead > tr > th {

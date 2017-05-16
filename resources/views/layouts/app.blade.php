@@ -27,6 +27,16 @@
             }
         });
     </script>
+    <style>
+        .pageheader h2 {
+            font-size: 28px;
+            color: #1CAF9A;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .pageheader .fa{border:none;}
+    </style>
 </head>
 @if (!Auth::guest())
     
@@ -62,7 +72,7 @@
         </div>
       
       <h5 class="sidebartitle"></h5>
-      <ul class="nav nav-pills nav-stacked nav-bracket">
+      <ul class="nav nav-pills nav-stacked nav-bracket" style="font-weight: bold;">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> <span>Trang chủ</span></a></li>
         @if(Auth::user()->isCreater() || Auth::user()->isAdmin())
         <li><a href="{{ route('news.index') }}"><i class="fa fa-edit"></i> <span>{{trans('app.news_management')}}</span></a>
@@ -153,7 +163,7 @@
     </div><!-- headerbar -->
         
     <div class="pageheader">
-      <h2><i class="fa fa-list"></i>{{ isset($titlePage) ? $titlePage : session('titlePage') }}<span></span></h2>
+      <h2><i class="fa fa-chevron-circle-right" aria-hidden="true"></i>&nbsp;{{ isset($titlePage) ? $titlePage : session('titlePage') }}</h2>
       <div class="breadcrumb-wrapper">
       </div>
     </div>
@@ -202,6 +212,7 @@
 @endif
 </html>
 <script>
+  // $('.menutoggle').click();
   function logout()
   {
     $('form[name=formLogout]').submit();

@@ -1,3 +1,14 @@
+<style>
+#preloaderCreateNew {
+    position: fixed;
+    top: 25%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fcfcfc;
+    z-index: 10000;
+}
+</style>
 <div class="row " >
     <div class="panel panel-default">
       <div class="">
@@ -9,16 +20,19 @@
       </div>
       <div class="panel-body panel-body-nopadding">
       <div class="form-group" style="padding:2%;">
-        <label class="col-sm-4">
+       <!--  <label class="col-sm-4">
           <i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp; {{trans('app.create_new_type')}}
-        </label>
-        <div class="col-sm-8">
+        </label> -->
+        <div class="col-sm-12 col-lg-12">
           <select class="select2" id="new_type" name="new_type">
           <option value="none">Hãy chọn kiểu tạo mới nội dung</option>
             <option value="basic">Truyền thống cơ bản</option>
             <option value="quickly">Truyền thống khẩn</option>
           </select>
         </div>
+      </div>
+      <div id="preloaderCreateNew" style="display: none;">
+          <div id="status"><i class="fa fa-spinner fa-spin"></i></div>
       </div>
       <!-- <div style="border-top: 2px solid #f0ad4e;"></div> -->
       <form class="form" style="padding:2%" enctype="multipart/form-data" method="POST" novalidate="novalidate" id="newsForm" action="{{ !isset($new) ? route('news.store') : route('news.update', ['id' => $new->id]) }}">
@@ -153,7 +167,11 @@
               </div>
             </div>
             <div style="float:right;margin-right:5px;">  
-              <button type="button" action="create" name="btnCreate" class="btn btn-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp; <label class="btn-action-new">{{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</label></button>
+              <button type="button" action="create" name="btnCreate" class="btn btn-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp; 
+              <!-- <label class="btn-action-new"> -->
+              {{ !isset($new) ? 'Lưu' : 'Sửa nội dung'}}
+              <!-- </label> -->
+              </button>
 
               <button type="reset" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
             </div>
@@ -193,7 +211,11 @@
                     </div>
                   </div>
                   <div style="float:right;margin-right:5px;">  
-                      <button type="button" action="create" class="btn btn-primary btn-quick-submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; <label class="btn-action-new">{{ !isset($new) ? 'Tạo mới nội dung' : 'Sửa nội dung'}}</label></button>
+                      <button type="button" action="create" class="btn btn-primary btn-quick-submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; 
+                      <!-- <label class="btn-action-new"> -->
+                      {{ !isset($new) ? 'Lưu' : 'Sửa nội dung'}}
+                      <!-- </label> -->
+                      </button>
                       <button type="reset" data-dismiss="modal" class="left btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Hủy</button>
                   </div>
               </form>

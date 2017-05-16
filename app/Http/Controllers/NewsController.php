@@ -283,7 +283,7 @@ class NewsController extends Controller
                 }
                 else
                 {
-                    return redirect(route('news.create'))->with('status', 'Xảy ra lỗi khi thêm mới'.$ec->getMessage())->withInput(); 
+                    return redirect(route('news.create'))->with('status', 'Xảy ra lỗi khi thêm mới'.$ec->getMessage());
                 }
             }
         }
@@ -293,7 +293,7 @@ class NewsController extends Controller
         }
 
         return redirect(route('news.index'))
-                ->with('status', isset($action) ? 'Sao chép nội dung thành công' : trans('app.notification.create_success'))->withInput(); 
+                ->with('status', isset($action) ? 'Sao chép nội dung thành công' : trans('app.notification.create_success')); 
     }
 
     /**
@@ -397,7 +397,7 @@ class NewsController extends Controller
                 }
                 catch(Exception $up)
                 {
-                    return redirect(route('news.create'))->with('status', $up->getMessage())->withInput(); 
+                    return redirect(route('news.create'))->with('status', $up->getMessage()); 
                 }
             }
 
@@ -418,7 +418,7 @@ class NewsController extends Controller
                 }
                 catch(Exception $up)
                 {
-                    return redirect(route('news.create'))->with('status', $up->getMessage())->withInput(); 
+                    return redirect(route('news.create'))->with('status', $up->getMessage()); 
                 }
             }
             
@@ -481,7 +481,7 @@ class NewsController extends Controller
             else
             {
                 return redirect(route('news.index'))
-                    ->with('status', 'Xảy ra lỗi khi cập nhật'.$ec->getMessage())->withInput(); 
+                    ->with('status', 'Xảy ra lỗi khi cập nhật'.$ec->getMessage()); 
             }
         }
         catch(Exception $e)
@@ -490,7 +490,7 @@ class NewsController extends Controller
         }
 
         return redirect()->route('news.index', ['id' => $new->id])
-                    ->with('status', trans('app.notification.edit_success'))->withInput();
+                    ->with('status', trans('app.notification.edit_success'));
     }
 
     /**

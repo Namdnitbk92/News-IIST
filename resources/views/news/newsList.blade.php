@@ -56,6 +56,7 @@
     	          <td data-title="Title">{{ $new->title }}</td>
     	          <td data-title="SubTitle">
     	            {{ $new->sub_title }}
+                  
     	          </td>
                 <td data-title="File_Type">
                   {{ $new->file_type }}
@@ -78,6 +79,11 @@
                     <span class="label label-danger">
                         {{$statusText}}
                     </span>
+                  @endif
+                  @if($new->publish_time < \Carbon\Carbon::now())
+                    <a {!! addTooltip('Thời gian phát đã hết hạn - cần cập nhật lại!') !!} class="label label-danger" style="color:red;float:right;">
+                      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
+                    </a>
                   @endif
     	          </td>
                 <td style="width:20%;">{{$new->reason ?? ''}}</td>
@@ -111,6 +117,8 @@
                     @if($new->status_id === '1')
                     <a {!! addTooltip(trans('app.makes_required_approve')) !!} class="panel-edit" href="javascript:void(0);" onclick="noticeApprove('{{$new->id}}');"><i class="fa fa-share" aria-hidden="true"></i></a>&nbsp;
                     @endif
+
+                    
                   @endif
                 </td>
     	        </tr>
@@ -141,7 +149,7 @@
     <div class="modal-content">
       <div class="modal-header" style="background: #f0ad4e;">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title"><i class="fa fa-information"></i>Tạo mới nội dung</h4>
+        <h4 class="modal-title modal-title-new"><i class="fa fa-information"></i>Tạo mới nội dung</h4>
       </div>
       <div class="modal-body">
         <?php unset($new)?>
@@ -198,9 +206,6 @@
         return;
 
       res = JSON.parse(res.new);
-      console.log(res);
-      $('.modal-title').text('Sửa nội dung');
-      $('.btn-action-new').text('Sửa nội dung');
       $('input[name=title]').val(res.title);
       $('textarea[name=sub_title]').val(res.sub_title ? res.sub_title : '');
       $('textarea[name=audio_text]').val(res.audio_text ? res.audio_text : '');
@@ -234,8 +239,8 @@
       var btnQuick = $('.btn-quick-submit');
       if (action === 'copy')
       {
-        $('.modal-title').text('Sao chép nội dung');
-        $('.btn-action-new').text('Sao chép nội dung');
+        $('.modal-title-new').text('Sao chép nội dung');
+        // $('.btn-action-new').text('Sao chép nội dung');
         btn.attr('action', 'create');
         btnQuick.attr('action', 'create');
         $('#newsForm').append('<input type="hidden" name="newId" value="'+ id +'"/>');
@@ -243,6 +248,9 @@
       }
       else
       {
+        $('.modal-title-new').text('Sửa nội dung');
+        // $('.btn-action-new').text('Sửa nội dung');
+      
         btn.attr('action', 'update');
         btnQuick.attr('action', 'update');
       }
@@ -314,7 +322,7 @@
     {
       fillDataForm(id, action);
     }
-   
+    $('#newModal').modal({backdrop: 'static', keyboard: false});
     $('#newModal').modal('show');
   }
 

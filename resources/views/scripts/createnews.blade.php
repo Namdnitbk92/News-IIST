@@ -43,8 +43,8 @@ $(document).ready(function(){
       var action = $('button[name=btnCreate]');
       action.attr('action', 'create');
 
-      $('.modal-title').text('Tạo mới nội dung');
-      $('.btn-action-new').text('Tạo mới nội dung');
+      $('.modal-title-new').text('Tạo mới nội dung');
+      // $('.btn-action-new').text('Tạo mới nội dung');
     })
 
      $('input[name=audio-file]').rules('add', {
@@ -53,12 +53,14 @@ $(document).ready(function(){
 
     $('#file_type').change(function (e){
       $('input[name=name-audio-files]').val('');
+      $('input[name=audio-file]').val('').clone(true);
       type = $(this).val();
       if(type === 'text')
       {
         $('.files-upload').fadeOut();
         $('._files').fadeIn();
         $('.describe_news').fadeIn();
+
       } 
       else if(type === 'audio')
       {
@@ -82,22 +84,34 @@ $(document).ready(function(){
 
     $('#new_type').change(function (e){
       type = $(this).val();
-      if(type === 'basic')
-      {
-        $('.create_content_additional').fadeIn();
-        $('.create_content_quickly').fadeOut();
-      }
-      else if(type === 'quickly')
-      {
-        $('.create_content_additional').fadeOut();
-        $('.create_content_quickly').fadeIn();
-      }
-      else
-      {
-        $('.create_content_additional').fadeOut();
-        $('.create_content_quickly').fadeOut();
-      }
       
+        if(type === 'basic')
+        {
+          $('.create_content_quickly').fadeOut();
+          $('#preloaderCreateNew').fadeIn();
+          setTimeout(function(){
+            $('.create_content_additional').fadeIn();
+            $('#preloaderCreateNew').fadeOut();
+          },500);
+        }
+        else if(type === 'quickly')
+        {
+          $('.create_content_additional').fadeOut();
+          $('#preloaderCreateNew').fadeIn();
+          setTimeout(function(){
+            $('.create_content_quickly').fadeIn();
+            $('#preloaderCreateNew').fadeOut();
+          },500);
+        }
+        else
+        {
+          $('.create_content_additional').fadeOut();
+          $('.create_content_quickly').fadeOut();
+          $('#preloaderCreateNew').fadeIn();
+          setTimeout(function(){
+            $('#preloaderCreateNew').fadeOut();
+          },500);
+        }
     });
 
       // We can attach the `fileselect` event to all file inputs on the page
@@ -144,6 +158,7 @@ $(document).ready(function(){
     $('#newModal').on('hidden.bs.modal', function () {
       $('#newsForm')[0].reset();
       $('#newsFormQuick')[0].reset();
+      $('input[name=title]').val('');
       $('#file_type').select2('val', '');
       $('#file_type').trigger('change');
       $('select[name="new_type"]').select2('val', 'none');
@@ -152,6 +167,9 @@ $(document).ready(function(){
       $validatorNewsForm.resetForm();
       $('select[name="new_type"]').select2('enable');
       $('input[name=name-audio-files]').val('');
+      $('.modal-title-new').text('Tạo mới nội dung');
+      // $('.btn-action-new').text('Tạo mới nội dung');
+      
       setCurrentTime();
     })
 });

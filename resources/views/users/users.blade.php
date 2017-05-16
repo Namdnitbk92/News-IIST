@@ -195,7 +195,7 @@
       {
         fillUserData(id, action);
       }
-
+      $('#userModal').modal({backdrop: 'static', keyboard: false});
       $('#userModal').modal('show');
     }
 

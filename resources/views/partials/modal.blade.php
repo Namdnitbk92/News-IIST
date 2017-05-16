@@ -4,7 +4,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header" style="background: #f0ad4e;">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title"><i class="fa fa-information"></i>{{ isset($header) ? $header : trans('app.notifications')}}</h4>
       </div>
